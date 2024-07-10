@@ -60,7 +60,11 @@ return (
       </Link>
     </li>
 
-
+    <li className="nav-item">
+      <Link to="/Pool" className={isActive('/Pool')}>
+        Pool
+      </Link>
+    </li>
 
     {/* ---------------------------------- log in conditional function --------------------------------  */}
 
