@@ -1,27 +1,22 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
-import MatterWrap from 'matter-wrap';
 import decomp from 'poly-decomp';
 
-const Stripped = () => {
+const Bike = () => {
   const [engine] = useState(Engine.create());
-  const [shipPosition, setShipPosition] = useState({ x: 300, y: 300, rotation: 0 });
+  const [bikePosition, setBikePosition] = useState({ x: 300, y: 300, rotation: 0 });
   const [gameOver, setGameOver] = useState(false);
-  const [ship, setShip] = useState(null);
+  const [bike, setBike] = useState(null);
   const [rotationSpeed, setRotationSpeed] = useState(0.15);
 
   const gameRef = useRef();
 
   window.decomp = decomp; // poly-decomp is available globally
 
-//------------------------------------------------------------------------------------//
-
-//------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
+  //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
   useEffect(() => {
-    Matter.use(MatterWrap);
-    engine.world.gravity.y = 0;
+    engine.world.gravity.y = 1; // Enable gravity
     const render = Render.create({
       element: gameRef.current,
       engine,
@@ -36,90 +31,114 @@ const Stripped = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-    const vertices = [
-      { x: 0, y: 0 },
-      { x: 34, y: 14 },
-      { x: 0, y: 27 }
-    ];
-
-    const shipBody = Bodies.fromVertices(750, 340, vertices, {
+    // Create the ball
+    const ball = Bodies.circle(750, 340, 20, {
+      restitution: 0.5, // Bounce effect
       render: {
         fillStyle: 'transparent',
         strokeStyle: '#ffffff', 
         lineWidth: 2,
         visible: true // Conditional visibility
-      },
-      plugin: {
-        wrap: {
-          min: { x: 0, y: 0 },
-          max: { x: 1500, y: 680 }
-        }
       }
     });
-    Body.rotate(shipBody, -Math.PI / 2);
 
-    setShip(shipBody);
-    World.add(engine.world, shipBody);
+    setBall(ball);
+    World.add(engine.world, ball);
 
-    const updateShipPosition = () => {
-      setShipPosition({
-        x: shipBody.position.x,
-        y: shipBody.position.y,
-        rotation: shipBody.angle * (180 / Math.PI)
+    // Create the floor
+    const floor = Bodies.rectangle(750, 670, 1500, 20, {
+      isStatic: true,
+      render: {
+        fillStyle: '#ffffff',
+        visible: true
+      }
+    });
+
+    // Create left and right boundaries
+    const leftWall = Bodies.rectangle(0, 340, 20, 680, {
+      isStatic: true,
+      render: {
+        fillStyle: '#ffffff',
+        visible: true
+      }
+    });
+
+    const rightWall = Bodies.rectangle(1500, 340, 20, 680, {
+      isStatic: true,
+      render: {
+        fillStyle: '#ffffff',
+        visible: true
+      }
+    });
+
+    World.add(engine.world, [floor, leftWall, rightWall]);
+
+    const updateBikePosition = () => {
+      setBikePosition({
+        x: ball.position.x,
+        y: ball.position.y,
+        rotation: ball.angle * (180 / Math.PI)
       });
     };
 
-    Events.on(engine, 'beforeUpdate', updateShipPosition);
+    Events.on(engine, 'beforeUpdate', updateBikePosition);
 
     return () => {
       Render.stop(render);
       World.clear(engine.world);
       Engine.clear(engine);
-      Events.off(engine, 'beforeUpdate', updateShipPosition);
+      Events.off(engine, 'beforeUpdate', updateBikePosition);
     };
   }, [engine]);
 
-  const moveShipUp = () => {
-    if (ship) {
-      const forceMagnitude = 0.0003;
-      const forceX = Math.cos(ship.angle) * forceMagnitude;
-      const forceY = Math.sin(ship.angle) * forceMagnitude;
-      Body.applyForce(ship, ship.position, { x: forceX, y: forceY });
+  const moveBikeForward = () => {
+    if (bike) {
+      const forceMagnitude = 0.05;
+      const forceX = Math.cos(bike.angle) * forceMagnitude;
+      const forceY = Math.sin(bike.angle) * forceMagnitude;
+      Body.applyForce(bike, bike.position, { x: forceX, y: forceY });
+    }
+  };
+
+  const moveShipBackward = () => {
+    if (bike) {
+      const forceMagnitude = 0.05;
+      const forceX = Math.cos(bike.angle) * -forceMagnitude;
+      const forceY = Math.sin(bike.angle) * -forceMagnitude;
+      Body.applyForce(bike, bike.position, { x: forceX, y: forceY });
     }
   };
 
   const rotateShipLeft = () => {
-    if (ship) {
-      Body.rotate(ship, -rotationSpeed);
+    if (bike) {
+      Body.rotate(bike, -rotationSpeed);
     }
   };
 
   const rotateShipRight = () => {
-    if (ship) {
-      Body.rotate(ship, rotationSpeed);
+    if (bike) {
+      Body.rotate(bike, rotationSpeed);
     }
   };
 
-
   // --------------------------------// HOTKEYS //-----------------------------------//
+  useHotkeys('up', moveBikeForward, [bike]);
+  useHotkeys('down', moveShipBackward, [bike]);
+  useHotkeys('left', rotateShipLeft, [bike, rotationSpeed]);
+  useHotkeys('right', rotateShipRight, [bike, rotationSpeed]);
 
-  useHotkeys('up', moveShipUp, [ship]);
-  useHotkeys('left', rotateShipLeft, [ship, rotationSpeed]);
-  useHotkeys('right', rotateShipRight, [ship, rotationSpeed]);
-
-//----------------------------------// RENDERING //----------------------------------//
-
-return (
-  <div className="game-container" ref={gameRef}>
-    {gameOver && (
-      <div className="game-over-overlay">
-        <div className="game-over">
-          Game Over
+  //----------------------------------// RENDERING //----------------------------------//
+  return (
+    <div className="game-container" ref={gameRef}>
+      {gameOver && (
+        <div className="game-over-overlay">
+          <div className="game-over">
+            Game Over
+          </div>
         </div>
-      </div>
-    )}
-  </div>
+      )}
+    </div>
   );
 };
 
-export default Stripped;
+export default Bike;
