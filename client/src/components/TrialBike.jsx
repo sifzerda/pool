@@ -124,7 +124,6 @@ const Bike = () => {
       const forceX = Math.cos(bike[0].angle) * forceMagnitude;
       const forceY = Math.sin(bike[0].angle) * forceMagnitude;
       Body.applyForce(bike[0], bike[0].position, { x: forceX, y: forceY });
-      Body.applyForce(bike[1], bike[1].position, { x: forceX, y: forceY });
     }
   };
 
@@ -134,21 +133,18 @@ const Bike = () => {
       const forceX = Math.cos(bike[0].angle) * -forceMagnitude;
       const forceY = Math.sin(bike[0].angle) * -forceMagnitude;
       Body.applyForce(bike[0], bike[0].position, { x: forceX, y: forceY });
-      Body.applyForce(bike[1], bike[1].position, { x: forceX, y: forceY });
     }
   };
 
   const rotateBikeLeft = () => {
     if (bike) {
       Body.rotate(bike[0], -rotationSpeed);
-      Body.rotate(bike[1], -rotationSpeed);
     }
   };
 
   const rotateBikeRight = () => {
     if (bike) {
       Body.rotate(bike[0], rotationSpeed);
-      Body.rotate(bike[1], rotationSpeed);
     }
   };
 
