@@ -161,13 +161,6 @@ const Bike = () => {
   //----------------------------------// RENDERING //----------------------------------//
   return (
     <div className="game-container" ref={gameRef}>
-      {gameOver && (
-        <div className="game-over-overlay">
-          <div className="game-over">
-            Game Over
-          </div>
-        </div>
-      )}
     </div>
   );
 };
