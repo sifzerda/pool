@@ -1,5 +1,5 @@
 import '../App.css';
-import Game from '../components/Game';
+import TrialBike from '../components/TrialBike';
 import '../minesweeper.css';
 
 export default function About () {
@@ -17,7 +17,7 @@ export default function About () {
 
 <div className='grid-wrapper'>
 <div className='white-box'>
-      <Game />
+      <TrialBike />
 </div>
 </div>
 {/* -------------- */}
