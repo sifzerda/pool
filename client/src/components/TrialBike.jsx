@@ -100,7 +100,7 @@ const Bike = () => {
     }
   };
 
-  const moveShipBackward = () => {
+  const moveBikeBackward = () => {
     if (bike) {
       const forceMagnitude = 0.05;
       const forceX = Math.cos(bike.angle) * -forceMagnitude;
@@ -109,13 +109,13 @@ const Bike = () => {
     }
   };
 
-  const rotateShipLeft = () => {
+  const rotateBikeLeft = () => {
     if (bike) {
       Body.rotate(bike, -rotationSpeed);
     }
   };
 
-  const rotateShipRight = () => {
+  const rotateBikeRight = () => {
     if (bike) {
       Body.rotate(bike, rotationSpeed);
     }
@@ -123,9 +123,9 @@ const Bike = () => {
 
   // --------------------------------// HOTKEYS //-----------------------------------//
   useHotkeys('up', moveBikeForward, [bike]);
-  useHotkeys('down', moveShipBackward, [bike]);
-  useHotkeys('left', rotateShipLeft, [bike, rotationSpeed]);
-  useHotkeys('right', rotateShipRight, [bike, rotationSpeed]);
+  useHotkeys('down', moveBikeBackward, [bike]);
+  useHotkeys('left', rotateBikeLeft, [bike, rotationSpeed]);
+  useHotkeys('right', rotateBikeRight, [bike, rotationSpeed]);
 
   //----------------------------------// RENDERING //----------------------------------//
   return (
