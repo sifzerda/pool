@@ -163,7 +163,7 @@ const Stripped = () => {
       World.add(engine.world, pockets);
 
         // Create cue ball at center-left position
-        const cueBall = Bodies.circle(200, halfHeight, 14, {
+        const cueBall = Bodies.circle(400, halfHeight, 14, {
           frictionAir: 0,
           render: {
             fillStyle: '#ffffff', // white
