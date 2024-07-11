@@ -1,17 +1,7 @@
-// ship, asteroids, projectiles, particles
-// movement, shooting, collisions
-// score lives
-// ship reset on crash, visibility toggle
-// game over on 3 lives lost
-
-// removed: Levels, replaceAsteroids fx
-
-// needs: maybe adjust ship motion so slightly more acceleration, and friction so it doesn't slide as much
-
+ 
 import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
-import MatterWrap from 'matter-wrap';
 import decomp from 'poly-decomp';
 
 const Stripped = () => {
@@ -70,10 +60,6 @@ const Stripped = () => {
             fillStyle: '#e5ff00', // yellow
           },
           plugin: {
-            wrap: {
-              min: { x: 0, y: 0 },
-              max: { x: 1500, y: 680 },
-            },
           },
         });
   
@@ -111,10 +97,6 @@ const createAsteroid = () => {
       lineWidth: 2,
     },
     plugin: {
-      wrap: {
-        min: { x: 0, y: 0 },
-        max: { x: 1500, y: 680 },
-      },
     },
   });
 
@@ -128,7 +110,6 @@ const createAsteroid = () => {
 
 //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
   useEffect(() => {
-    Matter.use(MatterWrap);
     engine.world.gravity.y = 0;
     const render = Render.create({
       element: gameRef.current,
@@ -144,6 +125,20 @@ const createAsteroid = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
+    // Create boundaries around the visible screen area
+    const wallThickness = 20;
+    const halfWidth = render.options.width / 2;
+    const halfHeight = render.options.height / 2;
+
+    const boundaries = [
+      Bodies.rectangle(halfWidth, -wallThickness / 2, render.options.width + 2 * wallThickness, wallThickness, { isStatic: true }),
+      Bodies.rectangle(halfWidth, render.options.height + wallThickness / 2, render.options.width + 2 * wallThickness, wallThickness, { isStatic: true }),
+      Bodies.rectangle(-wallThickness / 2, halfHeight, wallThickness, render.options.height + 2 * wallThickness, { isStatic: true }),
+      Bodies.rectangle(render.options.width + wallThickness / 2, halfHeight, wallThickness, render.options.height + 2 * wallThickness, { isStatic: true }),
+    ];
+
+    World.add(engine.world, boundaries);
+
     const vertices = [
       { x: 0, y: 0 },
       { x: 34, y: 14 },
@@ -158,10 +153,6 @@ const createAsteroid = () => {
         visible: true // Conditional visibility
       },
       plugin: {
-        wrap: {
-          min: { x: 0, y: 0 },
-          max: { x: 1500, y: 680 }
-        }
       }
     });
     Body.rotate(shipBody, -Math.PI / 2);
@@ -237,10 +228,6 @@ for (let i = 0; i < 5; i++) {
             fillStyle: '#ff3300' // red
           },
           plugin: {
-            wrap: {
-              min: { x: 0, y: 0 },
-              max: { x: 1500, y: 680 }
-            }
           }
         });
 
@@ -287,10 +274,6 @@ for (let i = 0; i < 5; i++) {
           fillStyle: '#00FFDC' // cyan
         },
         plugin: {
-          wrap: {
-            min: { x: 0, y: 0 },
-            max: { x: 1500, y: 680 }
-          }
         }
       });
       const velocityX = Math.cos(ship.angle) * speed;
@@ -388,10 +371,6 @@ for (let i = 0; i < 5; i++) {
           lineWidth: 2 // Outline width
         },
         plugin: {
-          wrap: {
-            min: { x: 0, y: 0 },
-            max: { x: 1500, y: 680 }
-          }
         }
       });
 
@@ -464,10 +443,6 @@ for (let i = 0; i < 5; i++) {
                 lineWidth: 2
               },
               plugin: {
-                wrap: {
-                  min: { x: 0, y: 0 },
-                  max: { x: 1500, y: 680 }
-                }
               }
             });
             Body.setVelocity(newAsteroid1, { x: velocityX, y: velocityY });
@@ -484,10 +459,6 @@ for (let i = 0; i < 5; i++) {
                 lineWidth: 2
               },
               plugin: {
-                wrap: {
-                  min: { x: 0, y: 0 },
-                  max: { x: 1500, y: 680 }
-                }
               }
             });
             Body.setVelocity(newAsteroid2, { x: -velocityX, y: -velocityY });
@@ -552,10 +523,6 @@ for (let i = 0; i < 5; i++) {
                   lineWidth: 2 // Outline width
                 },
                 plugin: {
-                  wrap: {
-                    min: { x: 0, y: 0 },
-                    max: { x: 1500, y: 680 }
-                  }
                 }
               });
           

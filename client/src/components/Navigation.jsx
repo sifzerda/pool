@@ -68,19 +68,19 @@ return (
 
     <li className="nav-item">
       <Link to="/Copy1" className={isActive('/Copy1')}>
-        Pool
+        Copy1
       </Link>
     </li>
 
     <li className="nav-item">
       <Link to="/Copy2" className={isActive('/Copy2')}>
-        Pool
+      Copy2
       </Link>
     </li>
 
     <li className="nav-item">
       <Link to="/Copy3" className={isActive('/Cop3')}>
-        Pool
+      Copy3
       </Link>
     </li>
 
