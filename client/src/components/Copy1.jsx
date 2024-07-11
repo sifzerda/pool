@@ -59,112 +59,125 @@ const Stripped = () => {
   
     //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
     useEffect(() => {
-      engine.world.gravity.y = 0;
-      const render = Render.create({
-        element: gameRef.current,
-        engine,
-        options: {
-          width: 1500,
-          height: 680,
-          wireframes: false
-        }
-      });
-      Render.run(render);
-  
-      const runner = Matter.Runner.create();
-      Matter.Runner.run(runner, engine);
-  
-      // Create boundaries around the visible screen area
-      const wallThickness = 14;
-      const halfWidth = render.canvas.width / 2;
-      const halfHeight = render.canvas.height / 2;
-  
-      // Adjusted to create inward walls not touching the edges
-      const topWall = Bodies.rectangle(halfWidth, 50, render.canvas.width - 100, wallThickness, { isStatic: true });
-      const bottomWall = Bodies.rectangle(halfWidth, render.canvas.height - 50, render.canvas.width - 100, wallThickness, { isStatic: true });
-      const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
-      const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
-  
-      World.add(engine.world, [topWall, bottomWall, leftWall, rightWall]);
-  
-      const boundaries = [
-        Bodies.rectangle(halfWidth, -wallThickness / 2, render.canvas.width + 2 * wallThickness, wallThickness, { isStatic: true }),
-        Bodies.rectangle(halfWidth, render.canvas.height + wallThickness / 2, render.canvas.width + 2 * wallThickness, wallThickness, { isStatic: true }),
-        Bodies.rectangle(-wallThickness / 2, halfHeight, wallThickness, render.canvas.height + 2 * wallThickness, { isStatic: true }),
-        Bodies.rectangle(render.canvas.width + wallThickness / 2, halfHeight, wallThickness, render.canvas.height + 2 * wallThickness, { isStatic: true }),
-      ];
-  
-      World.add(engine.world, boundaries);
-
-       // Create pockets (adjust positions as per your layout)
-    const pocketPositions = [
-        { x: 120, y: 80 }, // top left
-        { x: 750, y: 80 }, // middle top
-        { x: 1450, y: 200 }, // top right
-        { x: 50, y: 630 }, // bottom left
-        { x: 750, y: 630 }, // bottom middle
-        { x: 1450, y: 630 }, // bottom right
-      ];
-      const pocketRadius = 20;
-      const pockets = pocketPositions.map(pos => Bodies.circle(pos.x, pos.y, pocketRadius, { isStatic: true, render: { fillStyle: '#000' } }));
-      setPockets(pockets);
-      World.add(engine.world, pockets);
-  
-      const vertices = [
-        { x: 0, y: 0 },
-        { x: 34, y: 14 },
-        { x: 0, y: 27 }
-      ];
-  
-      const shipBody = Bodies.fromVertices(750, 340, vertices, {
-        render: {
-          fillStyle: 'transparent',
-          strokeStyle: '#ffffff',
-          lineWidth: 2,
-          visible: true // Conditional visibility
-        },
-        plugin: {}
-      });
-      Body.rotate(shipBody, -Math.PI / 2);
-  
-      setShip(shipBody);
-      World.add(engine.world, shipBody);
-  
-      // Create initial 15 asteroids
-      for (let i = 0; i < 15; i++) {
-        createBall();
-      }
-  
-      // Create cue ball at center-left position
-      const cueBall = Bodies.circle(200, halfHeight, 20, {
-        frictionAir: 0,
-        render: {
-          fillStyle: '#ffffff', // white
-          strokeStyle: '#ffffff',
-          lineWidth: 2,
-        },
-        plugin: {},
-      });
-  
-      World.add(engine.world, cueBall);
-  
-      const updateShipPosition = () => {
-        setShipPosition({
-          x: shipBody.position.x,
-          y: shipBody.position.y,
-          rotation: shipBody.angle * (180 / Math.PI)
+        engine.world.gravity.y = 0;
+        const render = Render.create({
+          element: gameRef.current,
+          engine,
+          options: {
+            width: 1500,
+            height: 680,
+            wireframes: false
+          }
         });
-      };
-  
-      Events.on(engine, 'beforeUpdate', updateShipPosition);
-  
-      return () => {
-        Render.stop(render);
-        World.clear(engine.world);
-        Engine.clear(engine);
-        Events.off(engine, 'beforeUpdate', updateShipPosition);
-      };
-    }, [engine]);
+        Render.run(render);
+      
+        const runner = Matter.Runner.create();
+        Matter.Runner.run(runner, engine);
+      
+        // Create boundaries around the visible screen area
+        const wallThickness = 14;
+        const halfWidth = render.canvas.width / 2;
+        const halfHeight = render.canvas.height / 2;
+      
+        // Adjusted to create inward walls not touching the edges
+        const topWall = Bodies.rectangle(halfWidth, 50, render.canvas.width - 100, wallThickness, { isStatic: true });
+        const bottomWall = Bodies.rectangle(halfWidth, render.canvas.height - 50, render.canvas.width - 100, wallThickness, { isStatic: true });
+        const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
+        const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
+      
+        World.add(engine.world, [topWall, bottomWall, leftWall, rightWall]);
+      
+        const boundaries = [
+          Bodies.rectangle(halfWidth, -wallThickness / 2, render.canvas.width + 2 * wallThickness, wallThickness, { isStatic: true }),
+          Bodies.rectangle(halfWidth, render.canvas.height + wallThickness / 2, render.canvas.width + 2 * wallThickness, wallThickness, { isStatic: true }),
+          Bodies.rectangle(-wallThickness / 2, halfHeight, wallThickness, render.canvas.height + 2 * wallThickness, { isStatic: true }),
+          Bodies.rectangle(render.canvas.width + wallThickness / 2, halfHeight, wallThickness, render.canvas.height + 2 * wallThickness, { isStatic: true }),
+        ];
+      
+        // Create rods just above the balls
+        const rodLength = 300;
+        const rodWidth = 2;
+        const rodMargin = 30; // Distance between rods and balls// Distance between rods and balls
+      
+        // Example positions (adjust as needed)
+        const rodConfigurations = [
+          //  { x: 600, y: 200, angle: Math.PI / 6 },   // Adjust angles for diagonal alignment
+          //  { x: 7, y: 500, angle: Math.PI / 4 },
+            { x: 1200, y: 400, angle: Math.PI / 1 }, // bottom rod
+            { x: 1100, y: 300, angle: Math.PI / 1.5 }, // left rod
+            { x: 1300, y: 300, angle: Math.PI / 3.5 }, // right rod
+          ];
+      
+  // Create rods with specified positions and angles
+  const rods = rodConfigurations.map(({ x, y, angle }) => {
+    const rod = Bodies.rectangle(x, y - rodMargin, rodLength, rodWidth, {
+      isStatic: true,
+      angle: angle,
+      render: {
+        fillStyle: '#ffffff',
+      },
+    });
+    return rod;
+  });
+
+  // Add rods to the Matter.js world
+  World.add(engine.world, rods);
+      
+        const vertices = [
+          { x: 0, y: 0 },
+          { x: 34, y: 14 },
+          { x: 0, y: 27 }
+        ];
+      
+        const shipBody = Bodies.fromVertices(750, 340, vertices, {
+          render: {
+            fillStyle: 'transparent',
+            strokeStyle: '#ffffff',
+            lineWidth: 2,
+            visible: true // Conditional visibility
+          },
+          plugin: {}
+        });
+        Body.rotate(shipBody, -Math.PI / 2);
+      
+        setShip(shipBody);
+        World.add(engine.world, shipBody);
+      
+        // Create initial 15 asteroids
+        for (let i = 0; i < 15; i++) {
+          createBall();
+        }
+      
+        // Create cue ball at center-left position
+        const cueBall = Bodies.circle(200, halfHeight, 20, {
+          frictionAir: 0,
+          render: {
+            fillStyle: '#ffffff', // white
+            strokeStyle: '#ffffff',
+            lineWidth: 2,
+          },
+          plugin: {},
+        });
+      
+        World.add(engine.world, cueBall);
+      
+        const updateShipPosition = () => {
+          setShipPosition({
+            x: shipBody.position.x,
+            y: shipBody.position.y,
+            rotation: shipBody.angle * (180 / Math.PI)
+          });
+        };
+      
+        Events.on(engine, 'beforeUpdate', updateShipPosition);
+      
+        return () => {
+          Render.stop(render);
+          World.clear(engine.world);
+          Engine.clear(engine);
+          Events.off(engine, 'beforeUpdate', updateShipPosition);
+        };
+      }, [engine]);
   
     const moveShipUp = () => {
       if (ship) {
