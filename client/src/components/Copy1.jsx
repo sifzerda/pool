@@ -1,4 +1,3 @@
- 
 import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
@@ -16,53 +15,48 @@ const Stripped = () => {
   const [ballHits, setBallHits] = useState([]);
   const [score, setScore] = useState(0); // Initialize score at 0
   const [lives, setLives] = useState(3); // Initialize lives at 3
-  const [destroyedBalls, setDestroyedBalls] = useState(0); // Initialize destroyed asteroids count
 
   const gameRef = useRef();
- 
+
   const MAX_PROJECTILES = 2;
 
   window.decomp = decomp; // poly-decomp is available globally
 
-//------------------------------------------------------------------------------------//
+  //---------------------------------// ASTEROIDS //-----------------------------------//
+  const createBall = () => {
+    const ballRadii = [14]; // Adjust radius options as needed
+    const radiusIndex = Math.floor(Math.random() * ballRadii.length);
+    const radius = ballRadii[radiusIndex];
 
- 
+    // Start the balls in the center-right quadrant of the screen
+    const startX = 1200 + Math.random() * 100;
+    const startY = 300 + Math.random() * 100 - 50;
 
-    //---------------------------------// ASTEROIDS //-----------------------------------//
-    const createBall = () => {
-        const ballRadii = [14]; // Adjust radius options as needed
-        const radiusIndex = Math.floor(Math.random() * ballRadii.length);
-        const radius = ballRadii[radiusIndex];
-        
-        // Randomize starting position anywhere outside the visible screen
-        const startX = Math.random() * 1000 - 250;
-        const startY = Math.random() * 1000 - 240;
-        
-        // Randomize velocity direction and speed
-        const velocityX = (Math.random() - 0.5) * 4;
-        const velocityY = (Math.random() - 0.5) * 4;
-        
-        const ball = Bodies.circle(startX, startY, radius, {
-          frictionAir: 0,
-          render: {
-            fillStyle: 'transparent',
-            strokeStyle: '#ffffff',
-            lineWidth: 2,
-          },
-          plugin: {},
-        });
-        
-        Body.setVelocity(ball, { x: velocityX, y: velocityY });
-        Body.setAngularVelocity(ball, 0.01); // Adjust angular velocity as needed
-        
-        setBalls((prev) => [...prev, ball]);
-        setBallSizes((prev) => [...prev, radius]);
-        setBallHits((prev) => [...prev, 0]);
-        World.add(engine.world, ball);
-      };
+    // Randomize velocity direction and speed
+    const velocityX = (Math.random() - 0.5) * 4;
+    const velocityY = (Math.random() - 0.5) * 4;
 
-//------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
-useEffect(() => {
+    const ball = Bodies.circle(startX, startY, radius, {
+      frictionAir: 0,
+      render: {
+        fillStyle: 'transparent',
+        strokeStyle: '#ffffff',
+        lineWidth: 2,
+      },
+      plugin: {},
+    });
+
+    Body.setVelocity(ball, { x: velocityX, y: velocityY });
+    Body.setAngularVelocity(ball, 0.01); // Adjust angular velocity as needed
+
+    setBalls((prev) => [...prev, ball]);
+    setBallSizes((prev) => [...prev, radius]);
+    setBallHits((prev) => [...prev, 0]);
+    World.add(engine.world, ball);
+  };
+
+  //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
+  useEffect(() => {
     engine.world.gravity.y = 0;
     const render = Render.create({
       element: gameRef.current,
@@ -74,28 +68,28 @@ useEffect(() => {
       }
     });
     Render.run(render);
-  
+
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
-  
+
     // Create boundaries around the visible screen area
     const wallThickness = 14;
-    const halfWidth = render.options.width / 2;
-    const halfHeight = render.options.height / 2;
-  
+    const halfWidth = render.canvas.width / 2;
+    const halfHeight = render.canvas.height / 2;
+
     // Adjusted to create inward walls not touching the edges
-    const topWall = Bodies.rectangle(halfWidth, 50, render.options.width - 100, wallThickness, { isStatic: true });
-    const bottomWall = Bodies.rectangle(halfWidth, render.options.height - 50, render.options.width - 100, wallThickness, { isStatic: true });
-    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.options.height - 100, { isStatic: true });
-    const rightWall = Bodies.rectangle(render.options.width - 100, halfHeight, wallThickness, render.options.height - 100, { isStatic: true });
-  
+    const topWall = Bodies.rectangle(halfWidth, 50, render.canvas.width - 100, wallThickness, { isStatic: true });
+    const bottomWall = Bodies.rectangle(halfWidth, render.canvas.height - 50, render.canvas.width - 100, wallThickness, { isStatic: true });
+    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
+    const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
+
     World.add(engine.world, [topWall, bottomWall, leftWall, rightWall]);
 
     const boundaries = [
-      Bodies.rectangle(halfWidth, -wallThickness / 2, render.options.width + 2 * wallThickness, wallThickness, { isStatic: true }),
-      Bodies.rectangle(halfWidth, render.options.height + wallThickness / 2, render.options.width + 2 * wallThickness, wallThickness, { isStatic: true }),
-      Bodies.rectangle(-wallThickness / 2, halfHeight, wallThickness, render.options.height + 2 * wallThickness, { isStatic: true }),
-      Bodies.rectangle(render.options.width + wallThickness / 2, halfHeight, wallThickness, render.options.height + 2 * wallThickness, { isStatic: true }),
+      Bodies.rectangle(halfWidth, -wallThickness / 2, render.canvas.width + 2 * wallThickness, wallThickness, { isStatic: true }),
+      Bodies.rectangle(halfWidth, render.canvas.height + wallThickness / 2, render.canvas.width + 2 * wallThickness, wallThickness, { isStatic: true }),
+      Bodies.rectangle(-wallThickness / 2, halfHeight, wallThickness, render.canvas.height + 2 * wallThickness, { isStatic: true }),
+      Bodies.rectangle(render.canvas.width + wallThickness / 2, halfHeight, wallThickness, render.canvas.height + 2 * wallThickness, { isStatic: true }),
     ];
 
     World.add(engine.world, boundaries);
@@ -109,22 +103,21 @@ useEffect(() => {
     const shipBody = Bodies.fromVertices(750, 340, vertices, {
       render: {
         fillStyle: 'transparent',
-        strokeStyle: '#ffffff', 
+        strokeStyle: '#ffffff',
         lineWidth: 2,
         visible: true // Conditional visibility
       },
-      plugin: {
-      }
+      plugin: {}
     });
     Body.rotate(shipBody, -Math.PI / 2);
 
     setShip(shipBody);
     World.add(engine.world, shipBody);
 
-  // Create initial 15 asteroids
-  for (let i = 0; i < 15; i++) {
-    createBall();
-  }
+    // Create initial 15 asteroids
+    for (let i = 0; i < 15; i++) {
+      createBall();
+    }
 
     const updateShipPosition = () => {
       setShipPosition({
@@ -165,7 +158,7 @@ useEffect(() => {
     }
   };
 
-//----------------------------------- SHOOTING ------------------------------//
+  //----------------------------------- SHOOTING ------------------------------//
   const shootProjectile = () => {
     if (ship) {
       const speed = 10;
@@ -179,20 +172,19 @@ useEffect(() => {
         render: {
           fillStyle: '#00FFDC' // cyan
         },
-        plugin: {
-        }
+        plugin: {}
       });
       const velocityX = Math.cos(ship.angle) * speed;
       const velocityY = Math.sin(ship.angle) * speed;
       Body.setVelocity(projectileBody, { x: velocityX, y: velocityY });
-  
+
       const newProjectile = {
         body: projectileBody,
         rotation: ship.angle,
         lifetime: 100
       };
       World.add(engine.world, projectileBody);
-      
+
       setProjectiles(prev => {
         const updatedProjectiles = [...prev, newProjectile];
         if (updatedProjectiles.length > MAX_PROJECTILES) {
@@ -200,12 +192,12 @@ useEffect(() => {
         }
         return updatedProjectiles;
       });
-  
+
       setTimeout(() => {
         World.remove(engine.world, projectileBody);
         setProjectiles(prev => prev.filter(proj => proj.body !== projectileBody));
       }, 2000);
-  
+
       // Update score
       setScore(prevScore => {
         const newScore = prevScore + 10; // Adjust score increment as needed
@@ -221,37 +213,37 @@ useEffect(() => {
   useHotkeys('right', rotateShipRight, [ship, rotationSpeed]);
   useHotkeys('space', shootProjectile, [ship]);
 
-//--------------------------------// CLOCKING SCORE //----------------------------------//
+  //--------------------------------// CLOCKING SCORE //----------------------------------//
 
-useEffect(() => {
-  // Continuous score increment example
-  const scoreInterval = setInterval(() => {
-    if (!gameOver) {
-      setScore(prevScore => prevScore + 1); // Increment score by 1 point every second
-    }
-  }, 100); // Adjust interval as needed (e.g., every second)
+  useEffect(() => {
+    // Continuous score increment example
+    const scoreInterval = setInterval(() => {
+      if (!gameOver) {
+        setScore(prevScore => prevScore + 1); // Increment score by 1 point every second
+      }
+    }, 100); // Adjust interval as needed (e.g., every second)
 
-  return () => clearInterval(scoreInterval); // Cleanup on unmount
-}, [gameOver]);
+    return () => clearInterval(scoreInterval); // Cleanup on unmount
+  }, [gameOver]);
 
-//----------------------------------// RENDERING //----------------------------------//
+  //----------------------------------// RENDERING //----------------------------------//
 
-return (
-  <div className="game-container" ref={gameRef}>
-    {gameOver && (
-      <div className="game-over-overlay">
-        <div className="game-over">
-          Game Over
+  return (
+    <div className="game-container" ref={gameRef}>
+      {gameOver && (
+        <div className="game-over-overlay">
+          <div className="game-over">
+            Game Over
+          </div>
         </div>
+      )}
+      <div className="score-display">
+        Score: {score}
       </div>
-    )}
-    <div className="score-display">
-      Score: {score}
+      <div className="lives-display">
+        Lives: <span className='life-triangle'>{'∆ '.repeat(lives)}</span>
+      </div>
     </div>
-    <div className="lives-display">
-    Lives: <span className='life-triangle'>{'∆ '.repeat(lives)}</span>
-    </div>
-  </div>
   );
 };
 
