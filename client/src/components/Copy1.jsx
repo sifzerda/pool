@@ -8,6 +8,8 @@ const Stripped = () => {
     const [shipPosition, setShipPosition] = useState({ x: 300, y: 300, rotation: 0 });
     const [projectiles, setProjectiles] = useState([]);
     const [balls, setBalls] = useState([]);
+    const [pockets, setPockets] = useState([]);
+    
     const [gameOver, setGameOver] = useState(false);
     const [ship, setShip] = useState(null);
     const [rotationSpeed, setRotationSpeed] = useState(0.15);
@@ -93,6 +95,20 @@ const Stripped = () => {
       ];
   
       World.add(engine.world, boundaries);
+
+       // Create pockets (adjust positions as per your layout)
+    const pocketPositions = [
+        { x: 120, y: 80 }, // top left
+        { x: 750, y: 80 }, // middle top
+        { x: 1450, y: 200 }, // top right
+        { x: 50, y: 630 }, // bottom left
+        { x: 750, y: 630 }, // bottom middle
+        { x: 1450, y: 630 }, // bottom right
+      ];
+      const pocketRadius = 20;
+      const pockets = pocketPositions.map(pos => Bodies.circle(pos.x, pos.y, pocketRadius, { isStatic: true, render: { fillStyle: '#000' } }));
+      setPockets(pockets);
+      World.add(engine.world, pockets);
   
       const vertices = [
         { x: 0, y: 0 },
