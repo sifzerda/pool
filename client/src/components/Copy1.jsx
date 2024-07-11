@@ -8,16 +8,15 @@ const Stripped = () => {
   const [engine] = useState(Engine.create());
   const [shipPosition, setShipPosition] = useState({ x: 300, y: 300, rotation: 0 });
   const [projectiles, setProjectiles] = useState([]);
-  const [particles, setParticles] = useState([]);
-  const [asteroids, setAsteroids] = useState([]);
+  const [balls, setBalls] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [ship, setShip] = useState(null);
   const [rotationSpeed, setRotationSpeed] = useState(0.15);
-  const [asteroidSizes, setAsteroidSizes] = useState([]);
-  const [asteroidHits, setAsteroidHits] = useState([]);
+  const [ballSizes, setBallSizes] = useState([]);
+  const [ballHits, setBallHits] = useState([]);
   const [score, setScore] = useState(0); // Initialize score at 0
   const [lives, setLives] = useState(3); // Initialize lives at 3
-  const [destroyedAsteroids, setDestroyedAsteroids] = useState(0); // Initialize destroyed asteroids count
+  const [destroyedBalls, setDestroyedBalls] = useState(0); // Initialize destroyed asteroids count
 
   const gameRef = useRef();
  
@@ -40,10 +39,10 @@ const Stripped = () => {
   };
 
     //---------------------------------// ASTEROIDS //-----------------------------------//
-    const createAsteroid = () => {
-        const asteroidRadii = [14]; // Adjust radius options as needed
-        const radiusIndex = Math.floor(Math.random() * asteroidRadii.length);
-        const radius = asteroidRadii[radiusIndex];
+    const createBall = () => {
+        const ballRadii = [14]; // Adjust radius options as needed
+        const radiusIndex = Math.floor(Math.random() * ballRadii.length);
+        const radius = ballRadii[radiusIndex];
         
         // Randomize starting position anywhere outside the visible screen
         const startX = Math.random() * 1000 - 250;
@@ -53,7 +52,7 @@ const Stripped = () => {
         const velocityX = (Math.random() - 0.5) * 4;
         const velocityY = (Math.random() - 0.5) * 4;
         
-        const asteroid = Bodies.circle(startX, startY, radius, {
+        const ball = Bodies.circle(startX, startY, radius, {
           frictionAir: 0,
           render: {
             fillStyle: 'transparent',
@@ -63,13 +62,13 @@ const Stripped = () => {
           plugin: {},
         });
         
-        Body.setVelocity(asteroid, { x: velocityX, y: velocityY });
-        Body.setAngularVelocity(asteroid, 0.01); // Adjust angular velocity as needed
+        Body.setVelocity(ball, { x: velocityX, y: velocityY });
+        Body.setAngularVelocity(ball, 0.01); // Adjust angular velocity as needed
         
-        setAsteroids((prev) => [...prev, asteroid]);
-        setAsteroidSizes((prev) => [...prev, radius]);
-        setAsteroidHits((prev) => [...prev, 0]);
-        World.add(engine.world, asteroid);
+        setBalls((prev) => [...prev, ball]);
+        setBallSizes((prev) => [...prev, radius]);
+        setBallHits((prev) => [...prev, 0]);
+        World.add(engine.world, ball);
       };
 
 //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
@@ -126,10 +125,8 @@ const Stripped = () => {
 
   // Create initial 15 asteroids
   for (let i = 0; i < 15; i++) {
-    createAsteroid();
+    createBall();
   }
-    // Set up an interval to create new asteroids every 20 seconds
-    const intervalId = setInterval(createAsteroid, 20000);
 
     const updateShipPosition = () => {
       setShipPosition({
@@ -142,7 +139,6 @@ const Stripped = () => {
     Events.on(engine, 'beforeUpdate', updateShipPosition);
 
     return () => {
-      clearInterval(intervalId);
       Render.stop(render);
       World.clear(engine.world);
       Engine.clear(engine);
@@ -226,168 +222,6 @@ const Stripped = () => {
   useHotkeys('left', rotateShipLeft, [ship, rotationSpeed]);
   useHotkeys('right', rotateShipRight, [ship, rotationSpeed]);
   useHotkeys('space', shootProjectile, [ship]);
-
-  // Handling asteroid and projectile collisions:
-  useEffect(() => {
-    const handleCollisions = (event) => {
-      const pairs = event.pairs;
-
-      pairs.forEach(pair => {
-        const { bodyA, bodyB } = pair;
-
-        const isProjectileA = projectiles.find(proj => proj.body === bodyA);
-        const isProjectileB = projectiles.find(proj => proj.body === bodyB);
-        const isAsteroidA = asteroids.find(ast => ast === bodyA);
-        const isAsteroidB = asteroids.find(ast => ast === bodyB);
-
-        if (isProjectileA && isAsteroidB) {
-          handleAsteroidCollision(bodyA, bodyB);
-        } else if (isProjectileB && isAsteroidA) {
-          handleAsteroidCollision(bodyB, bodyA);
-        }
-      });
-    };
-
-    const handleAsteroidCollision = (projectile, asteroid) => {
-      // Remove the projectile
-      World.remove(engine.world, projectile);
-      setProjectiles(prev => prev.filter(proj => proj.body !== projectile));
-
-//------------------------// HIT ASTEROID SPLITTING // ---------------------------------//
-      // Get index of the asteroid
-      const asteroidIndex = asteroids.findIndex(ast => ast === asteroid);
-      if (asteroidIndex !== -1) {
-        // Increment hit count for the asteroid
-        const currentHits = asteroidHits[asteroidIndex] + 1;
-        const updatedHits = [...asteroidHits];
-        updatedHits[asteroidIndex] = currentHits;
-        setAsteroidHits(updatedHits);
-
-               // Increment score
-               setScore(prevScore => prevScore + 10); // Adjust score increment as needed
-  
-        // Check if asteroid should be removed
-        if (currentHits >= 2) {
-          // Remove the asteroid
-          World.remove(engine.world, asteroid);
-          setAsteroids(prev => prev.filter(ast => ast !== asteroid));
-          setAsteroidSizes(prev => prev.filter((size, idx) => idx !== asteroidIndex));
-          setAsteroidHits(prev => prev.filter((hits, idx) => idx !== asteroidIndex));
-
-                    // Update the destroyed asteroids count and replace asteroids if needed
-                    setDestroyedAsteroids((prev) => prev + 1);
-
-                    if (destroyedAsteroids + 1 === 5) {
-
-                      setDestroyedAsteroids(0);
-                    }
-        } else {
-          // Split the asteroid into smaller ones
-          const asteroidRadius = asteroidSizes[asteroidIndex];
-          const newRadius = asteroidRadius / 2;
-
-          if (newRadius > 20) { // Ensure the new asteroids are not too small
-            const vertices = randomVertices(Math.floor(Math.random() * 5) + 5, newRadius);
-            const { x: asteroidX, y: asteroidY } = asteroid.position;
-            const velocityX = (Math.random() - 0.5) * 4;
-            const velocityY = (Math.random() - 0.5) * 4;
-  
-            const newAsteroid1 = Bodies.fromVertices(asteroidX, asteroidY, vertices, {
-              frictionAir: 0,
-              render: {
-                fillStyle: 'transparent',
-                strokeStyle: '#ffffff',
-                lineWidth: 2
-              },
-              plugin: {
-              }
-            });
-            Body.setVelocity(newAsteroid1, { x: velocityX, y: velocityY });
-            World.add(engine.world, newAsteroid1);
-            setAsteroids(prev => [...prev, newAsteroid1]);
-            setAsteroidSizes(prev => [...prev, newRadius]);
-            setAsteroidHits(prev => [...prev, 0]);
-  
-            const newAsteroid2 = Bodies.fromVertices(asteroidX, asteroidY, vertices, {
-              frictionAir: 0,
-              render: {
-                fillStyle: 'transparent',
-                strokeStyle: '#ffffff',
-                lineWidth: 2
-              },
-              plugin: {
-              }
-            });
-            Body.setVelocity(newAsteroid2, { x: -velocityX, y: -velocityY });
-            World.add(engine.world, newAsteroid2);
-            setAsteroids(prev => [...prev, newAsteroid2]);
-            setAsteroidSizes(prev => [...prev, newRadius]);
-            setAsteroidHits(prev => [...prev, 0]);
-          }
-        }
-      }
-    };
-
-    Events.on(engine, 'collisionStart', handleCollisions);
-
-    return () => {
-      Events.off(engine, 'collisionStart', handleCollisions);
-    };
-  }, [engine, projectiles, asteroids, asteroidSizes, asteroidHits]);
-
-  //---------------------------------- // CRASH HANDLING //---------------------------------------//
-
-  useEffect(() => {
-    const handleCollisions = (event) => {
-      const pairs = event.pairs;
-  
-      pairs.forEach(pair => {
-        const { bodyA, bodyB } = pair;
-  
-        const isShipA = bodyA === ship;
-        const isShipB = bodyB === ship;
-        const isAsteroidA = asteroids.find(ast => ast === bodyA);
-        const isAsteroidB = asteroids.find(ast => ast === bodyB);
-  
-        if ((isShipA && isAsteroidB) || (isShipB && isAsteroidA)) {
-
-//------------------------------------ subtract life on crash ------------------------------------------//
-           if (lives === 0) {
-            setGameOver(true);
-
-           } else {
-            setLives(prevLives => {
-              const updatedLives = prevLives - 1;
-                
-                          // Remove all asteroids
-          asteroids.forEach((asteroid) => {
-            World.remove(engine.world, asteroid);
-          });
-//------------------------// 5 sec Timeout: reset ship, asteroids //---------------------//
-setTimeout(() => {
-     Body.setPosition(ship, { x: 790, y: 350 }); // reset ship pos to center
-     Body.setVelocity(ship, { x: 0, y: 0 }); // Reset ship velocity 
-     Body.setAngularVelocity(ship, 0); // Reset ship angular velocity
-// Create more asteroids (reset them)
-for (let i = 0; i < 5; i++) {
-  createAsteroid();
-}
-  setGameOver(false);
-}, 5000); // 4secs before reset
-//-----------------------------------------------------------------------------------------//
-              return updatedLives;
-            });
-           }
-        }
-      });
-    };
-
-    Events.on(engine, 'collisionStart', handleCollisions);
-  
-    return () => {
-      Events.off(engine, 'collisionStart', handleCollisions);
-    };
-  }, [engine, ship, asteroids, gameOver]);
 
 //--------------------------------// CLOCKING SCORE //----------------------------------//
 
