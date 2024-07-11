@@ -33,8 +33,8 @@ const Stripped = () => {
     const startY = 300 + Math.random() * 100 - 50;
 
     // Randomize velocity direction and speed
-    const velocityX = (Math.random() - 0.5) * 4;
-    const velocityY = (Math.random() - 0.5) * 4;
+    const velocityX = 0;
+    const velocityY = 0;
 
     const ball = Bodies.circle(startX, startY, radius, {
       frictionAir: 0,
