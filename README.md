@@ -27,7 +27,8 @@ TO DO:
 - later: it disappears when ever balls are in motion, or after turn taken
 - make pockets accept balls, or balls disappear when they 'collide' with center of pocket
 - Pocket may be IsSensor or otherwise does not physically interact with balls (or anything)
-- b
+-  [ ] MUCH LATER - Drag and drop cue ball on potting it
+-  [ ] drag and drop cue ball on first move 
 - b
 - b
 - Create game rule logic:
