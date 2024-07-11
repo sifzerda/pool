@@ -26,17 +26,7 @@ const Stripped = () => {
 
 //------------------------------------------------------------------------------------//
 
-//---// helper function to generate random vertices for generated asteroids //-------//
-  const randomVertices = (numVertices, radius) => {
-    const vertices = [];
-    for (let i = 0; i < numVertices; i++) {
-      const angle = (i / numVertices) * Math.PI * 2;
-      const x = Math.cos(angle) * (radius * (0.8 + Math.random() * 0.4));
-      const y = Math.sin(angle) * (radius * (0.8 + Math.random() * 0.4));
-      vertices.push({ x, y });
-    }
-    return vertices;
-  };
+ 
 
     //---------------------------------// ASTEROIDS //-----------------------------------//
     const createBall = () => {
@@ -72,7 +62,7 @@ const Stripped = () => {
       };
 
 //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
-  useEffect(() => {
+useEffect(() => {
     engine.world.gravity.y = 0;
     const render = Render.create({
       element: gameRef.current,
@@ -84,14 +74,22 @@ const Stripped = () => {
       }
     });
     Render.run(render);
-
+  
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
-
+  
     // Create boundaries around the visible screen area
-    const wallThickness = 20;
+    const wallThickness = 14;
     const halfWidth = render.options.width / 2;
     const halfHeight = render.options.height / 2;
+  
+    // Adjusted to create inward walls not touching the edges
+    const topWall = Bodies.rectangle(halfWidth, 50, render.options.width - 100, wallThickness, { isStatic: true });
+    const bottomWall = Bodies.rectangle(halfWidth, render.options.height - 50, render.options.width - 100, wallThickness, { isStatic: true });
+    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.options.height - 100, { isStatic: true });
+    const rightWall = Bodies.rectangle(render.options.width - 100, halfHeight, wallThickness, render.options.height - 100, { isStatic: true });
+  
+    World.add(engine.world, [topWall, bottomWall, leftWall, rightWall]);
 
     const boundaries = [
       Bodies.rectangle(halfWidth, -wallThickness / 2, render.options.width + 2 * wallThickness, wallThickness, { isStatic: true }),
