@@ -150,12 +150,12 @@ const Stripped = () => {
 
     // Create pockets (adjust positions as per your layout)
     const pocketPositions = [
-        { x: 50, y: 50 },
-        { x: 750, y: 50 },
-        { x: 1450, y: 50 },
-        { x: 50, y: 630 },
-        { x: 750, y: 630 },
-        { x: 1450, y: 630 },
+        { x: 50, y: 50 }, // top left
+        { x: 750, y: 50 }, // top center
+        { x: 1450, y: 50 }, // top right
+        { x: 50, y: 630 }, // bottom left
+        { x: 750, y: 630 }, // bottom center
+        { x: 1450, y: 630 }, // bottom right
       ];
       const pocketRadius = 20;
       const pockets = pocketPositions.map(pos => Bodies.circle(pos.x, pos.y, pocketRadius, { isStatic: true, render: { fillStyle: '#000' } }));
