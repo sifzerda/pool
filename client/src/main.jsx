@@ -8,6 +8,9 @@ import Error from './pages/Error.jsx';
 import About from './pages/About.jsx';
 import Profile from './pages/Profile.jsx';
 import Pool from './pages/Pool.jsx';
+import Copy1 from './pages/Copy1.jsx';
+import Copy2 from './pages/Copy2.jsx';
+import Copy3 from './pages/Copy3.jsx';
 
 // subjects
 
@@ -43,6 +46,21 @@ const router = createBrowserRouter([
       {
         path: '/Pool',
         element: <Pool />
+      },
+
+      {
+        path: '/copy1',
+        element: <Copy1 />
+      },
+
+      {
+        path: '/copy2',
+        element: <Copy2 />
+      },
+
+      {
+        path: '/copy3',
+        element: <Copy3 />
       },
 
     ],

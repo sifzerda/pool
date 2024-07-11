@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
 import decomp from 'poly-decomp';
@@ -9,23 +9,22 @@ const PoolGame = () => {
   const [poolTable, setPoolTable] = useState(null);
   const [balls, setBalls] = useState([]);
   const [cueStick, setCueStick] = useState(null);
-  const [rotationSpeed, setRotationSpeed] = useState(0.02);
 
   const gameRef = useRef();
 
   window.decomp = decomp; // poly-decomp is available globally
 
-  //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
   useEffect(() => {
     engine.world.gravity.y = 0; // Disable gravity for pool balls
+
     const render = Render.create({
       element: gameRef.current,
       engine,
       options: {
         width: 800,
         height: 400,
-        wireframes: false
-      }
+        wireframes: false,
+      },
     });
     Render.run(render);
 
@@ -45,11 +44,51 @@ const PoolGame = () => {
       render: {
         fillStyle: '#008000',
         strokeStyle: '#ffffff',
-        lineWidth: 2
-      }
+        lineWidth: 2,
+      },
     });
     setPoolTable(table);
     World.add(engine.world, table);
+
+    // Create the pool table rim
+    const rimThickness = 20;
+    const rimOptions = {
+      isStatic: true,
+      render: {
+        fillStyle: '#654321', // Brown color for the rim
+      },
+    };
+
+    const leftRim = Bodies.rectangle(
+      tableX - tableWidth / 2 - rimThickness / 2,
+      tableY,
+      rimThickness,
+      tableHeight + rimThickness * 2,
+      rimOptions
+    );
+    const rightRim = Bodies.rectangle(
+      tableX + tableWidth / 2 + rimThickness / 2,
+      tableY,
+      rimThickness,
+      tableHeight + rimThickness * 2,
+      rimOptions
+    );
+    const topRim = Bodies.rectangle(
+      tableX,
+      tableY - tableHeight / 2 - rimThickness / 2,
+      tableWidth + rimThickness * 2,
+      rimThickness,
+      rimOptions
+    );
+    const bottomRim = Bodies.rectangle(
+      tableX,
+      tableY + tableHeight / 2 + rimThickness / 2,
+      tableWidth + rimThickness * 2,
+      rimThickness,
+      rimOptions
+    );
+
+    World.add(engine.world, [leftRim, rightRim, topRim, bottomRim]);
 
     // Create the cue ball
     const cueBallRadius = 15;
@@ -62,8 +101,8 @@ const PoolGame = () => {
       render: {
         fillStyle: '#ffffff',
         strokeStyle: '#000000',
-        lineWidth: 2
-      }
+        lineWidth: 2,
+      },
     });
     setCueBall(cueBallBody);
     World.add(engine.world, cueBallBody);
@@ -76,8 +115,8 @@ const PoolGame = () => {
 
     const cueStick = Bodies.rectangle(cueStickX, cueStickY, cueStickLength, cueStickWidth, {
       render: {
-        fillStyle: '#654321' // Brown color for the cue stick
-      }
+        fillStyle: '#654321', // Brown color for the cue stick
+      },
     });
     setCueStick(cueStick);
     World.add(engine.world, cueStick);
@@ -85,55 +124,31 @@ const PoolGame = () => {
     // Create additional balls in a triangle formation
     const ballRadius = 15;
     const triangleBaseX = 400; // X position of the base of the triangle
-    const triangleBaseY = 250; // Y position of the base of the triangle
-    const triangleHeight = Math.sqrt(3) * ballRadius; // Height of the equilateral triangle
+    const triangleBaseY = 200; // Y position of the base of the triangle
+
+    const createBall = (x, y, color) => {
+      return Bodies.circle(x, y, ballRadius, {
+        restitution: 0.8,
+        friction: 0.2,
+        render: {
+          fillStyle: color,
+          strokeStyle: '#000000',
+          lineWidth: 2,
+        },
+      });
+    };
 
     const balls = [
-      Bodies.circle(triangleBaseX, triangleBaseY, ballRadius, {
-        restitution: 0.8,
-        friction: 0.2,
-        render: {
-          fillStyle: '#ffcc00', // Yellow for the cue ball
-          strokeStyle: '#000000',
-          lineWidth: 2
-        }
-      }),
-      Bodies.circle(triangleBaseX - ballRadius * Math.sqrt(3), triangleBaseY + ballRadius, ballRadius, {
-        restitution: 0.8,
-        friction: 0.2,
-        render: {
-          fillStyle: '#ff0000', // Red ball
-          strokeStyle: '#000000',
-          lineWidth: 2
-        }
-      }),
-      Bodies.circle(triangleBaseX + ballRadius * Math.sqrt(3), triangleBaseY + ballRadius, ballRadius, {
-        restitution: 0.8,
-        friction: 0.2,
-        render: {
-          fillStyle: '#0000ff', // Blue ball
-          strokeStyle: '#000000',
-          lineWidth: 2
-        }
-      }),
-      Bodies.circle(triangleBaseX - 2 * ballRadius * Math.sqrt(3), triangleBaseY + 2 * ballRadius, ballRadius, {
-        restitution: 0.8,
-        friction: 0.2,
-        render: {
-          fillStyle: '#00ff00', // Green ball
-          strokeStyle: '#000000',
-          lineWidth: 2
-        }
-      }),
-      Bodies.circle(triangleBaseX + 2 * ballRadius * Math.sqrt(3), triangleBaseY + 2 * ballRadius, ballRadius, {
-        restitution: 0.8,
-        friction: 0.2,
-        render: {
-          fillStyle: '#ff00ff', // Purple ball
-          strokeStyle: '#000000',
-          lineWidth: 2
-        }
-      })
+      createBall(triangleBaseX, triangleBaseY, '#ffcc00'),
+      createBall(triangleBaseX - ballRadius * Math.sqrt(3), triangleBaseY + ballRadius, '#ff0000'),
+      createBall(triangleBaseX + ballRadius * Math.sqrt(3), triangleBaseY + ballRadius, '#0000ff'),
+      createBall(triangleBaseX - ballRadius * Math.sqrt(3) * 2, triangleBaseY + ballRadius * 2, '#00ff00'),
+      createBall(triangleBaseX, triangleBaseY + ballRadius * 2, '#ff00ff'),
+      createBall(triangleBaseX + ballRadius * Math.sqrt(3) * 2, triangleBaseY + ballRadius * 2, '#ffcc00'),
+      createBall(triangleBaseX - ballRadius * Math.sqrt(3), triangleBaseY + ballRadius * 3, '#ff0000'),
+      createBall(triangleBaseX + ballRadius * Math.sqrt(3), triangleBaseY + ballRadius * 3, '#0000ff'),
+      createBall(triangleBaseX, triangleBaseY + ballRadius * 4, '#00ff00'),
+      createBall(triangleBaseX - ballRadius * Math.sqrt(3) * 2, triangleBaseY + ballRadius * 4, '#ff00ff'),
     ];
 
     setBalls(balls);
@@ -182,10 +197,8 @@ const PoolGame = () => {
     }
   };
 
-  // --------------------------------// HOTKEYS //-----------------------------------//
   useHotkeys('space', shootCueBall, [cueBall, cueStick]);
 
-  //----------------------------------// RENDERING //----------------------------------//
   return (
     <div className="game-container" ref={gameRef}>
     </div>

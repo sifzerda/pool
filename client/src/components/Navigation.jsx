@@ -66,6 +66,24 @@ return (
       </Link>
     </li>
 
+    <li className="nav-item">
+      <Link to="/Copy1" className={isActive('/Copy1')}>
+        Pool
+      </Link>
+    </li>
+
+    <li className="nav-item">
+      <Link to="/Copy2" className={isActive('/Copy2')}>
+        Pool
+      </Link>
+    </li>
+
+    <li className="nav-item">
+      <Link to="/Copy3" className={isActive('/Cop3')}>
+        Pool
+      </Link>
+    </li>
+
     {/* ---------------------------------- log in conditional function --------------------------------  */}
 
     {showNavigation()}
