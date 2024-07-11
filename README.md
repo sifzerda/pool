@@ -35,4 +35,7 @@ TO DO:
 - Give balls colors (non tracked by UseState)
   - This may be tracked by useState later to display as image of balls needing to be potted (sort of like life display at top of screen)
 - 
--  
+-  POOL STICK LOGIC (consider):
+   -  making a slightly larger red circle surround the cue ball wherever it goes. probably will require tracking cue ball position with useState. 
+   -  Align or attack one end of a rod to that circle allowing 360 rotation around the cue ball. Rod and circle can remain visible whole time for debugging (later you can make the red circle transparent)
+   -  
