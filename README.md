@@ -38,4 +38,4 @@ TO DO:
 -  POOL STICK LOGIC (consider):
    -  making a slightly larger red circle surround the cue ball wherever it goes. probably will require tracking cue ball position with useState. 
    -  Align or attack one end of a rod to that circle allowing 360 rotation around the cue ball. Rod and circle can remain visible whole time for debugging (later you can make the red circle transparent)
-   -  
+   -  maybe use words like 'axis' or descriptive technical term CG can understand with precision.
