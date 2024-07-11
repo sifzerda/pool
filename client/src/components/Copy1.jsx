@@ -147,7 +147,21 @@ const Stripped = () => {
         for (let i = 0; i < 15; i++) {
           createBall();
         }
-      
+
+    // Create pockets (adjust positions as per your layout)
+    const pocketPositions = [
+        { x: 50, y: 50 },
+        { x: 750, y: 50 },
+        { x: 1450, y: 50 },
+        { x: 50, y: 630 },
+        { x: 750, y: 630 },
+        { x: 1450, y: 630 },
+      ];
+      const pocketRadius = 20;
+      const pockets = pocketPositions.map(pos => Bodies.circle(pos.x, pos.y, pocketRadius, { isStatic: true, render: { fillStyle: '#000' } }));
+      setPockets(pockets);
+      World.add(engine.world, pockets);
+
         // Create cue ball at center-left position
         const cueBall = Bodies.circle(200, halfHeight, 20, {
           frictionAir: 0,
