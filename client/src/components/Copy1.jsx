@@ -47,7 +47,7 @@ const Stripped = () => {
       });
   
       Body.setVelocity(ball, { x: velocityX, y: velocityY });
-      Body.setAngularVelocity(ball, 0.01); // Adjust angular velocity as needed
+      Body.setAngularVelocity(ball, 0.00); // Adjust angular velocity as needed
   
       setBalls((prev) => [...prev, ball]);
       setBallSizes((prev) => [...prev, radius]);
