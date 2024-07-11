@@ -20,8 +20,7 @@ const Stripped = () => {
   const [destroyedAsteroids, setDestroyedAsteroids] = useState(0); // Initialize destroyed asteroids count
 
   const gameRef = useRef();
-
-  const MAX_PARTICLES = 10;
+ 
   const MAX_PROJECTILES = 2;
 
   window.decomp = decomp; // poly-decomp is available globally
@@ -40,73 +39,38 @@ const Stripped = () => {
     return vertices;
   };
 
-  //------------------------// asteroids explode on ship hit //-------------------------//
-
-    // Function to emit explosion particles
-    const emitExplosionParticles = (collisionPosition) => {
-      const particleCount = 30; // Adjust particle count as needed
-      const particleSpeed = 5; // Adjust particle speed as needed
-      const particleSpread = Math.PI * 2; // Full circle spread
-  
-      for (let i = 0; i < particleCount; i++) {
-        const angle = (i / particleCount) * particleSpread;
-        const velocityX = Math.cos(angle) * particleSpeed;
-        const velocityY = Math.sin(angle) * particleSpeed;
-  
-        const particleBody = Bodies.circle(collisionPosition.x, collisionPosition.y, 2, {
-          frictionAir: 0,
-          restitution: 0.4,
-          render: {
-            fillStyle: '#e5ff00', // yellow
-          },
-          plugin: {
-          },
-        });
-  
-        Body.setVelocity(particleBody, { x: velocityX, y: velocityY });
-        World.add(engine.world, particleBody);
-  
-        setTimeout(() => {
-          World.remove(engine.world, particleBody);
-          setParticles((prev) => prev.filter((p) => p.body !== particleBody));
-        }, 1000);
-      }
-    };
-
     //---------------------------------// ASTEROIDS //-----------------------------------//
-const createAsteroid = () => {
-  const asteroidRadii = [80, 100, 120, 140, 160];
-  const radiusIndex = Math.floor(Math.random() * asteroidRadii.length);
-  const radius = asteroidRadii[radiusIndex];
-  const numVertices = Math.floor(Math.random() * 5) + 5;
-  const vertices = randomVertices(numVertices, radius);
-
-  // Randomize starting position anywhere outside the visible screen
-  const startX = Math.random() * 3000 - 750;
-  const startY = Math.random() * 1700 - 340;
-
-  // Randomize velocity direction and speed
-  const velocityX = (Math.random() - 0.5) * 4;
-  const velocityY = (Math.random() - 0.5) * 4;
-
-  const asteroid = Bodies.fromVertices(startX, startY, vertices, {
-    frictionAir: 0,
-    render: {
-      fillStyle: 'transparent',
-      strokeStyle: '#ffffff',
-      lineWidth: 2,
-    },
-    plugin: {
-    },
-  });
-
-  Body.setVelocity(asteroid, { x: velocityX, y: velocityY });
-  Body.setAngularVelocity(asteroid, 0.01); // Adjust angular velocity as needed
-  setAsteroids((prev) => [...prev, asteroid]);
-  setAsteroidSizes((prev) => [...prev, radius]);
-  setAsteroidHits((prev) => [...prev, 0]);
-  World.add(engine.world, asteroid);
-};
+    const createAsteroid = () => {
+        const asteroidRadii = [14]; // Adjust radius options as needed
+        const radiusIndex = Math.floor(Math.random() * asteroidRadii.length);
+        const radius = asteroidRadii[radiusIndex];
+        
+        // Randomize starting position anywhere outside the visible screen
+        const startX = Math.random() * 1000 - 250;
+        const startY = Math.random() * 1000 - 240;
+        
+        // Randomize velocity direction and speed
+        const velocityX = (Math.random() - 0.5) * 4;
+        const velocityY = (Math.random() - 0.5) * 4;
+        
+        const asteroid = Bodies.circle(startX, startY, radius, {
+          frictionAir: 0,
+          render: {
+            fillStyle: 'transparent',
+            strokeStyle: '#ffffff',
+            lineWidth: 2,
+          },
+          plugin: {},
+        });
+        
+        Body.setVelocity(asteroid, { x: velocityX, y: velocityY });
+        Body.setAngularVelocity(asteroid, 0.01); // Adjust angular velocity as needed
+        
+        setAsteroids((prev) => [...prev, asteroid]);
+        setAsteroidSizes((prev) => [...prev, radius]);
+        setAsteroidHits((prev) => [...prev, 0]);
+        World.add(engine.world, asteroid);
+      };
 
 //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
   useEffect(() => {
@@ -160,10 +124,10 @@ const createAsteroid = () => {
     setShip(shipBody);
     World.add(engine.world, shipBody);
 
-// Create initial asteroids
-for (let i = 0; i < 5; i++) {
-  createAsteroid();
-}
+  // Create initial 15 asteroids
+  for (let i = 0; i < 15; i++) {
+    createAsteroid();
+  }
     // Set up an interval to create new asteroids every 20 seconds
     const intervalId = setInterval(createAsteroid, 20000);
 
@@ -206,59 +170,7 @@ for (let i = 0; i < 5; i++) {
       Body.rotate(ship, rotationSpeed);
     }
   };
-//-------------------------------- SHIP EXHAUST PARTICLES ---------------------------//
-  const makeExhaust = () => {
-    if (ship) {
-      const exhaustCount = 5;
-      const speed = -2;
-      const offset = -30;
-      const spreadAngle = 0.2;
 
-      const newParticles = [];
-
-      for (let i = 0; i < exhaustCount; i++) {
-        const spreadOffset = (i - (exhaustCount - 1) / 2) * spreadAngle;
-        const particleX = ship.position.x + Math.cos(ship.angle) * offset;
-        const particleY = ship.position.y + Math.sin(ship.angle) * offset;
-        const particleBody = Bodies.circle(particleX, particleY, 1, {
-          frictionAir: 0.02,
-          restitution: 0.4,
-          isSensor: true,
-          render: {
-            fillStyle: '#ff3300' // red
-          },
-          plugin: {
-          }
-        });
-
-        const velocityX = Math.cos(ship.angle + spreadOffset) * speed + (Math.random() - 0.5) * 0.5;
-        const velocityY = Math.sin(ship.angle + spreadOffset) * speed + (Math.random() - 0.5) * 0.5;
-        Body.setVelocity(particleBody, { x: velocityX, y: velocityY });
-
-        const newParticle = {
-          body: particleBody,
-          rotation: ship.angle,
-          lifetime: 100
-        };
-        World.add(engine.world, particleBody);
-
-        newParticles.push(newParticle);
-
-        setTimeout(() => {
-          World.remove(engine.world, particleBody);
-          setParticles(prev => prev.filter(p => p.body !== particleBody));
-        }, newParticle.lifetime);
-      }
-
-      setParticles(prev => {
-        const combinedParticles = [...prev, ...newParticles];
-        if (combinedParticles.length > MAX_PARTICLES) {
-          return combinedParticles.slice(combinedParticles.length - MAX_PARTICLES);
-        }
-        return combinedParticles;
-      });
-    }
-  };
 //----------------------------------- SHOOTING ------------------------------//
   const shootProjectile = () => {
     if (ship) {
@@ -311,7 +223,6 @@ for (let i = 0; i < 5; i++) {
   // --------------------------------// HOTKEYS //-----------------------------------//
 
   useHotkeys('up', moveShipUp, [ship]);
-  useHotkeys('up', makeExhaust, [ship]);
   useHotkeys('left', rotateShipLeft, [ship, rotationSpeed]);
   useHotkeys('right', rotateShipRight, [ship, rotationSpeed]);
   useHotkeys('space', shootProjectile, [ship]);
@@ -341,61 +252,7 @@ for (let i = 0; i < 5; i++) {
       // Remove the projectile
       World.remove(engine.world, projectile);
       setProjectiles(prev => prev.filter(proj => proj.body !== projectile));
-//---------------------- // impact particles on asteroid fire // ----------------------//
-  const emitParticles = () => {
-    const particleCount = 5;
-    const particleSpeed = 2;
-    const particleSpread = 4;
 
-    for (let i = 0; i < particleCount; i++) {
-      const particleX = projectile.position.x + (Math.random() - 0.5) * 10;
-      const particleY = projectile.position.y + (Math.random() - 0.5) * 10;
-
-      // Generate random number of vertices
-      const numVertices = Math.floor(Math.random() * 5) + 5;
-      const vertices = [];
-      for (let j = 0; j < numVertices; j++) {
-        const angle = (j / numVertices) * Math.PI * 2;
-        const radius = 2 + Math.random() * 20; // Adjust radius as needed
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        vertices.push({ x, y });
-      }
-
-      const particleBody = Bodies.fromVertices(particleX, particleY, vertices, {
-        frictionAir: 0,
-        restitution: 0.4,
-        render: {
-          fillStyle: 'transparent', // Transparent fill
-          strokeStyle: '#ffffff', // Outline color
-          lineWidth: 2 // Outline width
-        },
-        plugin: {
-        }
-      });
-
-      const angle = Math.atan2(particleY - asteroid.position.y, particleX - asteroid.position.x);
-      const velocityX = Math.cos(angle + (Math.random() - 0.5) * particleSpread) * particleSpeed;
-      const velocityY = Math.sin(angle + (Math.random() - 0.5) * particleSpread) * particleSpeed;
-      Body.setVelocity(particleBody, { x: velocityX, y: velocityY });
-
-      setTimeout(() => {
-        World.remove(engine.world, particleBody);
-        setParticles(prev => prev.filter(p => p.body !== particleBody));
-      }, 1000);
-
-      const newParticle = {
-        body: particleBody,
-        rotation: 0, // Adjust rotation if needed
-        lifetime: 1000 // Adjust lifetime if needed
-      };
-
-      World.add(engine.world, particleBody);
-      setParticles(prev => [...prev, newParticle]);
-    }
-  };
-
-  emitParticles();
 //------------------------// HIT ASTEROID SPLITTING // ---------------------------------//
       // Get index of the asteroid
       const asteroidIndex = asteroids.findIndex(ast => ast === asteroid);
@@ -493,79 +350,15 @@ for (let i = 0; i < 5; i++) {
         const isAsteroidB = asteroids.find(ast => ast === bodyB);
   
         if ((isShipA && isAsteroidB) || (isShipB && isAsteroidA)) {
-//----------------------------------- expel ship parts --------------------------------------------//
-          const emitCrash = (shipBody) => {
-            const pieceCount = 10;
-            const pieceSpeed = 10;
-            const pieceSpread = 4;
-          
-            for (let i = 0; i < pieceCount; i++) {
-              const pieceX = shipBody.position.x + (Math.random() - 0.5) * 10;
-              const pieceY = shipBody.position.y + (Math.random() - 0.5) * 10;
-          
-              // Generate random number of vertices
-              const numVertices = Math.floor(Math.random() * 5) + 5;
-              const vertices = [];
-              for (let j = 0; j < numVertices; j++) {
-                const angle = (j / numVertices) * Math.PI * 2;
-                const radius = 2 + Math.random() * 20; // Adjust radius as needed
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-                vertices.push({ x, y });
-              }
-          // ship parts:
-              const pieceBody = Bodies.fromVertices(pieceX, pieceY, vertices, {
-                frictionAir: 0,
-                restitution: 0.4,
-                render: {
-                  fillStyle: 'transparent', // Transparent fill
-                  strokeStyle: '#ffffff', // Outline color
-                  lineWidth: 2 // Outline width
-                },
-                plugin: {
-                }
-              });
-          
-              const angle = Math.atan2(pieceY - shipBody.position.y, pieceX - shipBody.position.x);
-              const velocityX = Math.cos(angle + (Math.random() - 0.5) * pieceSpread) * pieceSpeed;
-              const velocityY = Math.sin(angle + (Math.random() - 0.5) * pieceSpread) * pieceSpeed;
-              Body.setVelocity(pieceBody, { x: velocityX, y: velocityY });
-          
-              setTimeout(() => {
-                World.remove(engine.world, pieceBody);
-                setParticles(prev => prev.filter(p => p.body !== pieceBody));
-                // crash takes 5 secs to disappear
-              }, 5000);
-          
-              const newPiece = {
-                body: pieceBody,
-                rotation: 5, // Adjust rotation if needed
-                lifetime: 1000 // Adjust lifetime if needed
-              };
-          
-              World.add(engine.world, pieceBody);
-              setParticles(prev => [...prev, newPiece]);
-            }
-          };
-          emitCrash(ship); // ship explodes on crash
-          ship.render.visible = false; // ship disappears on crash
 
-      // Calculate collision position as the midpoint between bodyA and bodyB
-      const collisionPosition = {
-        x: (bodyA.position.x + bodyB.position.x) / 2,
-        y: (bodyA.position.y + bodyB.position.y) / 2,
-      };
 //------------------------------------ subtract life on crash ------------------------------------------//
            if (lives === 0) {
             setGameOver(true);
-            emitCrash(ship); // trigger when ship collides with asteroid
-            emitExplosionParticles(collisionPosition);
 
            } else {
             setLives(prevLives => {
               const updatedLives = prevLives - 1;
                 
-                emitExplosionParticles(collisionPosition); // asteroid explodes on crash
                           // Remove all asteroids
           asteroids.forEach((asteroid) => {
             World.remove(engine.world, asteroid);
@@ -580,7 +373,6 @@ for (let i = 0; i < 5; i++) {
   createAsteroid();
 }
   setGameOver(false);
-  ship.render.visible = true; // ship reappears new life
 }, 5000); // 4secs before reset
 //-----------------------------------------------------------------------------------------//
               return updatedLives;
