@@ -2,21 +2,38 @@ import React, { useEffect, useRef } from 'react';
 
 const PoolGame = () => {
   const stickRef = useRef(null);
-  const cueBallPosition = { x: 100, y: 100 }; // Example position
+  const cueBallRef = useRef(null);
+  const cueBallPosition = { x: 100, y: 100 }; // Cue ball position
+  const ringRadius = 100; // Radius of the circular constraint
 
   useEffect(() => {
-    const stick = stickRef.current;
-    let angle = 0;
+    const handleMouseMove = (event) => {
+      const stick = stickRef.current;
+      const cueBall = cueBallRef.current;
+      const cueBallCenter = {
+        x: cueBallPosition.x + cueBall.offsetWidth / 2,
+        y: cueBallPosition.y + cueBall.offsetHeight / 2,
+      };
 
-    const rotateStick = () => {
-      angle = (angle + 1) % 360; // Increment the angle
-      stick.style.transform = `rotate(${angle}deg)`;
+      // Calculate angle between cue ball and mouse position
+      const angle = Math.atan2(event.clientY - cueBallCenter.y, event.clientX - cueBallCenter.x);
+      
+      // Calculate constrained stick end position
+      const stickEndX = cueBallCenter.x + ringRadius * Math.cos(angle);
+      const stickEndY = cueBallCenter.y + ringRadius * Math.sin(angle);
+      
+      stick.style.left = `${stickEndX - 100}px`; // Center the stick
+      stick.style.top = `${stickEndY - 2}px`; // Center the thickness
+      stick.style.transform = `rotate(${angle * (180 / Math.PI)}deg)`;
       stick.style.transformOrigin = '0% 50%'; // Set rotation around left edge
-      requestAnimationFrame(rotateStick);
     };
 
-    rotateStick(); // Start rotating
-  }, []);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [cueBallPosition]);
 
   const stickStyle = {
     position: 'absolute',
@@ -39,9 +56,21 @@ const PoolGame = () => {
     boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)', // Optional shadow for effect
   };
 
+  const ringStyle = {
+    position: 'absolute',
+    left: cueBallPosition.x + 8 - ringRadius,
+    top: cueBallPosition.y + 8 - ringRadius,
+    width: `${ringRadius * 2}px`,
+    height: `${ringRadius * 2}px`,
+    border: '2px dashed lightgray', // Style of the ring
+    borderRadius: '50%',
+    pointerEvents: 'none', // Prevent interaction with the ring
+  };
+
   return (
     <div style={{ position: 'relative', width: '800px', height: '600px', border: '1px solid black' }}>
-      <div style={cueBallStyle} />
+      <div style={ringStyle} />
+      <div ref={cueBallRef} style={cueBallStyle} />
       <div ref={stickRef} style={stickStyle} />
     </div>
   );
