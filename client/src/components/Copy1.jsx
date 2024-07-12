@@ -54,30 +54,31 @@ const Stripped = () => {
 
     // pool table walls 
     
+    // Pool table walls
     const wallThickness = 14;
     const halfWidth = render.canvas.width / 2; // Half the width of the canvas
     const halfHeight = render.canvas.height / 2; // Half the height of the canvas
-    
-    // Calculate the gap size between the split walls
     const gapSize = 40;  
+    
+    const wallConfig = { 
+      isStatic: true,
+      render: {
+        fillStyle: 'brown' // Set the walls to brown
+      }
+    };
     
     // Adjusting positions and width for top walls
     const topWallWidth = (render.canvas.width / 2) - 175; // Adjust width as necessary
-    
     // Move top wall left further left
-    const topWallLeft = Bodies.rectangle(halfWidth - 320, 50, topWallWidth, wallThickness, { isStatic: true });
-    
+    const topWallLeft = Bodies.rectangle(halfWidth - 320, 50, topWallWidth, wallThickness, wallConfig);
     // Move top wall right further right
-    const topWallRight = Bodies.rectangle(halfWidth + 320, 50, topWallWidth, wallThickness, { isStatic: true });
-    
+    const topWallRight = Bodies.rectangle(halfWidth + 320, 50, topWallWidth, wallThickness, wallConfig);
     // Adjusting positions and width for bottom walls
     const bottomWallWidth = (render.canvas.width / 2) - 175; // Adjust width as necessary
-    
     // Move bottom wall left further left
-    const bottomWallLeft = Bodies.rectangle(halfWidth - 320, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
-    
+    const bottomWallLeft = Bodies.rectangle(halfWidth - 320, render.canvas.height - 50, bottomWallWidth, wallThickness, wallConfig);
     // Move bottom wall right further right
-    const bottomWallRight = Bodies.rectangle(halfWidth + 320, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
+    const bottomWallRight = Bodies.rectangle(halfWidth + 320, render.canvas.height - 50, bottomWallWidth, wallThickness, wallConfig);
     
     // Adjusting positions to create a gap between top and bottom walls
     bottomWallLeft.position.y += gapSize / 2;
@@ -87,11 +88,11 @@ const Stripped = () => {
     
 // Creating left wall as a single object with slightly longer height
 const leftWallHeight = render.canvas.height - 180; // Adjust height as necessary
-const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, { isStatic: true });
+const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, wallConfig);
 
 // Creating right wall as a single object with slightly longer height
 const rightWallHeight = render.canvas.height - 180; // Adjust height as necessary
-const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, rightWallHeight, { isStatic: true });
+const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, rightWallHeight, wallConfig);
 
     // Adding all the walls to the world
     World.add(engine.world, [
