@@ -26,34 +26,37 @@ const PoolGame = () => {
       const jointX = cueBallCenter.x + ringRadius * Math.cos(angle);
       const jointY = cueBallCenter.y + ringRadius * Math.sin(angle);
 
+      // Update joint position only when mouse is not down
       setJointPosition({ x: jointX, y: jointY });
       setJointAngle(angle); // Update joint angle
 
       if (isMouseDown) {
-        // Calculate pull back distance
+        // Calculate pull back distance (can go outward and reverse)
         const mouseDiffX = event.clientX - jointX;
         const mouseDiffY = event.clientY - jointY;
         const distance = Math.min(Math.sqrt(mouseDiffX ** 2 + mouseDiffY ** 2), stickLength);
-        setPullBackDistance(distance);
+        
+        // Determine direction of pull
+        const direction = mouseDiffX < 0 ? -1 : 1; // Negative for pulling back, positive for pushing forward
+        const effectiveDistance = distance * direction;
 
-        // Calculate target stick position
-        const targetX = jointX + distance * Math.cos(angle);
-        const targetY = jointY + distance * Math.sin(angle);
+        setPullBackDistance(effectiveDistance);
 
-        // Gradually move the stick position towards the target position
-        setStickPosition(prev => ({
-          x: prev.x + (targetX - prev.x) * 0.1, // Smooth transition
-          y: prev.y + (targetY - prev.y) * 0.1,
-        }));
+        // Calculate target stick position based on pull back
+        const targetX = jointX + effectiveDistance * Math.cos(angle);
+        const targetY = jointY + effectiveDistance * Math.sin(angle);
+
+        // Update stick position
+        setStickPosition({ x: targetX, y: targetY });
       } else {
-        // Reset stick position to joint position
+        // Reset stick position to joint position when not pulling
         setStickPosition({ x: jointX, y: jointY });
       }
 
       // Update joint style
       const joint = jointRef.current;
-      joint.style.left = `${jointX - 8}px`;
-      joint.style.top = `${jointY - 8}px`;
+      joint.style.left = `${jointPosition.x - 8}px`;
+      joint.style.top = `${jointPosition.y - 8}px`;
       stickRef.current.style.transform = `rotate(${jointAngle * (180 / Math.PI)}deg)`;
       stickRef.current.style.transformOrigin = '0% 50%'; // Set rotation around left edge
     };
@@ -76,7 +79,7 @@ const PoolGame = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [cueBallPosition, isMouseDown]);
+  }, [cueBallPosition, isMouseDown, jointPosition]);
 
   const stickStyle = {
     position: 'absolute',
