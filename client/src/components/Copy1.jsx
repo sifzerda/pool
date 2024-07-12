@@ -6,7 +6,7 @@ import decomp from 'poly-decomp';
 const Stripped = () => {
   const [engine] = useState(Engine.create());
   const [shipPosition, setShipPosition] = useState({ x: 300, y: 300, rotation: 0 });
-  const [projectiles, setProjectiles] = useState([]);
+ 
   const [balls, setBalls] = useState([]);
   const [pockets, setPockets] = useState([]);
   const [gameOver, setGameOver] = useState(false);
@@ -15,9 +15,10 @@ const Stripped = () => {
   const [ballSizes, setBallSizes] = useState([]);
   const [ballHits, setBallHits] = useState([]);
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
+  const [lives, setLives] = useState(15);
+
   const gameRef = useRef();
-  const MAX_PROJECTILES = 2;
+
   window.decomp = decomp; // poly-decomp is available globally
 
   useEffect(() => {
@@ -51,6 +52,8 @@ const Stripped = () => {
 
     World.add(engine.world, greenTable);
 
+    // pool table walls 
+    
     const wallThickness = 14;
     const halfWidth = render.canvas.width / 2; // Half the width of the canvas
     const halfHeight = render.canvas.height / 2; // Half the height of the canvas
@@ -262,52 +265,9 @@ const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallTh
     }
   };
 
-  const shootProjectile = () => {
-    if (ship) {
-      const speed = 10;
-      const offset = 40;
-      const projectileX = ship.position.x + Math.cos(ship.angle) * offset;
-      const projectileY = ship.position.y + Math.sin(ship.angle) * offset;
-      const projectileBody = Bodies.rectangle(projectileX, projectileY, 15, 3, {
-        frictionAir: 0.01,
-        angle: ship.angle,
-        isSensor: true,
-        render: {
-          fillStyle: '#00FFDC'
-        },
-        plugin: {}
-      });
-      const velocityX = Math.cos(ship.angle) * speed;
-      const velocityY = Math.sin(ship.angle) * speed;
-      Body.setVelocity(projectileBody, { x: velocityX, y: velocityY });
-      const newProjectile = {
-        body: projectileBody,
-        rotation: ship.angle,
-        lifetime: 100
-      };
-      World.add(engine.world, projectileBody);
-      setProjectiles(prev => {
-        const updatedProjectiles = [...prev, newProjectile];
-        if (updatedProjectiles.length > MAX_PROJECTILES) {
-          return updatedProjectiles.slice(updatedProjectiles.length - MAX_PROJECTILES);
-        }
-        return updatedProjectiles;
-      });
-      setTimeout(() => {
-        World.remove(engine.world, projectileBody);
-        setProjectiles(prev => prev.filter(proj => proj.body !== projectileBody));
-      }, 2000);
-      setScore(prevScore => {
-        const newScore = prevScore + 10;
-        return newScore;
-      });
-    }
-  };
-
   useHotkeys('up', moveShipUp, [ship]);
   useHotkeys('left', rotateShipLeft, [ship, rotationSpeed]);
   useHotkeys('right', rotateShipRight, [ship, rotationSpeed]);
-  useHotkeys('space', shootProjectile, [ship]);
 
   useEffect(() => {
     const scoreInterval = setInterval(() => {
@@ -332,7 +292,7 @@ const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallTh
         Score: {score}
       </div>
       <div className="lives-display">
-        Lives: <span className='life-triangle'>{'∆ '.repeat(lives)}</span>
+        Balls to Pot: <span className='life-triangle'>{'◯ '.repeat(lives)}</span>
       </div>
     </div>
   );
