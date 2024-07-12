@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events, Constraint, MouseConstraint, Mouse } from 'matter-js';
 import decomp from 'poly-decomp';
@@ -75,8 +75,15 @@ const Stripped = () => {
       { x: 750, y: 630 },
       { x: 1450, y: 630 },
     ];
+
     const pocketRadius = 20;
-    const pockets = pocketPositions.map(pos => Bodies.circle(pos.x, pos.y, pocketRadius, { isStatic: true, render: { fillStyle: '#000' } }));
+    const pockets = pocketPositions.map(pos => Bodies.circle(pos.x, pos.y, pocketRadius, { 
+      isSensor: true,
+      isStatic: true, 
+      render: { 
+        fillStyle: '#000' 
+      } 
+    }));
     setPockets(pockets);
     World.add(engine.world, pockets);
 
