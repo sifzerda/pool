@@ -59,22 +59,22 @@ const Stripped = () => {
     const gapSize = 40;  
     
     // Adjusting positions and width for top walls
-    const topWallWidth = (render.canvas.width / 2) - 200; // Adjust width as necessary
+    const topWallWidth = (render.canvas.width / 2) - 175; // Adjust width as necessary
     
     // Move top wall left further left
-    const topWallLeft = Bodies.rectangle(halfWidth - 300, 50, topWallWidth, wallThickness, { isStatic: true });
+    const topWallLeft = Bodies.rectangle(halfWidth - 320, 50, topWallWidth, wallThickness, { isStatic: true });
     
     // Move top wall right further right
-    const topWallRight = Bodies.rectangle(halfWidth + 300, 50, topWallWidth, wallThickness, { isStatic: true });
+    const topWallRight = Bodies.rectangle(halfWidth + 320, 50, topWallWidth, wallThickness, { isStatic: true });
     
     // Adjusting positions and width for bottom walls
-    const bottomWallWidth = (render.canvas.width / 2) - 200; // Adjust width as necessary
+    const bottomWallWidth = (render.canvas.width / 2) - 175; // Adjust width as necessary
     
     // Move bottom wall left further left
-    const bottomWallLeft = Bodies.rectangle(halfWidth - 300, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
+    const bottomWallLeft = Bodies.rectangle(halfWidth - 320, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
     
     // Move bottom wall right further right
-    const bottomWallRight = Bodies.rectangle(halfWidth + 300, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
+    const bottomWallRight = Bodies.rectangle(halfWidth + 320, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
     
     // Adjusting positions to create a gap between top and bottom walls
     bottomWallLeft.position.y += gapSize / 2;
@@ -82,12 +82,14 @@ const Stripped = () => {
     topWallLeft.position.y -= gapSize / 2;
     topWallRight.position.y -= gapSize / 2;
     
-    // Creating left wall as a single object
-    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.canvas.height - 200, { isStatic: true });
-    
-    // Creating right wall as a single object
-    const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, render.canvas.height - 200, { isStatic: true });
-    
+// Creating left wall as a single object with slightly longer height
+const leftWallHeight = render.canvas.height - 180; // Adjust height as necessary
+const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, { isStatic: true });
+
+// Creating right wall as a single object with slightly longer height
+const rightWallHeight = render.canvas.height - 180; // Adjust height as necessary
+const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, rightWallHeight, { isStatic: true });
+
     // Adding all the walls to the world
     World.add(engine.world, [
       topWallLeft, topWallRight,
