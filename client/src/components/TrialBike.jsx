@@ -1,207 +1,50 @@
-import { useState, useEffect, useRef } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import Matter, { Engine, Render, World, Bodies, Body, Events, Constraint } from 'matter-js';
-import { useGesture } from 'react-use-gesture';
+import React, { useEffect, useRef } from 'react';
 
-const Bike = () => {
-  const [engine] = useState(Engine.create());
-  const [bikePosition, setBikePosition] = useState({ x: 300, y: 300, rotation: 0 });
-  const [bike, setBike] = useState(null);
-  const [rotationSpeed, setRotationSpeed] = useState(0.15);
+const PoolGame = () => {
+  const stickRef = useRef(null);
+  const cueBallPosition = { x: 100, y: 100 }; // Example position
 
-  const gameRef = useRef();
-
-  //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
   useEffect(() => {
-    engine.world.gravity.y = 0; // Enable gravity
-    const render = Render.create({
-      element: gameRef.current,
-      engine,
-      options: {
-        width: 1500,
-        height: 680,
-        wireframes: false
-      }
-    });
-    Render.run(render);
+    const stick = stickRef.current;
+    let angle = 0;
 
-    const runner = Matter.Runner.create();
-    Matter.Runner.run(runner, engine);
-
-    // Create the green sensor rectangle
-    const greenSensor = Bodies.rectangle(900, 340, 50, 50, {
-      isSensor: true,  // Makes it a sensor (no physical interaction)
-      render: {
-        fillStyle: 'green',  // Green color
-        strokeStyle: '#ffffff',
-        lineWidth: 2,
-        visible: true
-      }
-    });
-
-    World.add(engine.world, greenSensor);
-
-
-    // Create the two balls
-    const ball1 = Bodies.circle(700, 340, 20, {
-      restitution: 0.5, // Bounce effect
-      render: {
-        fillStyle: 'red', // Red color
-        strokeStyle: '#ffffff',
-        lineWidth: 2,
-        visible: true // Conditional visibility
-      }
-    });
-
-    const ball2 = Bodies.circle(800, 340, 20, {
-      restitution: 0.5, // Bounce effect
-      render: {
-        fillStyle: 'blue', // Blue color
-        strokeStyle: '#ffffff',
-        lineWidth: 2,
-        visible: true // Conditional visibility
-      }
-    });
-
-    setBike([ball1, ball2]);
-    World.add(engine.world, [ball1, ball2]);
-
-    // Create the constraint (rod) between the balls
-    const rod = Constraint.create({
-      bodyA: ball1,
-      bodyB: ball2,
-      length: 100,
-      stiffness: 1,
-      render: {
-        visible: true,
-        lineWidth: 2,
-        strokeStyle: '#ffffff'
-      }
-    });
-
-    World.add(engine.world, rod);
-
-    // Create the circular constraint (circle surrounding ball1)
-    const circleConstraint = Constraint.create({
-      pointA: { x: ball1.position.x, y: ball1.position.y },
-      bodyB: ball2,
-      length: 100, // Adjust this radius as needed
-      stiffness: 1,
-      render: {
-        visible: true,
-        lineWidth: 2,
-        strokeStyle: '#ffffff'
-      }
-    });
-
-    World.add(engine.world, circleConstraint);
-
-    // Create the floor
-    const floor = Bodies.rectangle(750, 670, 1500, 20, {
-      isStatic: true,
-      render: {
-        fillStyle: '#ffffff',
-        visible: true
-      }
-    });
-
-    // Create left and right boundaries
-    const leftWall = Bodies.rectangle(0, 340, 20, 680, {
-      isStatic: true,
-      render: {
-        fillStyle: '#ffffff',
-        visible: true
-      }
-    });
-
-    const rightWall = Bodies.rectangle(1500, 340, 20, 680, {
-      isStatic: true,
-      render: {
-        fillStyle: '#ffffff',
-        visible: true
-      }
-    });
-
-    World.add(engine.world, [floor, leftWall, rightWall]);
-
-    const updateBikePosition = () => {
-      const midX = (ball1.position.x + ball2.position.x) / 2;
-      const midY = (ball1.position.y + ball2.position.y) / 2;
-      setBikePosition({
-        x: midX,
-        y: midY,
-        rotation: ball1.angle * (180 / Math.PI)
-      });
+    const rotateStick = () => {
+      angle = (angle + 1) % 360; // Increment the angle
+      stick.style.transform = `rotate(${angle}deg)`;
+      stick.style.transformOrigin = '0% 50%'; // Set rotation around left edge
+      requestAnimationFrame(rotateStick);
     };
 
-    Events.on(engine, 'beforeUpdate', updateBikePosition);
+    rotateStick(); // Start rotating
+  }, []);
 
-    return () => {
-      Render.stop(render);
-      World.clear(engine.world);
-      Engine.clear(engine);
-      Events.off(engine, 'beforeUpdate', updateBikePosition);
-    };
-  }, [engine]);
-
-
-
-
-  // Use useGesture to handle mouse movements
-  const bind = useGesture({
-    onMove: ({ xy }) => {
-      if (bike) {
-        Body.setPosition(bike[0], { x: xy[0], y: xy[1] });
-      }
-    }
-  });
-
-
-
-
-
-  const moveBikeForward = () => {
-    if (bike) {
-      const forceMagnitude = 0.05;
-      const forceX = Math.cos(bike[0].angle) * forceMagnitude;
-      const forceY = Math.sin(bike[0].angle) * forceMagnitude;
-      Body.applyForce(bike[0], bike[0].position, { x: forceX, y: forceY });
-    }
+  const stickStyle = {
+    position: 'absolute',
+    left: cueBallPosition.x, // X position of the cue ball
+    top: cueBallPosition.y, // Y position of the cue ball
+    width: '200px', // Length of the pool stick
+    height: '4px', // Thickness of the pool stick
+    backgroundColor: 'brown', // Color of the pool stick
+    borderRadius: '2px',
   };
 
-  const moveBikeBackward = () => {
-    if (bike) {
-      const forceMagnitude = 0.05;
-      const forceX = Math.cos(bike[0].angle) * -forceMagnitude;
-      const forceY = Math.sin(bike[0].angle) * -forceMagnitude;
-      Body.applyForce(bike[0], bike[0].position, { x: forceX, y: forceY });
-    }
+  const cueBallStyle = {
+    position: 'absolute',
+    left: cueBallPosition.x,
+    top: cueBallPosition.y,
+    width: '16px',
+    height: '16px',
+    borderRadius: '50%',
+    backgroundColor: 'white', // Color of the cue ball
+    boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)', // Optional shadow for effect
   };
 
-  const rotateBikeLeft = () => {
-    if (bike) {
-      Body.rotate(bike[0], -rotationSpeed);
-    }
-  };
-
-  const rotateBikeRight = () => {
-    if (bike) {
-      Body.rotate(bike[0], rotationSpeed);
-    }
-  };
-
-  // --------------------------------// HOTKEYS //-----------------------------------//
-  useHotkeys('up', moveBikeForward, [bike]);
-  useHotkeys('down', moveBikeBackward, [bike]);
-  useHotkeys('left', rotateBikeLeft, [bike, rotationSpeed]);
-  useHotkeys('right', rotateBikeRight, [bike, rotationSpeed]);
-
-  //----------------------------------// RENDERING //----------------------------------//
   return (
-    <div className="game-container" ref={gameRef} {...bind()}>
-      {/* Render the game here */}
+    <div style={{ position: 'relative', width: '800px', height: '600px', border: '1px solid black' }}>
+      <div style={cueBallStyle} />
+      <div ref={stickRef} style={stickStyle} />
     </div>
   );
 };
 
-export default Bike;
+export default PoolGame;
