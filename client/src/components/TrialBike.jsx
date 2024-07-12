@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const PoolGame = () => {
   const stickRef = useRef(null);
@@ -10,6 +10,7 @@ const PoolGame = () => {
   const [isMouseDown, setIsMouseDown] = useState(false); // State to track mouse button status
   const [jointPosition, setJointPosition] = useState({ x: 0, y: 0 }); // State to track joint position
   const [jointAngle, setJointAngle] = useState(0); // State to track joint angle
+  const [pullBackDistance, setPullBackDistance] = useState(0); // Distance pulled back from the joint
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -23,24 +24,35 @@ const PoolGame = () => {
 
       // Calculate angle between cue ball and mouse position
       const angle = Math.atan2(event.clientY - cueBallCenter.y, event.clientX - cueBallCenter.x);
-      
-      // Calculate joint position on the circumference of the ring
       const jointX = cueBallCenter.x + ringRadius * Math.cos(angle);
       const jointY = cueBallCenter.y + ringRadius * Math.sin(angle);
 
-      if (!isMouseDown) {
-        // Update joint position only if mouse is not down
-        setJointPosition({ x: jointX, y: jointY });
-        setJointAngle(angle); // Update joint angle
+      setJointPosition({ x: jointX, y: jointY });
+      setJointAngle(angle); // Update joint angle
+
+      if (isMouseDown) {
+        // Calculate pull back distance based on mouse movement
+        const mouseDiffX = event.clientX - jointX;
+        const mouseDiffY = event.clientY - jointY;
+
+        // Calculate the distance and limit it to a maximum value
+        const distance = Math.min(Math.sqrt(mouseDiffX ** 2 + mouseDiffY ** 2), stickLength);
+        setPullBackDistance(distance);
+
+        // Update stick position to follow the joint while extending outwards
+        const pullBackX = jointX + distance * Math.cos(angle);
+        const pullBackY = jointY + distance * Math.sin(angle);
+
+        stick.style.left = `${pullBackX}px`;
+        stick.style.top = `${pullBackY - 2}px`;
+      } else {
+        stick.style.left = `${jointX}px`;
+        stick.style.top = `${jointY - 2}px`;
       }
 
       // Update joint style
-      joint.style.left = `${jointPosition.x - 8}px`;
-      joint.style.top = `${jointPosition.y - 8}px`;
-
-      // Update stick position based on joint
-      stick.style.left = `${jointPosition.x}px`;
-      stick.style.top = `${jointPosition.y - 2}px`;
+      joint.style.left = `${jointX - 8}px`;
+      joint.style.top = `${jointY - 8}px`;
       stick.style.transform = `rotate(${jointAngle * (180 / Math.PI)}deg)`;
       stick.style.transformOrigin = '0% 50%'; // Set rotation around left edge
     };
@@ -51,6 +63,7 @@ const PoolGame = () => {
 
     const handleMouseUp = () => {
       setIsMouseDown(false);
+      setPullBackDistance(0); // Reset pull back distance
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -62,7 +75,7 @@ const PoolGame = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [cueBallPosition, isMouseDown, jointPosition, jointAngle]);
+  }, [cueBallPosition, isMouseDown]);
 
   const stickStyle = {
     position: 'absolute',
