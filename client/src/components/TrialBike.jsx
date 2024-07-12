@@ -6,6 +6,7 @@ const PoolGame = () => {
   const jointRef = useRef(null);
   const cueBallPosition = { x: 100, y: 100 }; // Cue ball position
   const ringRadius = 100; // Radius of the circular constraint
+  const stickLength = 200; // Length of the pool stick
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -28,8 +29,8 @@ const PoolGame = () => {
       joint.style.left = `${jointX - 8}px`; // Center the joint
       joint.style.top = `${jointY - 8}px`; // Center the joint
 
-      // Calculate constrained stick end position
-      stick.style.left = `${jointX - 100}px`; // Center the stick
+      // Update stick position based on joint, pointing outward
+      stick.style.left = `${jointX}px`; // Position stick's base at the joint
       stick.style.top = `${jointY - 2}px`; // Center the thickness
       stick.style.transform = `rotate(${angle * (180 / Math.PI)}deg)`;
       stick.style.transformOrigin = '0% 50%'; // Set rotation around left edge
@@ -44,9 +45,7 @@ const PoolGame = () => {
 
   const stickStyle = {
     position: 'absolute',
-    left: cueBallPosition.x, // X position of the cue ball
-    top: cueBallPosition.y, // Y position of the cue ball
-    width: '200px', // Length of the pool stick
+    width: `${stickLength}px`, // Length of the pool stick
     height: '4px', // Thickness of the pool stick
     backgroundColor: 'brown', // Color of the pool stick
     borderRadius: '2px',
