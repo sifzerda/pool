@@ -41,6 +41,7 @@ const Stripped = () => {
 
     // Create the green sensor rectangle
     const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
+      isStatic: true,
       isSensor: true,  // Makes it a sensor (no physical interaction)
       render: {
         fillStyle: 'green',  // Green color
