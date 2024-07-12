@@ -36,6 +36,7 @@ const Stripped = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
+    //green felt table
 
     // Create the green sensor rectangle
     const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
@@ -49,10 +50,6 @@ const Stripped = () => {
     });
 
     World.add(engine.world, greenTable);
-
-
-
-
 
     // Create boundaries and other game objects
     const wallThickness = 14;
