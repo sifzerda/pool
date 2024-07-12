@@ -38,7 +38,7 @@ const Stripped = () => {
 
     //green felt table
 
-    // Create the green sensor rectangle
+// Create the green sensor rectangle
     const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
       isSensor: true,  // Makes it a sensor (no physical interaction)
       render: {
@@ -51,7 +51,7 @@ const Stripped = () => {
 
     World.add(engine.world, greenTable);
 
-    // Create boundaries and other game objects
+// Create boundaries and other game objects
     const wallThickness = 14;
     const halfWidth = render.canvas.width / 2;
     const halfHeight = render.canvas.height / 2;
