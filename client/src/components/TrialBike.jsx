@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const PoolGame = () => {
   const stickRef = useRef(null);
@@ -7,6 +7,9 @@ const PoolGame = () => {
   const cueBallPosition = { x: 100, y: 100 }; // Cue ball position
   const ringRadius = 100; // Radius of the circular constraint
   const stickLength = 200; // Length of the pool stick
+  const [isMouseDown, setIsMouseDown] = useState(false); // State to track mouse button status
+  const [jointPosition, setJointPosition] = useState({ x: 0, y: 0 }); // State to track joint position
+  const [jointAngle, setJointAngle] = useState(0); // State to track joint angle
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -25,23 +28,41 @@ const PoolGame = () => {
       const jointX = cueBallCenter.x + ringRadius * Math.cos(angle);
       const jointY = cueBallCenter.y + ringRadius * Math.sin(angle);
 
-      // Update joint position
-      joint.style.left = `${jointX - 8}px`; // Center the joint
-      joint.style.top = `${jointY - 8}px`; // Center the joint
+      if (!isMouseDown) {
+        // Update joint position only if mouse is not down
+        setJointPosition({ x: jointX, y: jointY });
+        setJointAngle(angle); // Update joint angle
+      }
 
-      // Update stick position based on joint, pointing outward
-      stick.style.left = `${jointX}px`; // Position stick's base at the joint
-      stick.style.top = `${jointY - 2}px`; // Center the thickness
-      stick.style.transform = `rotate(${angle * (180 / Math.PI)}deg)`;
+      // Update joint style
+      joint.style.left = `${jointPosition.x - 8}px`;
+      joint.style.top = `${jointPosition.y - 8}px`;
+
+      // Update stick position based on joint
+      stick.style.left = `${jointPosition.x}px`;
+      stick.style.top = `${jointPosition.y - 2}px`;
+      stick.style.transform = `rotate(${jointAngle * (180 / Math.PI)}deg)`;
       stick.style.transformOrigin = '0% 50%'; // Set rotation around left edge
     };
 
+    const handleMouseDown = () => {
+      setIsMouseDown(true);
+    };
+
+    const handleMouseUp = () => {
+      setIsMouseDown(false);
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [cueBallPosition]);
+  }, [cueBallPosition, isMouseDown, jointPosition, jointAngle]);
 
   const stickStyle = {
     position: 'absolute',
