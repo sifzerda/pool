@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import Matter, { Engine, Render, World, Bodies, Body, Events, Constraint, MouseConstraint, Mouse } from 'matter-js';
+import Matter, { Engine, Render, World, Bodies, Body, Events, MouseConstraint, Mouse } from 'matter-js';
 import decomp from 'poly-decomp';
 
 const Stripped = () => {
@@ -38,7 +38,7 @@ const Stripped = () => {
 
     //green felt table
 
-// Create the green sensor rectangle
+    // Create the green sensor rectangle
     const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
       isSensor: true,  // Makes it a sensor (no physical interaction)
       render: {
@@ -51,15 +51,50 @@ const Stripped = () => {
 
     World.add(engine.world, greenTable);
 
-// Create boundaries and other game objects
     const wallThickness = 14;
     const halfWidth = render.canvas.width / 2;
     const halfHeight = render.canvas.height / 2;
-    const topWall = Bodies.rectangle(halfWidth, 50, render.canvas.width - 100, wallThickness, { isStatic: true });
-    const bottomWall = Bodies.rectangle(halfWidth, render.canvas.height - 50, render.canvas.width - 100, wallThickness, { isStatic: true });
-    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
-    const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, render.canvas.height - 100, { isStatic: true });
-    World.add(engine.world, [topWall, bottomWall, leftWall, rightWall]);
+    
+    // Calculate the gap size between the split walls
+    const gapSize = 40; // Adjust this value as needed
+    
+    // Adjusting positions and width for top walls
+    const topWallWidth = (render.canvas.width / 3) - 200; // Adjust width as necessary
+    
+    // Move top wall left further left
+    const topWallLeft = Bodies.rectangle(halfWidth - 200, 50, topWallWidth, wallThickness, { isStatic: true });
+    
+    // Move top wall right further right
+    const topWallRight = Bodies.rectangle(halfWidth + 200, 50, topWallWidth, wallThickness, { isStatic: true });
+    
+    // Adjusting positions and width for bottom walls
+    const bottomWallWidth = (render.canvas.width / 3) - 200; // Adjust width as necessary
+    
+    // Move bottom wall left
+    const bottomWallLeft = Bodies.rectangle(halfWidth - 200, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
+    
+    // Move bottom wall right
+    const bottomWallRight = Bodies.rectangle(halfWidth + 200, render.canvas.height - 50, bottomWallWidth, wallThickness, { isStatic: true });
+    
+    // Adjusting positions to create a gap between top and bottom walls
+    bottomWallLeft.position.y += gapSize / 2;
+    bottomWallRight.position.y += gapSize / 2;
+    topWallLeft.position.y -= gapSize / 2;
+    topWallRight.position.y -= gapSize / 2;
+    
+    // Creating left wall as a single object
+    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, render.canvas.height - 200, { isStatic: true });
+    
+    // Creating right wall as a single object
+    const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, render.canvas.height - 200, { isStatic: true });
+    
+    // Adding all the walls to the world
+    World.add(engine.world, [
+      topWallLeft, topWallRight,
+      bottomWallLeft, bottomWallRight,
+      leftWall,
+      rightWall
+    ]);
 
     const rodLength = 300;
     const rodWidth = 2;
@@ -83,12 +118,12 @@ const Stripped = () => {
     World.add(engine.world, rods);
 
     const pocketPositions = [
-      { x: 50, y: 50 },
-      { x: 750, y: 50 },
-      { x: 1450, y: 50 },
-      { x: 50, y: 630 },
-      { x: 750, y: 630 },
-      { x: 1450, y: 630 },
+      { x: 110, y: 62 }, // top left
+      { x: 750, y: 50 }, // top middle
+      { x: 1380, y: 60 }, // top right
+      { x: 110, y: 620 }, // bottom left
+      { x: 750, y: 630 }, // bottom middle
+      { x: 1380, y: 620 }, // bottom right
     ];
 
     const pocketRadius = 20;
