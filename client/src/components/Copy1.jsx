@@ -36,6 +36,24 @@ const Stripped = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
+
+    // Create the green sensor rectangle
+    const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
+      isSensor: true,  // Makes it a sensor (no physical interaction)
+      render: {
+        fillStyle: 'green',  // Green color
+        strokeStyle: '#ffffff',
+        lineWidth: 2,
+        visible: true
+      }
+    });
+
+    World.add(engine.world, greenTable);
+
+
+
+
+
     // Create boundaries and other game objects
     const wallThickness = 14;
     const halfWidth = render.canvas.width / 2;

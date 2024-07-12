@@ -1,19 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events, Constraint } from 'matter-js';
-import decomp from 'poly-decomp';
-import { useGesture } from 'react-use-gesture'; // Import useGesture from react-use-gesture
+import { useGesture } from 'react-use-gesture';
 
 const Bike = () => {
   const [engine] = useState(Engine.create());
   const [bikePosition, setBikePosition] = useState({ x: 300, y: 300, rotation: 0 });
-  const [gameOver, setGameOver] = useState(false);
   const [bike, setBike] = useState(null);
   const [rotationSpeed, setRotationSpeed] = useState(0.15);
 
   const gameRef = useRef();
-
-  window.decomp = decomp; // poly-decomp is available globally
 
   //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
   useEffect(() => {
@@ -31,6 +27,20 @@ const Bike = () => {
 
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
+
+    // Create the green sensor rectangle
+    const greenSensor = Bodies.rectangle(900, 340, 50, 50, {
+      isSensor: true,  // Makes it a sensor (no physical interaction)
+      render: {
+        fillStyle: 'green',  // Green color
+        strokeStyle: '#ffffff',
+        lineWidth: 2,
+        visible: true
+      }
+    });
+
+    World.add(engine.world, greenSensor);
+
 
     // Create the two balls
     const ball1 = Bodies.circle(700, 340, 20, {
