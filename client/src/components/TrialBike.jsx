@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events, Constraint } from 'matter-js';
 import decomp from 'poly-decomp';
+import { useGesture } from 'react-use-gesture'; // Import useGesture from react-use-gesture
 
 const Bike = () => {
   const [engine] = useState(Engine.create());
@@ -16,7 +17,7 @@ const Bike = () => {
 
   //------------------------// SET UP MATTER.JS GAME OBJECTS //-------------------------//
   useEffect(() => {
-    engine.world.gravity.y = 1; // Enable gravity
+    engine.world.gravity.y = 0; // Enable gravity
     const render = Render.create({
       element: gameRef.current,
       engine,
@@ -35,7 +36,7 @@ const Bike = () => {
     const ball1 = Bodies.circle(700, 340, 20, {
       restitution: 0.5, // Bounce effect
       render: {
-        fillStyle: 'transparent',
+        fillStyle: 'red', // Red color
         strokeStyle: '#ffffff',
         lineWidth: 2,
         visible: true // Conditional visibility
@@ -45,7 +46,7 @@ const Bike = () => {
     const ball2 = Bodies.circle(800, 340, 20, {
       restitution: 0.5, // Bounce effect
       render: {
-        fillStyle: 'transparent',
+        fillStyle: 'blue', // Blue color
         strokeStyle: '#ffffff',
         lineWidth: 2,
         visible: true // Conditional visibility
@@ -69,6 +70,21 @@ const Bike = () => {
     });
 
     World.add(engine.world, rod);
+
+    // Create the circular constraint (circle surrounding ball1)
+    const circleConstraint = Constraint.create({
+      pointA: { x: ball1.position.x, y: ball1.position.y },
+      bodyB: ball2,
+      length: 100, // Adjust this radius as needed
+      stiffness: 1,
+      render: {
+        visible: true,
+        lineWidth: 2,
+        strokeStyle: '#ffffff'
+      }
+    });
+
+    World.add(engine.world, circleConstraint);
 
     // Create the floor
     const floor = Bodies.rectangle(750, 670, 1500, 20, {
@@ -118,6 +134,22 @@ const Bike = () => {
     };
   }, [engine]);
 
+
+
+
+  // Use useGesture to handle mouse movements
+  const bind = useGesture({
+    onMove: ({ xy }) => {
+      if (bike) {
+        Body.setPosition(bike[0], { x: xy[0], y: xy[1] });
+      }
+    }
+  });
+
+
+
+
+
   const moveBikeForward = () => {
     if (bike) {
       const forceMagnitude = 0.05;
@@ -156,7 +188,8 @@ const Bike = () => {
 
   //----------------------------------// RENDERING //----------------------------------//
   return (
-    <div className="game-container" ref={gameRef}>
+    <div className="game-container" ref={gameRef} {...bind()}>
+      {/* Render the game here */}
     </div>
   );
 };
