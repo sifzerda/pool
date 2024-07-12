@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 const PoolGame = () => {
   const stickRef = useRef(null);
   const cueBallRef = useRef(null);
+  const jointRef = useRef(null);
   const cueBallPosition = { x: 100, y: 100 }; // Cue ball position
   const ringRadius = 100; // Radius of the circular constraint
 
@@ -10,6 +11,7 @@ const PoolGame = () => {
     const handleMouseMove = (event) => {
       const stick = stickRef.current;
       const cueBall = cueBallRef.current;
+      const joint = jointRef.current;
       const cueBallCenter = {
         x: cueBallPosition.x + cueBall.offsetWidth / 2,
         y: cueBallPosition.y + cueBall.offsetHeight / 2,
@@ -18,12 +20,17 @@ const PoolGame = () => {
       // Calculate angle between cue ball and mouse position
       const angle = Math.atan2(event.clientY - cueBallCenter.y, event.clientX - cueBallCenter.x);
       
+      // Calculate joint position on the circumference of the ring
+      const jointX = cueBallCenter.x + ringRadius * Math.cos(angle);
+      const jointY = cueBallCenter.y + ringRadius * Math.sin(angle);
+
+      // Update joint position
+      joint.style.left = `${jointX - 8}px`; // Center the joint
+      joint.style.top = `${jointY - 8}px`; // Center the joint
+
       // Calculate constrained stick end position
-      const stickEndX = cueBallCenter.x + ringRadius * Math.cos(angle);
-      const stickEndY = cueBallCenter.y + ringRadius * Math.sin(angle);
-      
-      stick.style.left = `${stickEndX - 100}px`; // Center the stick
-      stick.style.top = `${stickEndY - 2}px`; // Center the thickness
+      stick.style.left = `${jointX - 100}px`; // Center the stick
+      stick.style.top = `${jointY - 2}px`; // Center the thickness
       stick.style.transform = `rotate(${angle * (180 / Math.PI)}deg)`;
       stick.style.transformOrigin = '0% 50%'; // Set rotation around left edge
     };
@@ -67,10 +74,20 @@ const PoolGame = () => {
     pointerEvents: 'none', // Prevent interaction with the ring
   };
 
+  const jointStyle = {
+    position: 'absolute',
+    width: '16px',
+    height: '16px',
+    borderRadius: '50%',
+    backgroundColor: 'red', // Color of the joint
+    boxShadow: '0 0 5px rgba(0, 0, 0, 0.5)', // Optional shadow for effect
+  };
+
   return (
     <div style={{ position: 'relative', width: '800px', height: '600px', border: '1px solid black' }}>
       <div style={ringStyle} />
       <div ref={cueBallRef} style={cueBallStyle} />
+      <div ref={jointRef} style={jointStyle} />
       <div ref={stickRef} style={stickStyle} />
     </div>
   );
