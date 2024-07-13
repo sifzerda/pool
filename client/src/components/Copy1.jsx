@@ -6,9 +6,7 @@ import PoolTable from './PoolTable';
 
 const Stripped = () => {
   const [engine] = useState(Engine.create());
- 
   const [balls, setBalls] = useState([]);
-  const [pockets, setPockets] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [ship, setShip] = useState(null);
   const [ballSizes, setBallSizes] = useState([]);
