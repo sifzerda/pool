@@ -16,6 +16,9 @@ const Stripped = () => {
   const [ballHits, setBallHits] = useState([]);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(15);
+  const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
+
+  const ringRadius = 100; // Radius of the circular constraint
 
   const gameRef = useRef();
 
@@ -37,7 +40,7 @@ const Stripped = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-// Cue Ball
+    // Cue Ball
     const halfHeight = 680 / 2;
     const cueBall = Bodies.circle(400, halfHeight, 14, {
       frictionAir: 0,
@@ -50,16 +53,16 @@ const Stripped = () => {
     });
     World.add(engine.world, cueBall);
 
- // Create a triangle with chamfer (rounded corners)
-const shipBody = Bodies.polygon(400, 250, 3, 150, {
-  chamfer: { radius: 20 },
-  render: {
-      fillStyle: 'transparent',
-      strokeStyle: '#ffffff',
-      lineWidth: 2,
-      visible: true,
-  },
-});
+    // Create a triangle with chamfer (rounded corners)
+    const shipBody = Bodies.polygon(400, 250, 3, 150, {
+      chamfer: { radius: 20 },
+      render: {
+        fillStyle: 'transparent',
+        strokeStyle: '#ffffff',
+        lineWidth: 2,
+        visible: true,
+      },
+    });
 
     Body.rotate(shipBody, -Math.PI / 2);
     setShip(shipBody);
@@ -96,13 +99,22 @@ const shipBody = Bodies.polygon(400, 250, 3, 150, {
       });
     };
 
+    const updateCueBallPosition = () => {
+      setCueBallPosition({
+        x: cueBall.position.x,
+        y: cueBall.position.y
+      });
+    };
+
     Events.on(engine, 'beforeUpdate', updateShipPosition);
+    Events.on(engine, 'beforeUpdate', updateCueBallPosition);
 
     return () => {
       Render.stop(render);
       World.clear(engine.world);
       Engine.clear(engine);
       Events.off(engine, 'beforeUpdate', updateShipPosition);
+      Events.off(engine, 'beforeUpdate', updateCueBallPosition);
     };
   }, [engine]);
 
@@ -163,6 +175,18 @@ const shipBody = Bodies.polygon(400, 250, 3, 150, {
     return () => clearInterval(scoreInterval);
   }, [gameOver]);
 
+  const ringStyle = {
+    position: 'absolute',
+    left: cueBallPosition.x + 8 - ringRadius,
+    top: cueBallPosition.y + 8 - ringRadius,
+    width: `${ringRadius * 2}px`,
+    height: `${ringRadius * 2}px`,
+    border: '2px dashed red', // Style of the ring
+    borderRadius: '50%',
+    pointerEvents: 'none', // Prevent interaction with the ring
+    zIndex: 10 // Raise the level of the ring
+  };
+
   return (
     <div className="game-container" ref={gameRef}>
       {gameOver && (
@@ -172,7 +196,11 @@ const shipBody = Bodies.polygon(400, 250, 3, 150, {
           </div>
         </div>
       )}
+
+      <div style={ringStyle} />
+
       <PoolTable engine={engine} /> {/* Add the GreenTable component here */}
+     
       <div className="score-display">
         Score: {score}
       </div>
