@@ -37,48 +37,7 @@ const Stripped = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-    // triangle rack for balls
-    const rodLength = 300;
-    const rodWidth = 2;
-    const rodMargin = 30;
-    const rodConfigurations = [
-      { x: 1200, y: 400, angle: Math.PI / 1 },
-      { x: 1100, y: 300, angle: Math.PI / 1.5 },
-      { x: 1300, y: 300, angle: Math.PI / 3.5 },
-    ];
-
-    const rods = rodConfigurations.map(({ x, y, angle }) => {
-      const rod = Bodies.rectangle(x, y - rodMargin, rodLength, rodWidth, {
-        isStatic: true,
-        angle: angle,
-        render: {
-          fillStyle: '#ffffff',
-        },
-      });
-      return rod;
-    });
-    World.add(engine.world, rods);
-
-    const pocketPositions = [
-      { x: 110, y: 62 },
-      { x: 750, y: 50 },
-      { x: 1380, y: 60 },
-      { x: 110, y: 620 },
-      { x: 750, y: 630 },
-      { x: 1380, y: 620 },
-    ];
-
-    const pocketRadius = 20;
-    const pockets = pocketPositions.map(pos => Bodies.circle(pos.x, pos.y, pocketRadius, { 
-      isSensor: true,
-      isStatic: true, 
-      render: { 
-        fillStyle: '#000' 
-      } 
-    }));
-    setPockets(pockets);
-    World.add(engine.world, pockets);
-
+// Cue Ball
     const halfHeight = 680 / 2;
     const cueBall = Bodies.circle(400, halfHeight, 14, {
       frictionAir: 0,
