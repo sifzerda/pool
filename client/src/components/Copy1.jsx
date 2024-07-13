@@ -15,9 +15,11 @@ const Stripped = () => {
   const [lives, setLives] = useState(15);
   const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
   const [jointBall, setJointBall] = useState(null);
+  const [rod, setRod] = useState(null);
 
   const ringRadius = 100; // Radius of the circular constraint
   const jointBallRadius = 8; // Radius of the joint ball
+  const rodLength = 420; // Length of the rod
 
   const gameRef = useRef();
 
@@ -98,10 +100,11 @@ const Stripped = () => {
     Events.on(engine, 'beforeUpdate', updateCueBallPosition);
 
     // Create joint ball
-    const initialJointBallPosition = {
-      x: cueBall.position.x + ringRadius * Math.cos(0),
-      y: cueBall.position.y + ringRadius * Math.sin(0),
-    };
+const initialJointBallPosition = {
+  x: cueBall.position.x + (ringRadius * 0.9) * Math.cos(0), // Reduce by 10%
+  y: cueBall.position.y + (ringRadius * 0.9) * Math.sin(0), // Reduce by 10%
+};
+
     const jointBall = Bodies.circle(initialJointBallPosition.x, initialJointBallPosition.y, jointBallRadius, {
       render: {
         fillStyle: 'blue',
@@ -120,6 +123,39 @@ const Stripped = () => {
       length: ringRadius,
     });
     World.add(engine.world, jointConstraint);
+
+    // Create rod
+    const rod = Bodies.rectangle(
+      initialJointBallPosition.x,
+      initialJointBallPosition.y - rodLength / 2,
+      4, // width of the rod
+      rodLength, // height of the rod
+      {
+        isStatic: true,
+        render: {
+          fillStyle: 'gray',
+          strokeStyle: 'gray',
+          lineWidth: 2,
+        },
+      }
+    );
+    World.add(engine.world, rod);
+    setRod(rod);
+
+    // Update rod position to extend opposite to cue ball
+    Events.on(engine, 'beforeUpdate', () => {
+      if (jointBall) {
+        const angle = Math.atan2(cueBall.position.y - jointBall.position.y, cueBall.position.x - jointBall.position.x);
+        const rodX = jointBall.position.x - (rodLength / 1.7) * Math.cos(angle); // Use a smaller factor
+        const rodY = jointBall.position.y - (rodLength / 1.7) * Math.sin(angle); // Use a smaller factor
+        
+        Body.setPosition(rod, {
+          x: rodX,
+          y: rodY,
+        });
+        Body.setAngle(rod, angle + Math.PI / 2); // Rotate to point opposite to the cue ball
+      }
+    });
 
     return () => {
       Render.stop(render);
