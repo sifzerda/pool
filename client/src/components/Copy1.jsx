@@ -50,20 +50,17 @@ const Stripped = () => {
     });
     World.add(engine.world, cueBall);
 
-    const vertices = [
-      { x: 0, y: 0 },
-      { x: 34, y: 14 },
-      { x: 0, y: 27 }
-    ];
-    const shipBody = Bodies.fromVertices(750, 340, vertices, {
-      render: {
-        fillStyle: 'transparent',
-        strokeStyle: '#ffffff',
-        lineWidth: 2,
-        visible: true
-      },
-      plugin: {}
-    });
+ // Create a triangle with chamfer (rounded corners)
+const shipBody = Bodies.polygon(400, 250, 3, 150, {
+  chamfer: { radius: 20 },
+  render: {
+      fillStyle: 'transparent',
+      strokeStyle: '#ffffff',
+      lineWidth: 2,
+      visible: true,
+  },
+});
+
     Body.rotate(shipBody, -Math.PI / 2);
     setShip(shipBody);
     World.add(engine.world, shipBody);

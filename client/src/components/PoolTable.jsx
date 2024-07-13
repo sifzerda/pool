@@ -55,27 +55,7 @@ const PoolTable = ({ engine }) => {
           rightWall,
         ]);
     
-        // Triangle rack for balls
-        const rodLength = 300;
-        const rodWidth = 2;
-        const rodMargin = 30;
-        const rodConfigurations = [
-          { x: 1200, y: 400, angle: Math.PI / 1 },
-          { x: 1100, y: 300, angle: Math.PI / 1.5 },
-          { x: 1300, y: 300, angle: Math.PI / 3.5 },
-        ];
-    
-        const rods = rodConfigurations.map(({ x, y, angle }) => {
-          return Bodies.rectangle(x, y - rodMargin, rodLength, rodWidth, {
-            isStatic: true,
-            angle: angle,
-            render: {
-              fillStyle: '#ffffff',
-            },
-          });
-        });
-    
-        World.add(engine.world, rods);
+
     
         // Pocket positions
         const pocketPositions = [
@@ -107,7 +87,6 @@ const PoolTable = ({ engine }) => {
             bottomWallLeft, bottomWallRight,
             leftWall,
             rightWall,
-            ...rods,
             ...pockets,
           ]);
         };

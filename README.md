@@ -17,10 +17,10 @@ See Copy1 for current pool code
 
 TO DO:
 - [x] Make 15 balls
-- [x] set no gravity
+- [x] set world gravity = 0
 - [x] make table;
   - [x] Table has to be 4 enclosing rods, solid table interupts object physics
-- [x] make cue ball
+- [x] make draggable cue ball
 - [x] make pool rack 
   - [ ] Rack needs to be non physical, or physical until first move (to keep balls in place before being hit)
 - Make pool stick [ ]
@@ -29,8 +29,8 @@ TO DO:
 - Pocket may be IsSensor or otherwise does not physically interact with balls (or anything)
 -  [ ] MUCH LATER - Drag and drop cue ball on potting it
 -  [ ] drag and drop cue ball on first move 
-- b
-- b
+- [x] Create triangle rack: through Matter.js 'chamfer' option to round corners.
+- 
 - Create game rule logic:
 - Split balls into solids and stripes (tracked by UseState)
 - Give balls colors (non tracked by UseState)
