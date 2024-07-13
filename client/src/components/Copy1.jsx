@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import Matter, { Engine, Render, World, Bodies, Body, Events, MouseConstraint, Mouse } from 'matter-js';
+import Matter, { Engine, Render, World, Bodies, Body, Events, MouseConstraint, Mouse, Constraint } from 'matter-js';
 import decomp from 'poly-decomp';
 import PoolTable from './PoolTable';
 
@@ -14,8 +14,10 @@ const Stripped = () => {
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(15);
   const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
+  const [jointBall, setJointBall] = useState(null);
 
   const ringRadius = 100; // Radius of the circular constraint
+  const jointBallRadius = 8; // Radius of the joint ball
 
   const gameRef = useRef();
 
@@ -30,8 +32,8 @@ const Stripped = () => {
       options: {
         width: 1500,
         height: 680,
-        wireframes: false
-      }
+        wireframes: false,
+      },
     });
     Render.run(render);
     const runner = Matter.Runner.create();
@@ -46,7 +48,6 @@ const Stripped = () => {
         strokeStyle: '#ffffff',
         lineWidth: 2,
       },
-      plugin: {},
     });
     World.add(engine.world, cueBall);
 
@@ -74,13 +75,13 @@ const Stripped = () => {
       constraint: {
         stiffness: 0.2,
         render: {
-          visible: false
-        }
-      }
+          visible: false,
+        },
+      },
     });
     World.add(engine.world, mouseConstraint);
 
-    Events.on(mouseConstraint, 'enddrag', function(event) {
+    Events.on(mouseConstraint, 'enddrag', function (event) {
       const forceMagnitude = 0.02;
       const angle = Math.atan2(event.mouse.position.y - cueBall.position.y, event.mouse.position.x - cueBall.position.x);
       const force = { x: Math.cos(angle) * forceMagnitude, y: Math.sin(angle) * forceMagnitude };
@@ -90,11 +91,35 @@ const Stripped = () => {
     const updateCueBallPosition = () => {
       setCueBallPosition({
         x: cueBall.position.x,
-        y: cueBall.position.y
+        y: cueBall.position.y,
       });
     };
 
     Events.on(engine, 'beforeUpdate', updateCueBallPosition);
+
+    // Create joint ball
+    const initialJointBallPosition = {
+      x: cueBall.position.x + ringRadius * Math.cos(0),
+      y: cueBall.position.y + ringRadius * Math.sin(0),
+    };
+    const jointBall = Bodies.circle(initialJointBallPosition.x, initialJointBallPosition.y, jointBallRadius, {
+      render: {
+        fillStyle: 'blue',
+        strokeStyle: 'blue',
+        lineWidth: 2,
+      },
+    });
+    World.add(engine.world, jointBall);
+    setJointBall(jointBall);
+
+    // Create a constraint for the joint ball
+    const jointConstraint = Constraint.create({
+      pointA: cueBall.position,
+      bodyB: jointBall,
+      stiffness: 1,
+      length: ringRadius,
+    });
+    World.add(engine.world, jointConstraint);
 
     return () => {
       Render.stop(render);
@@ -117,7 +142,6 @@ const Stripped = () => {
         strokeStyle: '#ffffff',
         lineWidth: 2,
       },
-      plugin: {},
     });
     Body.setVelocity(ball, { x: 0, y: 0 });
     setBalls(prev => [...prev, ball]);
@@ -125,7 +149,7 @@ const Stripped = () => {
     setBallHits(prev => [...prev, 0]);
     World.add(engine.world, ball);
   };
- 
+
   useEffect(() => {
     const scoreInterval = setInterval(() => {
       if (!gameOver) {
@@ -138,14 +162,14 @@ const Stripped = () => {
 
   const ringStyle = {
     position: 'absolute',
-    left: cueBallPosition.x + 55 - ringRadius,
-    top: cueBallPosition.y + 90 - ringRadius,
-    width: `${ringRadius * 1}px`,
-    height: `${ringRadius * 1}px`,
+    left: cueBallPosition.x - ringRadius,
+    top: cueBallPosition.y - ringRadius,
+    width: `${ringRadius * 2}px`,
+    height: `${ringRadius * 2}px`,
     border: '2px dashed red', // Style of the ring
     borderRadius: '50%',
     pointerEvents: 'none', // Prevent interaction with the ring
-    zIndex: 10 // Raise the level of the ring
+    zIndex: 10, // Raise the level of the ring
   };
 
   return (
@@ -161,7 +185,7 @@ const Stripped = () => {
       <div style={ringStyle} />
 
       <PoolTable engine={engine} /> {/* Add the GreenTable component here */}
-     
+
       <div className="score-display">
         Score: {score}
       </div>
