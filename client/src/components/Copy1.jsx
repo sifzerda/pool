@@ -138,10 +138,10 @@ const Stripped = () => {
 
   const ringStyle = {
     position: 'absolute',
-    left: cueBallPosition.x + 8 - ringRadius,
-    top: cueBallPosition.y + 8 - ringRadius,
-    width: `${ringRadius * 2}px`,
-    height: `${ringRadius * 2}px`,
+    left: cueBallPosition.x + 55 - ringRadius,
+    top: cueBallPosition.y + 90 - ringRadius,
+    width: `${ringRadius * 1}px`,
+    height: `${ringRadius * 1}px`,
     border: '2px dashed red', // Style of the ring
     borderRadius: '50%',
     pointerEvents: 'none', // Prevent interaction with the ring
