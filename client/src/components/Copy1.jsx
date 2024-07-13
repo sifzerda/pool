@@ -11,7 +11,6 @@ const Stripped = () => {
   const [pockets, setPockets] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [ship, setShip] = useState(null);
-  const [rotationSpeed, setRotationSpeed] = useState(0.15);
   const [ballSizes, setBallSizes] = useState([]);
   const [ballHits, setBallHits] = useState([]);
   const [score, setScore] = useState(0);
@@ -54,7 +53,7 @@ const Stripped = () => {
     World.add(engine.world, cueBall);
 
     // Create a triangle with chamfer (rounded corners)
-    const shipBody = Bodies.polygon(400, 250, 3, 150, {
+    const rack = Bodies.polygon(400, 250, 3, 150, {
       chamfer: { radius: 20 },
       render: {
         fillStyle: 'transparent',
@@ -64,9 +63,8 @@ const Stripped = () => {
       },
     });
 
-    Body.rotate(shipBody, -Math.PI / 2);
-    setShip(shipBody);
-    World.add(engine.world, shipBody);
+    setShip(rack);
+    World.add(engine.world, rack);
 
     for (let i = 0; i < 15; i++) {
       createBall();
@@ -91,14 +89,6 @@ const Stripped = () => {
       Body.applyForce(cueBall, cueBall.position, force);
     });
 
-    const updateShipPosition = () => {
-      setShipPosition({
-        x: shipBody.position.x,
-        y: shipBody.position.y,
-        rotation: shipBody.angle * (180 / Math.PI)
-      });
-    };
-
     const updateCueBallPosition = () => {
       setCueBallPosition({
         x: cueBall.position.x,
@@ -106,14 +96,12 @@ const Stripped = () => {
       });
     };
 
-    Events.on(engine, 'beforeUpdate', updateShipPosition);
     Events.on(engine, 'beforeUpdate', updateCueBallPosition);
 
     return () => {
       Render.stop(render);
       World.clear(engine.world);
       Engine.clear(engine);
-      Events.off(engine, 'beforeUpdate', updateShipPosition);
       Events.off(engine, 'beforeUpdate', updateCueBallPosition);
     };
   }, [engine]);
@@ -139,32 +127,7 @@ const Stripped = () => {
     setBallHits(prev => [...prev, 0]);
     World.add(engine.world, ball);
   };
-
-  const moveShipUp = () => {
-    if (ship) {
-      const forceMagnitude = 0.0003;
-      const forceX = Math.cos(ship.angle) * forceMagnitude;
-      const forceY = Math.sin(ship.angle) * forceMagnitude;
-      Body.applyForce(ship, ship.position, { x: forceX, y: forceY });
-    }
-  };
-
-  const rotateShipLeft = () => {
-    if (ship) {
-      Body.rotate(ship, -rotationSpeed);
-    }
-  };
-
-  const rotateShipRight = () => {
-    if (ship) {
-      Body.rotate(ship, rotationSpeed);
-    }
-  };
-
-  useHotkeys('up', moveShipUp, [ship]);
-  useHotkeys('left', rotateShipLeft, [ship, rotationSpeed]);
-  useHotkeys('right', rotateShipRight, [ship, rotationSpeed]);
-
+ 
   useEffect(() => {
     const scoreInterval = setInterval(() => {
       if (!gameOver) {
