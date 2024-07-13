@@ -37,43 +37,6 @@ const Stripped = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-    // Pool table walls
-    const wallThickness = 14;
-    const halfWidth = render.canvas.width / 2;
-    const halfHeight = render.canvas.height / 2;
-    const gapSize = 40;
-    
-    const wallConfig = { 
-      isStatic: true,
-      render: {
-        fillStyle: 'brown'
-      }
-    };
-
-    const topWallWidth = (render.canvas.width / 2) - 175;
-    const topWallLeft = Bodies.rectangle(halfWidth - 320, 50, topWallWidth, wallThickness, wallConfig);
-    const topWallRight = Bodies.rectangle(halfWidth + 320, 50, topWallWidth, wallThickness, wallConfig);
-    const bottomWallWidth = (render.canvas.width / 2) - 175;
-    const bottomWallLeft = Bodies.rectangle(halfWidth - 320, render.canvas.height - 50, bottomWallWidth, wallThickness, wallConfig);
-    const bottomWallRight = Bodies.rectangle(halfWidth + 320, render.canvas.height - 50, bottomWallWidth, wallThickness, wallConfig);
-
-    bottomWallLeft.position.y += gapSize / 2;
-    bottomWallRight.position.y += gapSize / 2;
-    topWallLeft.position.y -= gapSize / 2;
-    topWallRight.position.y -= gapSize / 2;
-
-    const leftWallHeight = render.canvas.height - 180;
-    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, wallConfig);
-    const rightWallHeight = render.canvas.height - 180;
-    const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, rightWallHeight, wallConfig);
-
-    World.add(engine.world, [
-      topWallLeft, topWallRight,
-      bottomWallLeft, bottomWallRight,
-      leftWall,
-      rightWall
-    ]);
-
     // triangle rack for balls
     const rodLength = 300;
     const rodWidth = 2;
@@ -116,6 +79,7 @@ const Stripped = () => {
     setPockets(pockets);
     World.add(engine.world, pockets);
 
+    const halfHeight = 680 / 2;
     const cueBall = Bodies.circle(400, halfHeight, 14, {
       frictionAir: 0,
       render: {
