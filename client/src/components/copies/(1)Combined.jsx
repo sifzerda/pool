@@ -1,12 +1,15 @@
+// has pool table, walls, pockets, cue ball, 15 balls, triangle rack, and ship
+
+
 import { useState, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events, MouseConstraint, Mouse } from 'matter-js';
 import decomp from 'poly-decomp';
-import PoolTable from './PoolTable';
 
 const Stripped = () => {
   const [engine] = useState(Engine.create());
   const [shipPosition, setShipPosition] = useState({ x: 300, y: 300, rotation: 0 });
+ 
   const [balls, setBalls] = useState([]);
   const [pockets, setPockets] = useState([]);
   const [gameOver, setGameOver] = useState(false);
@@ -19,7 +22,7 @@ const Stripped = () => {
 
   const gameRef = useRef();
 
-  window.decomp = decomp;
+  window.decomp = decomp; // poly-decomp is available globally
 
   useEffect(() => {
     // Initialize Matter.js engine and rendering
@@ -37,36 +40,65 @@ const Stripped = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
+    //green felt table
+
+    // Create the green sensor rectangle
+    const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
+      isStatic: true,
+      isSensor: true,  // Makes it a sensor (no physical interaction)
+      render: {
+        fillStyle: 'green',  // Green color
+        strokeStyle: '#ffffff',
+        lineWidth: 2,
+        visible: true
+      }
+    });
+
+    World.add(engine.world, greenTable);
+
+    // pool table walls 
+    
     // Pool table walls
     const wallThickness = 14;
-    const halfWidth = render.canvas.width / 2;
-    const halfHeight = render.canvas.height / 2;
-    const gapSize = 40;
+    const halfWidth = render.canvas.width / 2; // Half the width of the canvas
+    const halfHeight = render.canvas.height / 2; // Half the height of the canvas
+    const gapSize = 40;  
     
     const wallConfig = { 
       isStatic: true,
       render: {
-        fillStyle: 'brown'
+        fillStyle: 'brown' // Set the walls to brown
       }
     };
-
-    const topWallWidth = (render.canvas.width / 2) - 175;
+    
+    // Adjusting positions and width for top walls
+    const topWallWidth = (render.canvas.width / 2) - 175; // Adjust width as necessary
+    // Move top wall left further left
     const topWallLeft = Bodies.rectangle(halfWidth - 320, 50, topWallWidth, wallThickness, wallConfig);
+    // Move top wall right further right
     const topWallRight = Bodies.rectangle(halfWidth + 320, 50, topWallWidth, wallThickness, wallConfig);
-    const bottomWallWidth = (render.canvas.width / 2) - 175;
+    // Adjusting positions and width for bottom walls
+    const bottomWallWidth = (render.canvas.width / 2) - 175; // Adjust width as necessary
+    // Move bottom wall left further left
     const bottomWallLeft = Bodies.rectangle(halfWidth - 320, render.canvas.height - 50, bottomWallWidth, wallThickness, wallConfig);
+    // Move bottom wall right further right
     const bottomWallRight = Bodies.rectangle(halfWidth + 320, render.canvas.height - 50, bottomWallWidth, wallThickness, wallConfig);
-
+    
+    // Adjusting positions to create a gap between top and bottom walls
     bottomWallLeft.position.y += gapSize / 2;
     bottomWallRight.position.y += gapSize / 2;
     topWallLeft.position.y -= gapSize / 2;
     topWallRight.position.y -= gapSize / 2;
+    
+// Creating left wall as a single object with slightly longer height
+const leftWallHeight = render.canvas.height - 180; // Adjust height as necessary
+const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, wallConfig);
 
-    const leftWallHeight = render.canvas.height - 180;
-    const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, wallConfig);
-    const rightWallHeight = render.canvas.height - 180;
-    const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, rightWallHeight, wallConfig);
+// Creating right wall as a single object with slightly longer height
+const rightWallHeight = render.canvas.height - 180; // Adjust height as necessary
+const rightWall = Bodies.rectangle(render.canvas.width - 100, halfHeight, wallThickness, rightWallHeight, wallConfig);
 
+    // Adding all the walls to the world
     World.add(engine.world, [
       topWallLeft, topWallRight,
       bottomWallLeft, bottomWallRight,
@@ -97,12 +129,12 @@ const Stripped = () => {
     World.add(engine.world, rods);
 
     const pocketPositions = [
-      { x: 110, y: 62 },
-      { x: 750, y: 50 },
-      { x: 1380, y: 60 },
-      { x: 110, y: 620 },
-      { x: 750, y: 630 },
-      { x: 1380, y: 620 },
+      { x: 110, y: 62 }, // top left
+      { x: 750, y: 50 }, // top middle
+      { x: 1380, y: 60 }, // top right
+      { x: 110, y: 620 }, // bottom left
+      { x: 750, y: 630 }, // bottom middle
+      { x: 1380, y: 620 }, // bottom right
     ];
 
     const pocketRadius = 20;
@@ -145,6 +177,7 @@ const Stripped = () => {
     setShip(shipBody);
     World.add(engine.world, shipBody);
 
+    // Create initial asteroids
     for (let i = 0; i < 15; i++) {
       createBall();
     }
@@ -161,8 +194,13 @@ const Stripped = () => {
     });
     World.add(engine.world, mouseConstraint);
 
+    Events.on(mouseConstraint, 'startdrag', function(event) {
+      // Implement behavior when drag starts
+    });
+
     Events.on(mouseConstraint, 'enddrag', function(event) {
-      const forceMagnitude = 0.02;
+      // Implement behavior when drag ends (shoot the cue ball)
+      const forceMagnitude = 0.02; // Adjust this value for shot strength
       const angle = Math.atan2(event.mouse.position.y - cueBall.position.y, event.mouse.position.x - cueBall.position.x);
       const force = { x: Math.cos(angle) * forceMagnitude, y: Math.sin(angle) * forceMagnitude };
       Body.applyForce(cueBall, cueBall.position, force);
@@ -192,6 +230,8 @@ const Stripped = () => {
     const radius = ballRadii[radiusIndex];
     const startX = 1200 + Math.random() * 100;
     const startY = 300 + Math.random() * 100 - 50;
+    const velocityX = 0;
+    const velocityY = 0;
     const ball = Bodies.circle(startX, startY, radius, {
       frictionAir: 0,
       render: {
@@ -201,7 +241,8 @@ const Stripped = () => {
       },
       plugin: {},
     });
-    Body.setVelocity(ball, { x: 0, y: 0 });
+    Body.setVelocity(ball, { x: velocityX, y: velocityY });
+    Body.setAngularVelocity(ball, 0.00);
     setBalls(prev => [...prev, ball]);
     setBallSizes(prev => [...prev, radius]);
     setBallHits(prev => [...prev, 0]);
@@ -252,7 +293,6 @@ const Stripped = () => {
           </div>
         </div>
       )}
-      <PoolTable engine={engine} /> {/* Add the GreenTable component here */}
       <div className="score-display">
         Score: {score}
       </div>
