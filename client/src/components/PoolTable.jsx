@@ -4,15 +4,22 @@ import { Bodies, World } from 'matter-js';
 
 const PoolTable = ({ engine }) => {
     useEffect(() => {
+      
+      const greenTableTexture = new Image();
+      greenTableTexture.src = '../../public/images/greenTable.jpg'; // Update the path as needed
         // Create the green table surface
         const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
           isStatic: true,
           isSensor: true,
           render: {
-            fillStyle: 'green',
+            fillStyle: 'green', // Keep the fill style
             strokeStyle: '#ffffff',
             lineWidth: 2,
-            visible: true,
+            sprite: {
+              texture: greenTableTexture.src,
+              xScale: 0.81, // Adjust this to change texture width
+              yScale: 0.61, // Adjust this to change texture height
+            },
           },
         });
     
@@ -54,8 +61,6 @@ const PoolTable = ({ engine }) => {
           leftWall,
           rightWall,
         ]);
-    
-
     
         // Pocket positions
         const pocketPositions = [
