@@ -2,6 +2,13 @@
 
 npm install socket.io-client: if you want to make the game multiplayer
 
+** GET BALL MOVING LOGIC IN COPY 2 AND PUT INTO COPY 3
+** TRY TO START WITH THE AIM LINE
+** ONCE THAT WORKS, GET THE DRAG AND RELEASE
+
+
+
+
 
 
 8ball Pool
