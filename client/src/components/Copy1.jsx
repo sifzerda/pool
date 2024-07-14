@@ -118,6 +118,8 @@ const Stripped = () => {
     };
   }, [engine]);
 
+      ///////////////////////////////////////////////////////////////
+
   const createBall = () => {
     const ballRadii = [14];
     const radiusIndex = Math.floor(Math.random() * ballRadii.length);
