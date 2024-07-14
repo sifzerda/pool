@@ -1,3 +1,5 @@
+// this has the slingshot mechanic fixed in place
+
 import  { useState, useEffect, useRef } from 'react';
 import Matter, {
   Engine,
@@ -65,77 +67,78 @@ const Stripped = () => {
 
     Events.on(engine, 'beforeUpdate', updateCueBallPosition);
 
+        /// PYRAMID ////////////////////////////////////////////////////////////////////////
 
-     // SLINGSHOT //////////////////////////////////////////////////////////////
-     const rockOptions = { density: 0.004 };
-     let rock = Bodies.polygon(170, 450, 8, 20, rockOptions);
-     const elastic = Constraint.create({
-       pointA: { x: 170, y: 450 }, // Initial anchor point
-       bodyB: rock,
-       length: 0.01,
-       damping: 0.01,
-       stiffness: 0.05,
-     });
+        const pyramid = Composites.pyramid(500, 300, 9, 10, 0, 0, (x, y) => {
+          return Bodies.circle(x, y, 14, { // Adjust radius to 10
+            frictionAir: 0,
+            restitution: 1.5,
+            render: {
+              fillStyle: 'transparent',
+              strokeStyle: '#ffffff',
+              lineWidth: 2,
+            },
+          });
+        });
+     
+        Composite.add(engine.world, [pyramid]);
+    
+    ///////////////////////////////////////////////////////////////////////
+    
+
+    // SLINGSHOT //////////////////////////////////////////////////////////////
  
-    /// PYRAMID ////////////////////////////////////////////////////////////////////////
-
-    const pyramid = Composites.pyramid(500, 300, 9, 10, 0, 0, (x, y) => {
-      return Bodies.circle(x, y, 14, { // Adjust radius to 10
-        frictionAir: 0,
-        restitution: 1.5,
-        render: {
-          fillStyle: 'transparent',
-          strokeStyle: '#ffffff',
-          lineWidth: 2,
-        },
-      });
+    const rockOptions = { density: 0.004 };
+    let rock = Bodies.polygon(170, 450, 8, 20, rockOptions);
+    const anchor = { x: 170, y: 450 };
+    const elastic = Constraint.create({
+      pointA: anchor,
+      bodyB: rock,
+      length: 0.01,
+      damping: 0.01,
+      stiffness: 0.05,
     });
- 
-    Composite.add(engine.world, [pyramid, rock, elastic]);
 
-///////////////////////////////////////////////////////////////////////
+    Composite.add(engine.world, [ rock, elastic]);
 
-     // Add mouse control
-     const mouse = Mouse.create(render.canvas);
-     const mouseConstraint = MouseConstraint.create(engine, {
-       mouse,
-       constraint: {
-         stiffness: 0.2,
-         render: {
-           visible: false,
-         },
-       },
-     });
- 
-     Composite.add(engine.world, mouseConstraint);
-     render.mouse = mouse;
- 
-     // Update logic
-     Events.on(engine, 'afterUpdate', () => {
-       // Update pointA to the mouse position
-       elastic.pointA = { x: mouse.position.x, y: mouse.position.y };
- 
-       if (mouseConstraint.mouse.button === -1 && (rock.position.x > 190 || rock.position.y < 430)) {
-         // Limit maximum speed of the current rock.
-         if (Body.getSpeed(rock) > 45) {
-           Body.setSpeed(rock, 45);
-         }
- 
-         // Release the current rock and add a new one.
-         //rock = Bodies.polygon(170, 450, 7, 20, rockOptions);
-         //Composite.add(engine.world, rock);
-         //elastic.bodyB = rock;
-       }
-     });
- 
-     return () => {
-       Render.stop(render);
-       World.clear(engine.world);
-       Engine.clear(engine);
-       Events.off(engine, 'beforeUpdate', updateCueBallPosition);
-     };
-   }, [engine]);
- 
+    // Add mouse control
+    const mouse = Mouse.create(render.canvas);
+    const mouseConstraint = MouseConstraint.create(engine, {
+      mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: {
+          visible: false,
+        },
+      },
+    });
+
+    Composite.add(engine.world, mouseConstraint);
+    render.mouse = mouse;
+
+    // Update logic
+    Events.on(engine, 'afterUpdate', () => {
+      if (mouseConstraint.mouse.button === -1 && (rock.position.x > 190 || rock.position.y < 430)) {
+        // Limit maximum speed of the current rock.
+        if (Body.getSpeed(rock) > 45) {
+          Body.setSpeed(rock, 45);
+        }
+
+        // Release the current rock and add a new one.
+        rock = Bodies.polygon(170, 450, 7, 20, rockOptions);
+        Composite.add(engine.world, rock);
+        elastic.bodyB = rock;
+      }
+    });
+
+    return () => {
+      Render.stop(render);
+      World.clear(engine.world);
+      Engine.clear(engine);
+      Events.off(engine, 'beforeUpdate', updateCueBallPosition);
+    };
+  }, [engine]);
+
    ///////////////////////////////////////////////////////////////
 
       // 15 balls:
@@ -167,8 +170,11 @@ const Stripped = () => {
       },
     });
 
+
     Body.setVelocity(ball, { x: 0, y: 0 });
     setBalls((prev) => [...prev, ball]);
+    setBallSizes((prev) => [...prev, radius]);
+    setBallHits((prev) => [...prev, 0]);
     World.add(engine.world, ball);
   };
 
