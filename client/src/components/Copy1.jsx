@@ -75,30 +75,46 @@ const Stripped = () => {
     Composite.add(engine.world, mouseConstraint);
     render.mouse = mouse;
 
-    // Custom render for the aim line and pool stick
-    Events.on(render, 'afterRender', () => {
-      const context = render.context;
+// Custom render for the aim line and pool stick
+Events.on(render, 'afterRender', () => {
+  const context = render.context;
 
-      // Draw the aim line
-      context.beginPath();
-      context.moveTo(cueBall.position.x, cueBall.position.y);
-      context.lineTo(mouse.position.x, mouse.position.y);
-      context.strokeStyle = 'brown'; // brown color for the aim line
-      context.lineWidth = 2;
-      context.stroke();
+  // Draw the aim line
+  context.beginPath();
+  const aimLength = 150; // Length of the aim line
 
-      // Draw the pool stick
-      const stickLength = 100; // Length of the stick
-      const stickX = cueBall.position.x + (mouse.position.x - cueBall.position.x) * 0.5;
-      const stickY = cueBall.position.y + (mouse.position.y - cueBall.position.y) * 0.5;
-      
-      context.beginPath();
-      context.moveTo(stickX, stickY);
-      context.lineTo(cueBall.position.x, cueBall.position.y);
-      context.strokeStyle = '#ffffff'; // White color for the stick
-      context.lineWidth = 5;
-      context.stroke();
-    });
+  // Calculate the direction vector from the cue ball to the mouse
+  const directionX = mouse.position.x - cueBall.position.x;
+  const directionY = mouse.position.y - cueBall.position.y;
+  const directionLength = Math.sqrt(directionX ** 2 + directionY ** 2);
+
+  // Normalize the direction vector and extend beyond the cue ball
+  const normalizedX = directionX / directionLength;
+  const normalizedY = directionY / directionLength;
+
+  const aimStartX = cueBall.position.x + normalizedX * -20; // Start 20px behind the cue ball
+  const aimStartY = cueBall.position.y + normalizedY * -20;
+  const aimEndX = cueBall.position.x + normalizedX * aimLength;
+  const aimEndY = cueBall.position.y + normalizedY * aimLength;
+
+  context.moveTo(aimStartX, aimStartY);
+  context.lineTo(aimEndX, aimEndY);
+  context.strokeStyle = '#ff0000'; // Red color for the aim line
+  context.lineWidth = 2;
+  context.stroke();
+
+  // Draw the pool stick
+  const stickLength = 100; // Length of the stick
+  const stickX = cueBall.position.x + (aimEndX - cueBall.position.x) * 0.5;
+  const stickY = cueBall.position.y + (aimEndY - cueBall.position.y) * 0.5;
+
+  context.beginPath();
+  context.moveTo(stickX, stickY);
+  context.lineTo(cueBall.position.x, cueBall.position.y);
+  context.strokeStyle = '#ffffff'; // White color for the stick
+  context.lineWidth = 5;
+  context.stroke();
+});
 
     return () => {
       Render.stop(render);
