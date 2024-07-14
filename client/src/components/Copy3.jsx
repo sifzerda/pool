@@ -1,27 +1,16 @@
 // spare for playing around 
 
 import { useState, useEffect, useRef } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import Matter, { Engine, Render, World, Bodies, Body, Events, MouseConstraint, Mouse, Constraint } from 'matter-js';
+import Matter, { Engine, Render, World, Bodies, Body, Events,  } from 'matter-js';
 import decomp from 'poly-decomp';
 import PoolTable from './PoolTable';
 
 const Stripped = () => {
   const [engine] = useState(Engine.create());
   const [balls, setBalls] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
-  const [ship, setShip] = useState(null);
   const [ballSizes, setBallSizes] = useState([]);
   const [ballHits, setBallHits] = useState([]);
-  const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(15);
   const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
-  const [jointBall, setJointBall] = useState(null);
-  const [rod, setRod] = useState(null);
-
-  const ringRadius = 100; // Radius of the circular constraint
-  const jointBallRadius = 8; // Radius of the joint ball
-  const rodLength = 420; // Length of the rod
 
   const gameRef = useRef();
 
@@ -97,34 +86,11 @@ const Stripped = () => {
     World.add(engine.world, ball);
   };
 
-  useEffect(() => {
-    const scoreInterval = setInterval(() => {
-      if (!gameOver) {
-        setScore(prevScore => prevScore + 1);
-      }
-    }, 100);
-
-    return () => clearInterval(scoreInterval);
-  }, [gameOver]);
-
   return (
     <div className="game-container" ref={gameRef}>
-      {gameOver && (
-        <div className="game-over-overlay">
-          <div className="game-over">
-            Game Over
-          </div>
-        </div>
-      )}
 
       <PoolTable engine={engine} /> {/* Add the GreenTable component here */}
 
-      <div className="score-display">
-        Score: {score}
-      </div>
-      <div className="lives-display">
-        Balls to Pot: <span className='life-triangle'>{'◯ '.repeat(lives)}</span>
-      </div>
     </div>
   );
 };
