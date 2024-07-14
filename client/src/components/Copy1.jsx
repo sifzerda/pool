@@ -82,6 +82,7 @@ const Stripped = () => {
     const pyramid = Composites.pyramid(500, 300, 9, 10, 0, 0, (x, y) => {
       return Bodies.circle(x, y, 14, { // Adjust radius to 10
         frictionAir: 0,
+        restitution: 1.5,
         render: {
           fillStyle: 'transparent',
           strokeStyle: '#ffffff',
@@ -158,6 +159,7 @@ const Stripped = () => {
   const createBall = (x, y, radius) => {
     const ball = Bodies.circle(x, y, radius, {
       frictionAir: 0,
+      restitution: 1.5,
       render: {
         fillStyle: 'transparent',
         strokeStyle: '#ffffff',
