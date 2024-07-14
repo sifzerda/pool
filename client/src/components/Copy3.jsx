@@ -1,96 +1,132 @@
 // spare for playing around 
 
-import React, { useRef, useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import Matter, { Engine, Render, World, Bodies, Body, Events, MouseConstraint, Mouse, Constraint } from 'matter-js';
+import decomp from 'poly-decomp';
+import PoolTable from './PoolTable';
 
-const PoolGame = () => {
-  const canvasRef = useRef(null);
-  const [cueBall, setCueBall] = useState({ x: 200, y: 200 });
-  const [poolStick, setPoolStick] = useState({ angle: 0, power: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState(null);
+const Stripped = () => {
+  const [engine] = useState(Engine.create());
+  const [balls, setBalls] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
+  const [ship, setShip] = useState(null);
+  const [ballSizes, setBallSizes] = useState([]);
+  const [ballHits, setBallHits] = useState([]);
+  const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(15);
+  const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
+  const [jointBall, setJointBall] = useState(null);
+  const [rod, setRod] = useState(null);
 
-  const draw = (ctx) => {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  const ringRadius = 100; // Radius of the circular constraint
+  const jointBallRadius = 8; // Radius of the joint ball
+  const rodLength = 420; // Length of the rod
 
-    // Draw cue ball
-    ctx.beginPath();
-    ctx.arc(cueBall.x, cueBall.y, 10, 0, 2 * Math.PI);
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    ctx.stroke();
+  const gameRef = useRef();
 
-    // Draw pool stick
-    if (isDragging || poolStick.power > 0) {
-      ctx.beginPath();
-      ctx.moveTo(cueBall.x, cueBall.y);
-      ctx.lineTo(
-        cueBall.x - poolStick.power * Math.sin(poolStick.angle),
-        cueBall.y - poolStick.power * Math.cos(poolStick.angle)
-      );
-      ctx.strokeStyle = 'brown';
-      ctx.lineWidth = 4;
-      ctx.stroke();
+  window.decomp = decomp;
+
+  useEffect(() => {
+    // Initialize Matter.js engine and rendering
+    engine.world.gravity.y = 0;
+    const render = Render.create({
+      element: gameRef.current,
+      engine,
+      options: {
+        width: 1500,
+        height: 680,
+        wireframes: false,
+      },
+    });
+    Render.run(render);
+    const runner = Matter.Runner.create();
+    Matter.Runner.run(runner, engine);
+
+    // Cue Ball
+    const halfHeight = 680 / 2;
+    const cueBall = Bodies.circle(400, halfHeight, 14, {
+      frictionAir: 0,
+      render: {
+        fillStyle: '#ffffff',
+        strokeStyle: '#ffffff',
+        lineWidth: 2,
+      },
+    });
+    World.add(engine.world, cueBall);
+
+    for (let i = 0; i < 15; i++) {
+      createBall();
     }
-  };
 
-  const handleMouseDown = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const updateCueBallPosition = () => {
+      setCueBallPosition({
+        x: cueBall.position.x,
+        y: cueBall.position.y,
+      });
+    };
 
-    if (
-      Math.hypot(cueBall.x - x, cueBall.y - y) <= 10
-    ) {
-      setIsDragging(true);
-      setDragStart({ x, y });
-    }
-  };
+    Events.on(engine, 'beforeUpdate', updateCueBallPosition);
 
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    return () => {
+      Render.stop(render);
+      World.clear(engine.world);
+      Engine.clear(engine);
+      Events.off(engine, 'beforeUpdate', updateCueBallPosition);
+    };
+  }, [engine]);
 
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const power = Math.min(100, Math.hypot(dragStart.x - x, dragStart.y - y));
-    const angle = Math.atan2(y - cueBall.y, x - cueBall.x) - Math.PI / 2;
-
-    setPoolStick({ angle, power });
-  };
-
-  const handleMouseUp = () => {
-    if (isDragging) {
-      setIsDragging(false);
-      setCueBall((prevCueBall) => ({
-        x: prevCueBall.x - poolStick.power * Math.sin(poolStick.angle),
-        y: prevCueBall.y - poolStick.power * Math.cos(poolStick.angle),
-      }));
-      setPoolStick({ angle: 0, power: 0 });
-    }
+  const createBall = () => {
+    const ballRadii = [14];
+    const radiusIndex = Math.floor(Math.random() * ballRadii.length);
+    const radius = ballRadii[radiusIndex];
+    const startX = 1200 + Math.random() * 100;
+    const startY = 300 + Math.random() * 100 - 50;
+    const ball = Bodies.circle(startX, startY, radius, {
+      frictionAir: 0,
+      render: {
+        fillStyle: 'transparent',
+        strokeStyle: '#ffffff',
+        lineWidth: 2,
+      },
+    });
+    Body.setVelocity(ball, { x: 0, y: 0 });
+    setBalls(prev => [...prev, ball]);
+    setBallSizes(prev => [...prev, radius]);
+    setBallHits(prev => [...prev, 0]);
+    World.add(engine.world, ball);
   };
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
+    const scoreInterval = setInterval(() => {
+      if (!gameOver) {
+        setScore(prevScore => prevScore + 1);
+      }
+    }, 100);
 
-    const render = () => {
-      draw(context);
-    };
-
-    render();
-  }, [cueBall, poolStick]);
+    return () => clearInterval(scoreInterval);
+  }, [gameOver]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={400}
-      height={400}
-      style={{ border: '1px solid black' }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    />
+    <div className="game-container" ref={gameRef}>
+      {gameOver && (
+        <div className="game-over-overlay">
+          <div className="game-over">
+            Game Over
+          </div>
+        </div>
+      )}
+
+      <PoolTable engine={engine} /> {/* Add the GreenTable component here */}
+
+      <div className="score-display">
+        Score: {score}
+      </div>
+      <div className="lives-display">
+        Balls to Pot: <span className='life-triangle'>{'◯ '.repeat(lives)}</span>
+      </div>
+    </div>
   );
 };
 
-export default PoolGame;
+export default Stripped;
