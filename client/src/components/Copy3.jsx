@@ -1,84 +1,94 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Matter from 'matter-js';
+import React, { useRef, useState, useEffect } from 'react';
 
-const PoolStick = () => {
-  const sceneRef = useRef(null);
-  const [engine] = useState(Matter.Engine.create());
-  const [stick, setStick] = useState(null);
-  const [ball, setBall] = useState(null);
+const PoolGame = () => {
+  const canvasRef = useRef(null);
+  const [cueBall, setCueBall] = useState({ x: 200, y: 200 });
+  const [poolStick, setPoolStick] = useState({ angle: 0, power: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(null);
+
+  const draw = (ctx) => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    // Draw cue ball
+    ctx.beginPath();
+    ctx.arc(cueBall.x, cueBall.y, 10, 0, 2 * Math.PI);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw pool stick
+    if (isDragging || poolStick.power > 0) {
+      ctx.beginPath();
+      ctx.moveTo(cueBall.x, cueBall.y);
+      ctx.lineTo(
+        cueBall.x - poolStick.power * Math.sin(poolStick.angle),
+        cueBall.y - poolStick.power * Math.cos(poolStick.angle)
+      );
+      ctx.strokeStyle = 'brown';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (
+      Math.hypot(cueBall.x - x, cueBall.y - y) <= 10
+    ) {
+      setIsDragging(true);
+      setDragStart({ x, y });
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const power = Math.min(100, Math.hypot(dragStart.x - x, dragStart.y - y));
+    const angle = Math.atan2(y - cueBall.y, x - cueBall.x) - Math.PI / 2;
+
+    setPoolStick({ angle, power });
+  };
+
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setCueBall((prevCueBall) => ({
+        x: prevCueBall.x - poolStick.power * Math.sin(poolStick.angle),
+        y: prevCueBall.y - poolStick.power * Math.cos(poolStick.angle),
+      }));
+      setPoolStick({ angle: 0, power: 0 });
+    }
+  };
 
   useEffect(() => {
-    const render = Matter.Render.create({
-      element: sceneRef.current,
-      engine: engine,
-      options: {
-        width: 800,
-        height: 400,
-        wireframes: false,
-      },
-    });
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
 
-    const ground = Matter.Bodies.rectangle(400, 380, 810, 60, { isStatic: true });
-    const cueBall = Matter.Bodies.circle(400, 200, 20, { restitution: 0.8 });
-
-    const poolStick = Matter.Bodies.rectangle(400, 250, 300, 10, {
-      render: {
-        fillStyle: '#8B4513',
-      },
-    });
-
-    Matter.World.add(engine.world, [ground, cueBall, poolStick]);
-    setStick(poolStick);
-    setBall(cueBall);
-
-    Matter.Engine.run(engine);
-    Matter.Render.run(render);
-
-    return () => {
-      Matter.Render.stop(render);
-      Matter.World.clear(engine.world);
-      Matter.Engine.clear(engine);
-      render.canvas.remove();
-      render.textures = {};
-    };
-  }, [engine]);
-
-  useEffect(() => {
-    if (!stick || !ball) return;
-
-    const mouse = Matter.Mouse.create(sceneRef.current);
-    const mouseConstraint = Matter.MouseConstraint.create(engine, {
-      mouse: mouse,
-      constraint: {
-        stiffness: 0.2,
-        render: {
-          visible: false,
-        },
-      },
-    });
-
-    Matter.World.add(engine.world, mouseConstraint);
-
-    const handleMouseUp = () => {
-      const forceMagnitude = 0.05 * stick.mass;
-      Matter.Body.applyForce(ball, ball.position, {
-        x: (ball.position.x - stick.position.x) * forceMagnitude,
-        y: (ball.position.y - stick.position.y) * forceMagnitude,
-      });
-      Matter.Body.setPosition(stick, { x: 400, y: 250 }); // Reset stick position after shot
+    const render = () => {
+      draw(context);
     };
 
-    mouse.element.addEventListener('mouseup', handleMouseUp);
+    render();
+  }, [cueBall, poolStick]);
 
-    return () => {
-      if (mouse.element) {
-        mouse.element.removeEventListener('mouseup', handleMouseUp);
-      }
-      Matter.World.remove(engine.world, mouseConstraint);
-    };
-  }, [stick, ball, engine]);
-
-  return <div ref={sceneRef} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      width={400}
+      height={400}
+      style={{ border: '1px solid black' }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    />
+  );
 };
 
-export default PoolStick;
+export default PoolGame;
