@@ -94,8 +94,8 @@ Events.on(render, 'afterRender', () => {
   const normalizedX = directionX / directionLength;
   const normalizedY = directionY / directionLength;
 
-  const aimStartX = cueBall.position.x + normalizedX * -20; // Start 20px behind the cue ball
-  const aimStartY = cueBall.position.y + normalizedY * -20;
+  const aimStartX = cueBall.position.x + normalizedX * -500; // Start 20px behind the cue ball
+  const aimStartY = cueBall.position.y + normalizedY * -500;
   const aimEndX = cueBall.position.x + normalizedX * aimLength;
   const aimEndY = cueBall.position.y + normalizedY * aimLength;
 
@@ -114,7 +114,7 @@ Events.on(render, 'afterRender', () => {
   context.moveTo(stickX, stickY);
   context.lineTo(cueBall.position.x, cueBall.position.y);
   context.strokeStyle = '#ffffff'; // White color for the stick
-  context.lineWidth = 5;
+  context.lineWidth = 2;
   context.stroke();
 });
 
