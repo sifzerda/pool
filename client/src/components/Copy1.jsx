@@ -7,6 +7,7 @@ import Matter, {
   Body,
   Events,
   Composite,
+  Constraint,
   Mouse,
   MouseConstraint,
 } from 'matter-js';
@@ -117,6 +118,21 @@ Events.on(render, 'afterRender', () => {
   context.lineWidth = 2;
   context.stroke();
 });
+
+    // SLINGSHOT //////////////////////////////////////////////////////////////
+ 
+    const rockOptions = { density: 0.004 };
+    let rock = Bodies.polygon(170, 450, 8, 20, rockOptions);
+    const anchor = { x: 170, y: 450 };
+    const elastic = Constraint.create({
+      pointA: anchor,
+      bodyB: rock,
+      length: 0.01,
+      damping: 0.01,
+      stiffness: 0.05,
+    });
+
+    Composite.add(engine.world, [ rock, elastic]);
 
   ///////////////////////////////////////////////////////////////////////////
 
