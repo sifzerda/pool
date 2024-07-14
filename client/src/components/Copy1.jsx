@@ -1,6 +1,4 @@
-// this has the slingshot mechanic fixed in place
-
-import  { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Matter, {
   Engine,
   Render,
@@ -9,10 +7,8 @@ import Matter, {
   Body,
   Events,
   Composite,
-  Constraint,
   Mouse,
   MouseConstraint,
-  Composites,
 } from 'matter-js';
 
 import PoolTable from './PoolTable';
@@ -20,8 +16,6 @@ import PoolTable from './PoolTable';
 const Stripped = () => {
   const [engine] = useState(Engine.create());
   const [balls, setBalls] = useState([]);
-  const [ballSizes, setBallSizes] = useState([]);
-  const [ballHits, setBallHits] = useState([]);
   const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
   const gameRef = useRef();
 
@@ -36,7 +30,6 @@ const Stripped = () => {
         width: 1500,
         height: 680,
         wireframes: false,
-        //showAngleIndicator: true
       },
     });
     Render.run(render);
@@ -55,9 +48,6 @@ const Stripped = () => {
     });
     World.add(engine.world, cueBall);
 
-    // Create a pyramid of balls
-    createPyramidBalls();
-
     const updateCueBallPosition = () => {
       setCueBallPosition({
         x: cueBall.position.x,
@@ -67,39 +57,8 @@ const Stripped = () => {
 
     Events.on(engine, 'beforeUpdate', updateCueBallPosition);
 
-        /// PYRAMID ////////////////////////////////////////////////////////////////////////
-
-        const pyramid = Composites.pyramid(500, 300, 9, 10, 0, 0, (x, y) => {
-          return Bodies.circle(x, y, 14, { // Adjust radius to 10
-            frictionAir: 0,
-            restitution: 1.5,
-            render: {
-              fillStyle: 'transparent',
-              strokeStyle: '#ffffff',
-              lineWidth: 2,
-            },
-          });
-        });
-     
-        Composite.add(engine.world, [pyramid]);
-    
-    ///////////////////////////////////////////////////////////////////////
-    
-
-    // SLINGSHOT //////////////////////////////////////////////////////////////
- 
-    const rockOptions = { density: 0.004 };
-    let rock = Bodies.polygon(170, 450, 8, 20, rockOptions);
-    const anchor = { x: 170, y: 450 };
-    const elastic = Constraint.create({
-      pointA: anchor,
-      bodyB: rock,
-      length: 0.01,
-      damping: 0.01,
-      stiffness: 0.05,
-    });
-
-    Composite.add(engine.world, [ rock, elastic]);
+    // Create a pyramid of balls
+    createPyramidBalls();
 
     // Add mouse control
     const mouse = Mouse.create(render.canvas);
@@ -116,31 +75,30 @@ const Stripped = () => {
     Composite.add(engine.world, mouseConstraint);
     render.mouse = mouse;
 
-    // Update logic
-    Events.on(engine, 'afterUpdate', () => {
-      if (mouseConstraint.mouse.button === -1 && (rock.position.x > 190 || rock.position.y < 430)) {
-        // Limit maximum speed of the current rock.
-        if (Body.getSpeed(rock) > 45) {
-          Body.setSpeed(rock, 45);
-        }
+    // Custom render for the aim line and pool stick
+    Events.on(render, 'afterRender', () => {
+      const context = render.context;
 
-        // Release the current rock and add a new one.
-        rock = Bodies.polygon(170, 450, 7, 20, rockOptions);
-        Composite.add(engine.world, rock);
-        elastic.bodyB = rock;
-      }
+      // Draw the aim line
+      context.beginPath();
+      context.moveTo(cueBall.position.x, cueBall.position.y);
+      context.lineTo(mouse.position.x, mouse.position.y);
+      context.strokeStyle = '#ff0000'; // Red color for the aim line
+      context.lineWidth = 2;
+      context.stroke();
+
+      // Draw the pool stick
+      const stickLength = 100; // Length of the stick
+      const stickX = cueBall.position.x + (mouse.position.x - cueBall.position.x) * 0.5;
+      const stickY = cueBall.position.y + (mouse.position.y - cueBall.position.y) * 0.5;
+      
+      context.beginPath();
+      context.moveTo(stickX, stickY);
+      context.lineTo(cueBall.position.x, cueBall.position.y);
+      context.strokeStyle = '#ffffff'; // White color for the stick
+      context.lineWidth = 5;
+      context.stroke();
     });
-
-        // Custom render to draw the aim line
-        Events.on(render, 'afterRender', () => {
-          const context = render.context;
-          context.beginPath();
-          context.moveTo(cueBall.position.x, cueBall.position.y);
-          context.lineTo(mouse.position.x, mouse.position.y);
-          context.strokeStyle = '#ff0000'; // Red color for the aim line
-          context.lineWidth = 2;
-          context.stroke();
-        });
 
     return () => {
       Render.stop(render);
@@ -150,15 +108,12 @@ const Stripped = () => {
     };
   }, [engine]);
 
-   ///////////////////////////////////////////////////////////////
-
-      // 15 balls:
   // Create a pyramid of balls
   const createPyramidBalls = () => {
-    const radius = 14; // Radius for the balls
-    const pyramidRows = 4; // Number of rows in the pyramid
-    const baseX = 1200; // Base X position for the pyramid
-    const baseY = 300; // Base Y position for the pyramid
+    const radius = 14;
+    const pyramidRows = 4;
+    const baseX = 1200;
+    const baseY = 300;
 
     for (let row = 0; row < pyramidRows; row++) {
       for (let col = 0; col <= row; col++) {
@@ -181,11 +136,8 @@ const Stripped = () => {
       },
     });
 
-
     Body.setVelocity(ball, { x: 0, y: 0 });
     setBalls((prev) => [...prev, ball]);
-    setBallSizes((prev) => [...prev, radius]);
-    setBallHits((prev) => [...prev, 0]);
     World.add(engine.world, ball);
   };
 
