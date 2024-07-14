@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import Matter, { Engine, Render, World, Bodies, Body, Events, } from 'matter-js';
-import decomp from 'poly-decomp';
 import PoolTable from './PoolTable';
 
 const Stripped = () => {
   const [engine] = useState(Engine.create());
   const [balls, setBalls] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
   const [ballSizes, setBallSizes] = useState([]);
   const [ballHits, setBallHits] = useState([]);
   const [score, setScore] = useState(0);
@@ -14,8 +12,6 @@ const Stripped = () => {
   const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
 
   const gameRef = useRef();
-
-  window.decomp = decomp;
 
   useEffect(() => {
     // Initialize Matter.js engine and rendering
@@ -86,16 +82,6 @@ const Stripped = () => {
     setBallHits(prev => [...prev, 0]);
     World.add(engine.world, ball);
   };
-
-  useEffect(() => {
-    const scoreInterval = setInterval(() => {
-      if (!gameOver) {
-        setScore(prevScore => prevScore + 1);
-      }
-    }, 100);
-
-    return () => clearInterval(scoreInterval);
-  }, [gameOver]);
 
   return (
     <div className="game-container" ref={gameRef}>
