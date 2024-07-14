@@ -18,6 +18,7 @@ const Stripped = () => {
   const [engine] = useState(Engine.create());
   const [balls, setBalls] = useState([]);
   const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
+  const [anchorFixed, setAnchorFixed] = useState(false);
   const gameRef = useRef();
 
   useEffect(() => {
@@ -76,54 +77,11 @@ const Stripped = () => {
     Composite.add(engine.world, mouseConstraint);
     render.mouse = mouse;
 
-// AIM LINE AND STICK //////////////////////////////////////////////////////
-
-// Custom render for the aim line and pool stick
-Events.on(render, 'afterRender', () => {
-  const context = render.context;
-
-  // Draw the aim line
-  context.beginPath();
-  const aimLength = 150; // Length of the aim line
-
-  // Calculate the direction vector from the cue ball to the mouse
-  const directionX = mouse.position.x - cueBall.position.x;
-  const directionY = mouse.position.y - cueBall.position.y;
-  const directionLength = Math.sqrt(directionX ** 2 + directionY ** 2);
-
-  // Normalize the direction vector and extend beyond the cue ball
-  const normalizedX = directionX / directionLength;
-  const normalizedY = directionY / directionLength;
-
-  const aimStartX = cueBall.position.x + normalizedX * -500; // Start 20px behind the cue ball
-  const aimStartY = cueBall.position.y + normalizedY * -500;
-  const aimEndX = cueBall.position.x + normalizedX * aimLength;
-  const aimEndY = cueBall.position.y + normalizedY * aimLength;
-
-  context.moveTo(aimStartX, aimStartY);
-  context.lineTo(aimEndX, aimEndY);
-  context.strokeStyle = '#ff0000'; // Red color for the aim line
-  context.lineWidth = 2;
-  context.stroke();
-
-  // Draw the pool stick
-  const stickLength = 100; // Length of the stick
-  const stickX = cueBall.position.x + (aimEndX - cueBall.position.x) * 0.5;
-  const stickY = cueBall.position.y + (aimEndY - cueBall.position.y) * 0.5;
-
-  context.beginPath();
-  context.moveTo(stickX, stickY);
-  context.lineTo(cueBall.position.x, cueBall.position.y);
-  context.strokeStyle = '#ffffff'; // White color for the stick
-  context.lineWidth = 2;
-  context.stroke();
-});
-
     // SLINGSHOT //////////////////////////////////////////////////////////////
- 
     const rockOptions = { density: 0.004 };
-    let rock = Bodies.polygon(170, 450, 8, 20, rockOptions);
+    const rock = Bodies.polygon(170, 450, 8, 20, rockOptions);
     const anchor = { x: 170, y: 450 };
+
     const elastic = Constraint.create({
       pointA: anchor,
       bodyB: rock,
@@ -132,9 +90,65 @@ Events.on(render, 'afterRender', () => {
       stiffness: 0.05,
     });
 
-    Composite.add(engine.world, [ rock, elastic]);
+    Composite.add(engine.world, [rock, elastic]);
 
-  ///////////////////////////////////////////////////////////////////////////
+    // AIM LINE AND STICK //////////////////////////////////////////////////////
+    Events.on(render, 'afterRender', () => {
+      const context = render.context;
+
+      // Draw the aim line
+      context.beginPath();
+      const aimLength = 150; // Length of the aim line
+
+      // Calculate the direction vector from the cue ball to the mouse
+      const directionX = mouse.position.x - cueBall.position.x;
+      const directionY = mouse.position.y - cueBall.position.y;
+      const directionLength = Math.sqrt(directionX ** 2 + directionY ** 2);
+
+      // Normalize the direction vector and extend beyond the cue ball
+      const normalizedX = directionX / directionLength;
+      const normalizedY = directionY / directionLength;
+
+      const aimStartX = cueBall.position.x + normalizedX * -500; // Start 20px behind the cue ball
+      const aimStartY = cueBall.position.y + normalizedY * -500;
+      const aimEndX = cueBall.position.x + normalizedX * aimLength;
+      const aimEndY = cueBall.position.y + normalizedY * aimLength;
+
+      context.moveTo(aimStartX, aimStartY);
+      context.lineTo(aimEndX, aimEndY);
+      context.strokeStyle = '#ff0000'; // Red color for the aim line
+      context.lineWidth = 2;
+      context.stroke();
+
+      // Draw the pool stick
+      const stickX = cueBall.position.x + (aimEndX - cueBall.position.x) * 0.5;
+      const stickY = cueBall.position.y + (aimEndY - cueBall.position.y) * 0.5;
+
+      context.beginPath();
+      context.moveTo(stickX, stickY);
+      context.lineTo(cueBall.position.x, cueBall.position.y);
+      context.strokeStyle = '#ffffff'; // White color for the stick
+      context.lineWidth = 2;
+      context.stroke();
+
+      // Update anchor position to follow the aim line
+      if (!anchorFixed) {
+        anchor.x = aimEndX;
+        anchor.y = aimEndY;
+      }
+    });
+
+    // Update anchor position on mouse down
+    Events.on(mouseConstraint, 'mousedown', () => {
+      if (mouseConstraint.body === rock) {
+        setAnchorFixed(true);
+      }
+    });
+
+    // Handle mouse up to optionally unfreeze the anchor
+    Events.on(mouseConstraint, 'mouseup', () => {
+      setAnchorFixed(false);
+    });
 
     return () => {
       Render.stop(render);
@@ -142,7 +156,7 @@ Events.on(render, 'afterRender', () => {
       Engine.clear(engine);
       Events.off(engine, 'beforeUpdate', updateCueBallPosition);
     };
-  }, [engine]);
+  }, [engine, anchorFixed]);
 
   // Create a pyramid of balls
   const createPyramidBalls = () => {
