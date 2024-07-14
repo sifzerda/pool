@@ -35,6 +35,8 @@ const PoolTable = ({ engine }) => {
           isStatic: true,
           render: {
             fillStyle: 'brown',
+            strokeStyle: '#5e0808',
+            lineWidth: 9,
           },
         };
     
@@ -78,7 +80,9 @@ const PoolTable = ({ engine }) => {
             isSensor: true,
             isStatic: true, 
             render: { 
-              fillStyle: '#000' 
+              fillStyle: '#000', 
+              strokeStyle: '#43505a',
+              lineWidth: 20,
             } 
           })
         );
