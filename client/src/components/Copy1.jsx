@@ -75,6 +75,8 @@ const Stripped = () => {
     Composite.add(engine.world, mouseConstraint);
     render.mouse = mouse;
 
+// AIM LINE AND STICK //////////////////////////////////////////////////////
+
 // Custom render for the aim line and pool stick
 Events.on(render, 'afterRender', () => {
   const context = render.context;
@@ -115,6 +117,8 @@ Events.on(render, 'afterRender', () => {
   context.lineWidth = 5;
   context.stroke();
 });
+
+  ///////////////////////////////////////////////////////////////////////////
 
     return () => {
       Render.stop(render);
