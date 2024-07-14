@@ -131,6 +131,17 @@ const Stripped = () => {
       }
     });
 
+        // Custom render to draw the aim line
+        Events.on(render, 'afterRender', () => {
+          const context = render.context;
+          context.beginPath();
+          context.moveTo(cueBall.position.x, cueBall.position.y);
+          context.lineTo(mouse.position.x, mouse.position.y);
+          context.strokeStyle = '#ff0000'; // Red color for the aim line
+          context.lineWidth = 2;
+          context.stroke();
+        });
+
     return () => {
       Render.stop(render);
       World.clear(engine.world);
