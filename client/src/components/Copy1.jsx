@@ -83,7 +83,7 @@ const Stripped = () => {
       context.beginPath();
       context.moveTo(cueBall.position.x, cueBall.position.y);
       context.lineTo(mouse.position.x, mouse.position.y);
-      context.strokeStyle = '#ff0000'; // Red color for the aim line
+      context.strokeStyle = 'brown'; // brown color for the aim line
       context.lineWidth = 2;
       context.stroke();
 
