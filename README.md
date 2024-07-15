@@ -4,7 +4,6 @@ THIS IS CURRENTLY UNFINISHED
 
 Current games in gamestack:
 
-- [ ] 8ballpool
 - [ ] Solitaire
 - [ ] Asteroids
 - [x] 8 Ball Pool
@@ -104,46 +103,7 @@ The main functions of code:
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
 
-
-
-
-
-
-
-
-- <u>const updateShipPosition: </u> Sets ship speed and rotational radius.
-- <u>setShipPosition…wrapPosition: </u> Ship’s movement wraps to other side of game boundary when passing outside, with small ‘buffer’ zone so ship fully disappears and re-appears.
-- <u>const wrapPosition, and Matter Wrap</u>: Wraps game boundary around so there is no game edge; objects pass around to opposite side.
-- 
 (B) Movement:
-
-- <u>useHotkeys</u>:  Hook which simplifies movement control code.
-- <u>const [rotationSpeed, setRotationSpeed] = useState(0.15)];</u>:  sets ship rotation speed.
-- <u>Body.rotate(shipBody, -Math.PI / 2)</u>:  Initializes ship's starting position (rotated so facing up). Ship's front is actually right side angle, has to be rotated on game start to face moveUp direction upwards.
-- <u>const shipBody = Bodies.fromVertices, const vertices</u>: Shapes ship body.
-- <u>emitExplosionParticles</u>: creates red particles when ship crashes.
-
-(C) Projectile fire:
-
-- <u>shootProjectile</u>: Sets gunfire speed, fire position, and fire decay (setTimeout).
-- <u>setProjectiles</u>: Limits asteroid and projectile fire to wrap the game boundary.
-
-(D) Thrust fire:
-
-- <u>const makeExhaust</u>: replicates projectile fire but displaced to ship back by 'offset' and renders on arrow key up.
-
-(E) Asteroids:
-
-- <u>useEffect…createAsteroids</u>: Creates some starting asteroids [size, number, rotation, velocity] and calls in new asteroid/s over time. Gets called again on ship crash.
-- <u>useEffect...const handleCollisions</u>:  There are 2 useEffect handleCollisions functions; one for shooting asteroids, and one for the ship getting hit. When asteroids are hit, they split into new asteroids with differing initial velocities, and size property. When the ship is hit, it triggers game over.
-- <u>emitParticles();</u>: when asteroids are shot, they break off into 'chunks' (particles)
-
- (F) Game:
-
-- <u>const gameLoop</u>:  Game runs (updates) until game ends. API ‘requestAnimationFrame’ smoothes updates (of gameLoop) into continual flow/animation. Hook requestRef gives each animation ‘frame’ an id, allowing gameLoop to cease on any frame.
-- <u>useEffect...const scoreInterval...</u>: Handles score incrementation.
-- <u>useEffect(() => {Matter.use...})</u>: Sets up Matter.js game engine, world, objects.
-- <u>useEffect(() => {const scoreInterval = setInterval(() => {})})</u>: keeps score.
 
 ## (7) Alternative Config
 
