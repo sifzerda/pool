@@ -69,7 +69,7 @@ npm run start
 ```
 
 Controls:
-- Click and hold the cue ball to begin shot, drag mouse back to add power, release to fire.
+- Click and hold mouse button on the cue ball to begin shot, drag mouse back to add power, release to fire.
 
 ## (5) Usage
 
@@ -83,14 +83,36 @@ Technologies:
 
 The main functions of code:
 
-(A) Movement: 
+(A) Game: 
 
-- <u>const handleKeyDown </u>: Key press event listening for controls and gunfire.
+(A.1) PoolTable component:
+
+- <strong>'const greenTable' </strong>: creates pool table rectangle, non-moving (isStatic) and non-physical (isSensor)
+- <strong>'const wallThickness....' </strong>: creates pool table walls/boundaries non-moving (isStatic), interactive with balls.
+- <strong>'const pocketPositions', 'pockets' </strong>: creates pockets
+- <strong>'const pocketPositions', 'pockets' </strong>: creates pockets
+
+(A.2) Pool component:
+
+- <strong>'const initialBalls' </strong>: holds ball data, I did this the same as creating cards in my solitaire code.
+- <strong>'useEffect...const render' </strong>: creates game world.
+- <strong>'const cueBallRadius...' 'const cueBallBody' </strong>: creates cue ball.
+- <strong>'const createBall' </strong>: makes all other balls taking in data from initialBalls
+- <strong>'const ballSpacing' </strong>: positions balls on game start.
+- <strong>'const ballSpacing' </strong>: positions balls on game start.
+
+
+
+
+
+
+
+
 - <u>const updateShipPosition: </u> Sets ship speed and rotational radius.
 - <u>setShipPosition…wrapPosition: </u> Ship’s movement wraps to other side of game boundary when passing outside, with small ‘buffer’ zone so ship fully disappears and re-appears.
 - <u>const wrapPosition, and Matter Wrap</u>: Wraps game boundary around so there is no game edge; objects pass around to opposite side.
 - 
-(B) Ship:
+(B) Movement:
 
 - <u>useHotkeys</u>:  Hook which simplifies movement control code.
 - <u>const [rotationSpeed, setRotationSpeed] = useState(0.15)];</u>:  sets ship rotation speed.
