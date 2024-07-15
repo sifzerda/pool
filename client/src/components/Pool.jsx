@@ -30,68 +30,10 @@ const PoolGame = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-    // Create the pool table
-    const tableWidth = 600;
-    const tableHeight = 300;
-    const tableX = 400;
-    const tableY = 200;
-    const tableThickness = 20;
-
-    const table = Bodies.rectangle(tableX, tableY, tableWidth, tableHeight, {
-      isStatic: true,
-      chamfer: { radius: 20 },
-      render: {
-        fillStyle: '#008000',
-        strokeStyle: '#ffffff',
-        lineWidth: 2,
-      },
-    });
-    World.add(engine.world, table);
-
-    // Create the pool table rim
-    const rimThickness = 20;
-    const rimOptions = {
-      isStatic: true,
-      render: {
-        fillStyle: '#654321', // Brown color for the rim
-      },
-    };
-
-    const leftRim = Bodies.rectangle(
-      tableX - tableWidth / 2 - rimThickness / 2,
-      tableY,
-      rimThickness,
-      tableHeight + rimThickness * 2,
-      rimOptions
-    );
-    const rightRim = Bodies.rectangle(
-      tableX + tableWidth / 2 + rimThickness / 2,
-      tableY,
-      rimThickness,
-      tableHeight + rimThickness * 2,
-      rimOptions
-    );
-    const topRim = Bodies.rectangle(
-      tableX,
-      tableY - tableHeight / 2 - rimThickness / 2,
-      tableWidth + rimThickness * 2,
-      rimThickness,
-      rimOptions
-    );
-    const bottomRim = Bodies.rectangle(
-      tableX,
-      tableY + tableHeight / 2 + rimThickness / 2,
-      tableWidth + rimThickness * 2,
-      rimThickness,
-      rimOptions
-    );
-
-    World.add(engine.world, [leftRim, rightRim, topRim, bottomRim]);
-
-    // Create the cue ball
+    // Create the cue ball at the center of the screen
     const cueBallRadius = 15;
-    const cueBallX = 100;
-    const cueBallY = 200;
+    const cueBallX = render.options.width / 2;
+    const cueBallY = render.options.height / 2;
 
     const cueBallBody = Bodies.circle(cueBallX, cueBallY, cueBallRadius, {
       restitution: 0.8,
@@ -169,6 +111,7 @@ const PoolGame = () => {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      style={{ width: '800px', height: '400px' }}
     >
     </div>
   );
