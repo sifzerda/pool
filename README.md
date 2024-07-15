@@ -4,7 +4,7 @@ THIS IS CURRENTLY UNFINISHED
 
 Current games in gamestack:
 
-- [ ] Minesweeper
+- [ ] 8ballpool
 - [ ] Solitaire
 - [ ] Asteroids
 - [x] 8 Ball Pool

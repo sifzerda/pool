@@ -20,13 +20,13 @@ const userSchema = new Schema({
     required: true,
     minlength: 5
   },
-  mineScore: [
+  poolScore: [
     {
-      minePoints: {
+      poolPoints: {
         type: Number,
         required: true,
       },
-      mineTimeTaken: {
+      poolTimeTaken: {
         type: Number,
         required: true,
       },

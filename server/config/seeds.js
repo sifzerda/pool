@@ -12,7 +12,7 @@ db.once('open', async () => {
         username: 'Xandromus',
         email: 'xandro@aol.com',
         password: '12345',
-/* -----------------minesweeper score*/ 
+/* -----------------8ballpool score*/ 
         mineScore: [
           {
             minePoints: 100,
@@ -58,7 +58,7 @@ db.once('open', async () => {
     ]);
 
     console.log('🔑 users seeded');
-    console.log('💣 user.minesweeper scores seeded');
+    console.log('💣 user.8ballpool scores seeded');
 
     process.exit();
   } catch (err) {

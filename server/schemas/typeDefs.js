@@ -5,12 +5,12 @@ const typeDefs = `
     username: String
     email: String
     password: String
-    mineScore: [MineScore]
+    poolScore: [PoolScore]
   }
 
-    type MineScore {
-    minePoints: Int
-    mineTimeTaken: Int
+    type PoolScore {
+    poolPoints: Int
+    poolTimeTaken: Int
   }
 
   type Auth {
@@ -22,7 +22,7 @@ const typeDefs = `
     user(userId: ID!): User
     users: [User]
     me: User
-    getMineScore(userId: ID!): [MineScore]
+    getPoolScore(userId: ID!): [PoolScore]
   }
 
   type Mutation {
@@ -30,7 +30,7 @@ const typeDefs = `
     updateUser(username: String, email: String, password: String): User
     login(email: String!, password: String!): Auth
     removeUser: User
-    saveMineScore(userId: ID!, minePoints: Int!, mineTimeTaken: Int!): User
+    savePoolScore(userId: ID!, poolPoints: Int!, poolTimeTaken: Int!): User
   }
 `;
 

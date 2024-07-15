@@ -16,9 +16,9 @@ export const QUERY_USERS = gql`
       _id
       username
       email
-      mineScore {
-        minePoints
-        mineTimeTaken
+      poolScore {
+        poolPoints
+        poolTimeTaken
       }
     }
   }
@@ -30,19 +30,19 @@ export const QUERY_ME = gql`
       _id
       username
       email
-            mineScore {
-        minePoints
-        mineTimeTaken
+            poolScore {
+        poolPoints
+        poolTimeTaken
       }
     }
   }
 `;
 
-export const GET_MINE_SCORE = gql`
-  query getMineScore($userId: ID!) {
-    getMineScore(userId: $userId) {
-      minePoints
-      minetimeTaken
+export const GET_POOL_SCORE = gql`
+  query getPoolScore($userId: ID!) {
+    getPoolScore(userId: $userId) {
+      poolPoints
+      pooltimeTaken
     }
   }
 `;

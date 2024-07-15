@@ -64,13 +64,17 @@ const PoolGame = () => {
         fillStyle: '#ffffff',
         strokeStyle: '#000000',
         lineWidth: 2,
+         //sprite: {
+            //texture: `/images/ball${id}.png`,
+            //xScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
+            //yScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
       },
     });
     setCueBall(cueBallBody);
     World.add(engine.world, cueBallBody);
 
 
-
+// --------------------------- balls ------------------------------------//
 
     // Create other pool balls
     const createBall = (x, y, color) => {
@@ -81,25 +85,35 @@ const PoolGame = () => {
           fillStyle: color,
           strokeStyle: '#000000',
           lineWidth: 2,
+          //sprite: {
+            //texture: `/images/ball${id}.png`,
+            //xScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
+            //yScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
+          //}
         },
       });
     };
 
     const ballSpacing = cueBallRadius * 2 + 2; // Adjust spacing as needed
-    const balls = initialBalls.map((ball, index) => {
-      const row = Math.floor(index / 5);
-      const col = index % 5;
-      const x = cueBallX + (col - 2) * ballSpacing;
-      const y = cueBallY - 100 + row * ballSpacing;
-      return createBall(x, y, ball.color);
-    });
+    let balls = [];
+    let index = 0;
+    let startX = cueBallX;
+    let startY = cueBallY - 100;
+
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col <= row; col++) {
+        if (index < initialBalls.length) {
+          const x = startX + (col - row / 2) * ballSpacing;
+          const y = startY + row * ballSpacing;
+          balls.push(createBall(x, y, initialBalls[index].color));
+          index++;
+        }
+      }
+    }
 
     World.add(engine.world, balls);
 
-
-
-
-
+// ------------------------------------------------------------------//
 
     // Collision events example (not fully implemented for all balls, just cue ball)
     Events.on(engine, 'collisionStart', (event) => {

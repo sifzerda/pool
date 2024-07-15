@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import '../App.css';
-import '../minesweeper.css';
+import '../8ballpool.css';
 
 const Profile = () => {
     const { loading, data, error } = useQuery(QUERY_ME);
@@ -31,7 +31,7 @@ const Profile = () => {
             </div>
             <p className='black-text'>Email: {user.email}</p>
             <p className="email-info">Note: Your email cannot be seen by other users</p>
-            <h2 className='profile-text'>Your Minesweeper Highscores:</h2>
+            <h2 className='profile-text'>Your 8ballpool Highscores:</h2>
             
             {limitedScores.length === 0 ? (
                 <p className="black-text">No high scores yet!</p>

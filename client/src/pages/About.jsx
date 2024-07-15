@@ -1,6 +1,6 @@
 import '../App.css';
 import TrialBike from '../components/TrialBike';
-import '../minesweeper.css';
+import '../8ballpool.css';
 
 export default function About () {
   return (

@@ -1,6 +1,6 @@
 import '../App.css';
 import Copy1 from '../components/Copy1';
-import '../minesweeper.css';
+import '../8ballpool.css';
 
 export default function About () {
   return (

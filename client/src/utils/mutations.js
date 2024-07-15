@@ -33,15 +33,15 @@ export const REMOVE_USER = gql`
   }
 `;
 
-export const SAVE_MINE_SCORE = gql`
-  mutation saveMineScore($userId: ID!, $minePoints: Int!, $mineTimeTaken: Int!) {
-    saveMineScore(userId: $userId, minePoints: $minePoints, mineTimeTaken: $mineTimeTaken) {
+export const SAVE_POOL_SCORE = gql`
+  mutation savePoolScore($userId: ID!, $poolPoints: Int!, $poolTimeTaken: Int!) {
+    savePoolScore(userId: $userId, poolPoints: $poolPoints, poolTimeTaken: $poolTimeTaken) {
       _id
       username
       email
-      mineScore {
-        minePoints
-        mineTimeTaken
+      poolScore {
+        poolPoints
+        poolTimeTaken
       }
     }
   }
