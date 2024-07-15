@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
+
 import decomp from 'poly-decomp';
+
+import PoolTable from './PoolTable';
 
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
@@ -112,8 +115,11 @@ const PoolGame = () => {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      
     >
+
+<PoolTable engine={engine} />
+
+
     </div>
   );
 };
