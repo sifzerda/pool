@@ -360,7 +360,31 @@ span.bomb {
 span.flag {
   color: var(--light-red);
   font-size: 20px;
+}
+
+span.bomb2 {
+  color: var(--creepy-green2);
+  text-shadow: 
+  0 0 5px rgba(255, 255, 255, 0.863), 
+  0 0 10px  rgb(0, 0, 255), 
+  0 0 15px rgb(0, 0, 255), 
+  0 0 20px rgba(0, 0, 255, 0.5), 
+  0 0 25px rgba(0, 0, 255, 0.5), 
+  0 0 30px rgba(0, 0, 255, 0.5),
+  0 0 90px rgb(0, 0, 255)
  
+}
+
+.footer-text2 {
+  color: var(--creepy-green2);
+  text-shadow: 
+  0 0 5px rgba(255, 255, 255, 0.863), 
+  0 0 10px  rgb(0, 0, 255), 
+  0 0 15px rgb(0, 0, 255), 
+  0 0 20px rgba(0, 0, 255, 0.5), 
+  0 0 25px rgba(0, 0, 255, 0.5), 
+  0 0 30px rgba(0, 0, 255, 0.5),
+  0 0 90px rgb(0, 0, 255)
 }
 
 .separator-line {
