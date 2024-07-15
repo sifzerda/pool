@@ -7,15 +7,9 @@ function Footer() {
       <div className="row d-flex justify-content-center">
         <div className="col-lg-8">
 
-
-        <p className="footer-text">Explodere est pars facillima.</p>
-          <p className="footer-text">
-          <span className='flag'>🚩</span> minesweeper <span className='flag'>🚩</span>
-          </p>
-
-          <p className="footer-text">sifzerda</p>
-          <p className="footer-text">2024</p>
-          <a href="https://github.com/sifzerda/minesweeper" target="_blank" rel="noopener noreferrer">
+          <p className="footer-text">sifzerda <span className='flag'> c::::::=====o 🎱</span> 2024</p> 
+          <p className="footer-text"></p>
+          <a href="https://github.com/sifzerda/pool" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faGithub} size="2x" />
           </a>
 

@@ -9,6 +9,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Permanent+Marker&family=Rubik+Mono+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poiret+One&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nixie+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Neonderthaw&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
 
 :root {
   --blue: #2684ff;
@@ -27,6 +30,7 @@
   --creepy-green: #9cffd9;
   --creepy-green2:  #cefff4;
   --midnight: rgb(8, 29, 88);
+  --flamingo: rgb(255, 5, 130);
 }
 
 * {
@@ -192,7 +196,7 @@ h2.login-title {
   text-align: center;
   margin-bottom: 20px;
   margin-top: 20px;
-  color: var(--volt);
+  color: var(--lblue);
 }
 
 div.container.my-1-9 {
@@ -262,17 +266,13 @@ a {
 
 /* svg icons on contact page*/
 a:hover {
-  color: var(--volt)!important;
+  color: var(--lblue)!important;
 }
 
 /* ------ -------------------- ----------- */
 
 div.bucket-app {
   border-top: var(--dark-blue) ridge 8px;
-}
-
-aside.sidebar {
-  border-right: var(--dark-blue) ridge 8px;
 }
 
 .nav-tabs-subjects {
@@ -294,14 +294,20 @@ aside.sidebar {
 
 .nav-link {
   background-color: black !important;
-  color:   white !important;
+  color:   var(--lblue) !important;
   border: 2px solid var(--midnight) !important;
 }
 
 .nav-link.active {
   background-color: black !important;
-  color: var(--volt) !important;
-  border: 2px solid var(--volt) !important;
+  color: white !important;
+  border: 2px solid white !important;
+  font-style: italic;
+}
+
+.nav-link:hover {
+  color: var(--lblue) !important;
+  border: 2px solid var(--lblue) !important;
   font-style: italic;
 }
 
@@ -317,25 +323,28 @@ li.nav-item {
 }
 
 h1 {
-  font-size: 40px !important;
+  font-size: 50px;
   margin: auto 0;
+  margin-bottom: -5px;
   justify-content: center;
-  display: grid;
-  font-family: "Rajdhani", cursive;
-  color:  var(--volt);
+  font-family: "Neonderthaw", Monospace, sans-serif;
+  color: var(--lblue);
   text-shadow: 5px 8px 5px rgba(0, 0, 0, 0.5);
 }
 
+h1 {
+  text-align: center;
+}
+
 span.bomb {
-  color: var(--light-red);
-border: 3px solid white;
-  padding: 10px;
-  font-size: 25px;
+  color: var(--creepy-green2);
+  font-size: 40px;
 }
 
 span.flag {
   color: var(--light-red);
   font-size: 20px;
+ 
 }
 
 .separator-line {
