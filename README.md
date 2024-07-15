@@ -57,6 +57,7 @@ Game was divided up into the smallest working components/units. It reused my ast
 
 ## (3) Visuals
 
+REPLACE WITH PICS & LINK WHEN FINISHED 
 [Visit App deployed to Heroku](https://asteroids-10-d02b9b752090.herokuapp.com/)    <<<<<<<<<<<<<<<<<<,
 
 ![asteroids-screenshot](https://github.com/sifzerda/asteroids/assets/139626561/31b31fd3-c265-4837-8a97-553cb44f1d23) <<<<<<<<<<<<<<<<<<,
