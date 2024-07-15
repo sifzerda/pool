@@ -19,6 +19,7 @@ const Stripped = () => {
   const [balls, setBalls] = useState([]);
   const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
   const [anchorFixed, setAnchorFixed] = useState(false);
+  
   const gameRef = useRef();
 
   useEffect(() => {

@@ -20,13 +20,12 @@ const PoolGame = () => {
       element: gameRef.current,
       engine,
       options: {
-        width: 800,
-        height: 400,
+        width: 1500,
+        height: 680,
         wireframes: false,
       },
     });
     Render.run(render);
-
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
@@ -106,16 +105,14 @@ const PoolGame = () => {
     }
   };
 
-    // -----------------------------------------------------------------------//
+// -----------------------------------------------------------------------------//
 
   return (
-    <div
-      className="game-container"
-      ref={gameRef}
+    <div className="game-container" ref={gameRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      style={{ width: '800px', height: '400px' }}
+      
     >
     </div>
   );
