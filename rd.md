@@ -257,6 +257,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 The author acknowledges and credits those who have contributed to this project including:
 
 - ChatGPT
+- Matter.js 'Slingshot' example (to make pool balls in a pyramid composite structure)
 
 ## (13) License
 
