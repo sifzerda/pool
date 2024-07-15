@@ -11,7 +11,7 @@ const initialBalls = [
 { id: 3, suit: 'solid', color: '#FF002E' }, // red
 { id: 4, suit: 'solid', color: '#8000FF' }, // purple
 { id: 5, suit: 'solid', color: '#FF7C00' }, // orange
-{ id: 6, suit: 'solid', color: '#F3FF00' }, // green
+{ id: 6, suit: 'solid', color: '#29F900' }, // green
 { id: 7, suit: 'solid', color: '#954600' }, // brown
 
 { id: 8, suit: 'neither', color: '#000000' }, // black
@@ -21,7 +21,7 @@ const initialBalls = [
 { id: 11, suit: 'stripe', color: '#FF002E' }, // red
 { id: 12, suit: 'stripe', color: '#8000FF' }, // purple
 { id: 13, suit: 'stripe', color: '#FF7C00' }, // orange
-{ id: 14, suit: 'stripe', color: '#F3FF00' }, // green
+{ id: 14, suit: 'stripe', color: '#29F900' }, // green
 { id: 15, suit: 'stripe', color: '#954600' }, // brown
 ];
 
