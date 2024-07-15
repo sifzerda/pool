@@ -1,98 +1,55 @@
-// spare for playing around 
+import React, { useEffect, useRef } from 'react';
+import Matter from 'matter-js';
 
-import { useState, useEffect, useRef } from 'react';
-import Matter, { Engine, Render, World, Bodies, Body, Events,  } from 'matter-js';
-import decomp from 'poly-decomp';
-import PoolTable from './PoolTable';
-
-const Stripped = () => {
-  const [engine] = useState(Engine.create());
-  const [balls, setBalls] = useState([]);
-  const [ballSizes, setBallSizes] = useState([]);
-  const [ballHits, setBallHits] = useState([]);
-  const [cueBallPosition, setCueBallPosition] = useState({ x: 0, y: 0 });
-
-  const gameRef = useRef();
-
-  window.decomp = decomp;
+const Ball = () => {
+  const sceneRef = useRef(null);
 
   useEffect(() => {
-    // Initialize Matter.js engine and rendering
-    engine.world.gravity.y = 0;
+    const { Engine, Render, World, Bodies } = Matter;
+
+    // Create an engine
+    const engine = Engine.create();
+    const world = engine.world;
+
+    // Create a renderer
     const render = Render.create({
-      element: gameRef.current,
-      engine,
+      element: sceneRef.current,
+      engine: engine,
       options: {
-        width: 1500,
-        height: 680,
-        wireframes: false,
-      },
+        width: 800,
+        height: 600,
+        wireframes: false
+      }
     });
+
+    // Create a ball
+    const ball = Bodies.circle(400, 200, 30, {
+      restitution: 0.8, // Bounciness
+      render: {
+        fillStyle: 'blue'
+      }
+    });
+
+    // Add the ball to the world
+    World.add(world, ball);
+
+    // Run the engine
+    Engine.run(engine);
+
+    // Run the renderer
     Render.run(render);
-    const runner = Matter.Runner.create();
-    Matter.Runner.run(runner, engine);
 
-    // Cue Ball
-    const halfHeight = 680 / 2;
-    const cueBall = Bodies.circle(400, halfHeight, 14, {
-      frictionAir: 0,
-      render: {
-        fillStyle: '#ffffff',
-        strokeStyle: '#ffffff',
-        lineWidth: 2,
-      },
-    });
-    World.add(engine.world, cueBall);
-
-    for (let i = 0; i < 15; i++) {
-      createBall();
-    }
-
-    const updateCueBallPosition = () => {
-      setCueBallPosition({
-        x: cueBall.position.x,
-        y: cueBall.position.y,
-      });
-    };
-
-    Events.on(engine, 'beforeUpdate', updateCueBallPosition);
-
+    // Clean up on component unmount
     return () => {
-      Render.stop(render);
-      World.clear(engine.world);
-      Engine.clear(engine);
-      Events.off(engine, 'beforeUpdate', updateCueBallPosition);
+      Matter.Render.stop(render);
+      Matter.World.clear(world);
+      Matter.Engine.clear(engine);
+      render.canvas.remove();
+      render.textures = {};
     };
-  }, [engine]);
+  }, []);
 
-  const createBall = () => {
-    const ballRadii = [14];
-    const radiusIndex = Math.floor(Math.random() * ballRadii.length);
-    const radius = ballRadii[radiusIndex];
-    const startX = 1200 + Math.random() * 100;
-    const startY = 300 + Math.random() * 100 - 50;
-    const ball = Bodies.circle(startX, startY, radius, {
-      frictionAir: 0,
-      render: {
-        fillStyle: 'transparent',
-        strokeStyle: '#ffffff',
-        lineWidth: 2,
-      },
-    });
-    Body.setVelocity(ball, { x: 0, y: 0 });
-    setBalls(prev => [...prev, ball]);
-    setBallSizes(prev => [...prev, radius]);
-    setBallHits(prev => [...prev, 0]);
-    World.add(engine.world, ball);
-  };
-
-  return (
-    <div className="game-container" ref={gameRef}>
-
-      <PoolTable engine={engine} /> {/* Add the GreenTable component here */}
-
-    </div>
-  );
+  return <div ref={sceneRef}></div>;
 };
 
-export default Stripped;
+export default Ball;

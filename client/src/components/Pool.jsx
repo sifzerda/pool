@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
 import decomp from 'poly-decomp';
 
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
   const [cueBall, setCueBall] = useState(null);
-  const [poolTable, setPoolTable] = useState(null);
-  const [balls, setBalls] = useState([]);
-  const [cueStick, setCueStick] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [initialMousePosition, setInitialMousePosition] = useState({ x: 0, y: 0 });
 
   const gameRef = useRef();
 
@@ -47,7 +46,6 @@ const PoolGame = () => {
         lineWidth: 2,
       },
     });
-    setPoolTable(table);
     World.add(engine.world, table);
 
     // Create the pool table rim
@@ -107,53 +105,6 @@ const PoolGame = () => {
     setCueBall(cueBallBody);
     World.add(engine.world, cueBallBody);
 
-    // Create the cue stick
-    const cueStickLength = 100;
-    const cueStickWidth = 5;
-    const cueStickX = cueBallX + cueBallRadius + cueStickLength / 2;
-    const cueStickY = cueBallY;
-
-    const cueStick = Bodies.rectangle(cueStickX, cueStickY, cueStickLength, cueStickWidth, {
-      render: {
-        fillStyle: '#654321', // Brown color for the cue stick
-      },
-    });
-    setCueStick(cueStick);
-    World.add(engine.world, cueStick);
-
-    // Create additional balls in a triangle formation
-    const ballRadius = 15;
-    const triangleBaseX = 400; // X position of the base of the triangle
-    const triangleBaseY = 200; // Y position of the base of the triangle
-
-    const createBall = (x, y, color) => {
-      return Bodies.circle(x, y, ballRadius, {
-        restitution: 0.8,
-        friction: 0.2,
-        render: {
-          fillStyle: color,
-          strokeStyle: '#000000',
-          lineWidth: 2,
-        },
-      });
-    };
-
-    const balls = [
-      createBall(triangleBaseX, triangleBaseY, '#ffcc00'),
-      createBall(triangleBaseX - ballRadius * Math.sqrt(3), triangleBaseY + ballRadius, '#ff0000'),
-      createBall(triangleBaseX + ballRadius * Math.sqrt(3), triangleBaseY + ballRadius, '#0000ff'),
-      createBall(triangleBaseX - ballRadius * Math.sqrt(3) * 2, triangleBaseY + ballRadius * 2, '#00ff00'),
-      createBall(triangleBaseX, triangleBaseY + ballRadius * 2, '#ff00ff'),
-      createBall(triangleBaseX + ballRadius * Math.sqrt(3) * 2, triangleBaseY + ballRadius * 2, '#ffcc00'),
-      createBall(triangleBaseX - ballRadius * Math.sqrt(3), triangleBaseY + ballRadius * 3, '#ff0000'),
-      createBall(triangleBaseX + ballRadius * Math.sqrt(3), triangleBaseY + ballRadius * 3, '#0000ff'),
-      createBall(triangleBaseX, triangleBaseY + ballRadius * 4, '#00ff00'),
-      createBall(triangleBaseX - ballRadius * Math.sqrt(3) * 2, triangleBaseY + ballRadius * 4, '#ff00ff'),
-    ];
-
-    setBalls(balls);
-    World.add(engine.world, balls);
-
     // Collision events example (not fully implemented for all balls, just cue ball)
     Events.on(engine, 'collisionStart', (event) => {
       const pairs = event.pairs;
@@ -166,41 +117,59 @@ const PoolGame = () => {
       });
     });
 
-    // Mouse movement event listener to rotate cue stick
-    const handleMouseMove = (event) => {
-      if (cueStick) {
-        const mouseX = event.clientX - gameRef.current.getBoundingClientRect().left;
-        const mouseY = event.clientY - gameRef.current.getBoundingClientRect().top;
-
-        const angle = Math.atan2(mouseY - cueStick.position.y, mouseX - cueStick.position.x);
-        Body.setAngle(cueStick, angle);
-      }
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-
     return () => {
       Render.stop(render);
       World.clear(engine.world);
       Engine.clear(engine);
       Events.off(engine, 'collisionStart');
-      document.removeEventListener('mousemove', handleMouseMove);
     };
   }, [engine]);
 
-  const shootCueBall = () => {
-    if (cueBall) {
-      const forceMagnitude = 0.03;
-      const forceX = Math.cos(cueStick.angle) * forceMagnitude;
-      const forceY = Math.sin(cueStick.angle) * forceMagnitude;
-      Body.applyForce(cueBall, cueBall.position, { x: forceX, y: forceY });
+  const handleMouseDown = (event) => {
+    const rect = gameRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    setInitialMousePosition({ x, y });
+
+    if (Matter.Bounds.contains(cueBall.bounds, { x, y })) {
+      setIsDragging(true);
+      setMousePosition({ x, y });
     }
   };
 
-  useHotkeys('space', shootCueBall, [cueBall, cueStick]);
+  const handleMouseMove = (event) => {
+    if (isDragging) {
+      const rect = gameRef.current.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      setMousePosition({ x, y });
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (isDragging) {
+      const dx = initialMousePosition.x - mousePosition.x;
+      const dy = initialMousePosition.y - mousePosition.y;
+      const power = Math.sqrt(dx * dx + dy * dy) * 0.05; // Adjust power scaling factor as needed
+      const angle = Math.atan2(dy, dx);
+      const velocity = {
+        x: power * Math.cos(angle),
+        y: power * Math.sin(angle),
+      };
+
+      Body.setVelocity(cueBall, velocity);
+      setIsDragging(false);
+    }
+  };
 
   return (
-    <div className="game-container" ref={gameRef}>
+    <div
+      className="game-container"
+      ref={gameRef}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
     </div>
   );
 };
