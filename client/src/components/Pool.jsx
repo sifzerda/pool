@@ -52,9 +52,9 @@ const PoolGame = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-    // Create the cue ball at the center of the screen
+    // Create the cue ball at the center left of the screen
     const cueBallRadius = 15;
-    const cueBallX = render.options.width / 2;
+    const cueBallX = render.options.width / 4;
     const cueBallY = render.options.height / 2;
 
     const cueBallBody = Bodies.circle(cueBallX, cueBallY, cueBallRadius, {
@@ -95,23 +95,31 @@ const PoolGame = () => {
     };
 
     const ballSpacing = cueBallRadius * 2 + 2; // Adjust spacing as needed
-    let balls = [];
-    let index = 0;
-    let startX = cueBallX;
-    let startY = cueBallY - 100;
-
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col <= row; col++) {
-        if (index < initialBalls.length) {
-          const x = startX + (col - row / 2) * ballSpacing;
-          const y = startY + row * ballSpacing;
-          balls.push(createBall(x, y, initialBalls[index].color));
-          index++;
-        }
+    const pyramidBaseX = (render.options.width / 4) * 2.6; // Center right position
+    const pyramidBaseY = render.options.height / 2;
+    
+    const balls = [];
+    
+    // Position ball 1 first
+    balls.push(createBall(pyramidBaseX, pyramidBaseY, initialBalls[0].color));
+    
+    // Position the rest of the balls
+    let currentRow = 1;
+    let ballIndex = 1;
+    
+    while (ballIndex < initialBalls.length) {
+      for (let i = 0; i <= currentRow; i++) {
+        const x = pyramidBaseX + (currentRow * ballSpacing * Math.cos(Math.PI / 6));
+        const y = pyramidBaseY - (currentRow * ballSpacing * Math.sin(Math.PI / 6)) + (i * ballSpacing);
+        balls.push(createBall(x, y, initialBalls[ballIndex].color));
+        ballIndex++;
+        if (ballIndex >= initialBalls.length) break;
       }
+      currentRow++;
     }
-
+    
     World.add(engine.world, balls);
+
 
 // ------------------------------------------------------------------//
 
