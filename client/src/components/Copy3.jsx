@@ -69,7 +69,7 @@ const PoolGame = () => {
     };
   }, [engine]);
 
-  // taking a shot // -----------------------------------------------------//
+  // taking a shot // -------------------------------------------------------------------//
 
   const handleMouseDown = (event) => {
     const rect = gameRef.current.getBoundingClientRect();
@@ -108,7 +108,7 @@ const PoolGame = () => {
     }
   };
 
-// -----------------------------------------------------------------------------//
+// --------------------------------------------------------------------------------------//
 
   return (
     <div className="game-container" ref={gameRef}
@@ -118,7 +118,6 @@ const PoolGame = () => {
     >
 
 <PoolTable engine={engine} />
-
 
     </div>
   );
