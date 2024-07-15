@@ -67,6 +67,8 @@ const PoolGame = () => {
     };
   }, [engine]);
 
+  // taking a shot // -----------------------------------------------------//
+
   const handleMouseDown = (event) => {
     const rect = gameRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -103,6 +105,8 @@ const PoolGame = () => {
       setIsDragging(false);
     }
   };
+
+    // -----------------------------------------------------------------------//
 
   return (
     <div
