@@ -9,7 +9,7 @@ export default function About () {
 
       <div className="separator-line"></div>
 
-<p>description</p>
+<p>aim line thing</p>
       
       <div className="separator-line"></div>
 
