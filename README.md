@@ -93,7 +93,6 @@ The main functions of code:
 - <strong>'const greenTable' </strong>: creates pool table rectangle, non-moving (isStatic) and non-physical (isSensor)
 - <strong>'const wallThickness....' </strong>: creates pool table walls/boundaries non-moving (isStatic), interactive with balls.
 - <strong>'const pocketPositions', 'pockets' </strong>: creates pockets
-- <strong>'const pocketPositions', 'pockets' </strong>: creates pockets
 
 (A.2) Pool component:
 
@@ -101,7 +100,6 @@ The main functions of code:
 - <strong>'useEffect...const render' </strong>: creates game world.
 - <strong>'const cueBallRadius...' 'const cueBallBody' </strong>: creates cue ball.
 - <strong>'const createBall' </strong>: makes all other balls taking in data from initialBalls
-- <strong>'const ballSpacing' </strong>: positions balls on game start.
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
  
 
@@ -125,7 +123,7 @@ and
         },
       });
 ```
-Pocket sensors create smaller objects inside each pocket which must be touched for ball to get pocketed. 
+Pocket sensors create smaller objects inside each pocket which must be touched for ball to get removed. 
 Without it, balls need only touch any part of pocket to fall in. Pocket sensors allow pocket detection radius to be configurable, so balls can sit right at the edge of the pocket, touching it, but not trip detection.
 
 
@@ -173,7 +171,7 @@ Optimization:
 - use react-virtualized to only render visible stuff
 - once game basically running, convert it into Redux or Zustand
 - use a bundler like Webpack or Parcel to optimize build output: Enable code splitting, tree-shaking, and minification to reduce bundle size and improve load times.
-- Consider memoizing components like Projectile and Particle using React.memo to prevent unnecessary re-renders, especially if their props rarely change.
+- Consider memoizing components using React.memo to prevent unnecessary re-renders, especially if their props rarely change.
 
 ## (9) To do: 
 
@@ -206,7 +204,6 @@ Optimization:
 -  POOL STICK LOGIC (consider):
    -  making a slightly larger red circle surround the cue ball wherever it goes. probably will require tracking cue ball position with useState. 
    -  Align or attack one end of a rod to that circle allowing 360 rotation around the cue ball. Rod and circle can remain visible whole time for debugging (later you can make the red circle transparent)
-   -  maybe use words like 'axis' or descriptive technical term CG can understand with precision.
 -  STYLE:
 -  Green pool table (or radio switches to change table color; green default, red, blue, yellow, white, black - or fluro colors)
 -  change stick color; beige (default), brown, black, red, blue, green
