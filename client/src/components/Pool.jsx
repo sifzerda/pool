@@ -189,7 +189,7 @@ const PoolGame = () => {
           setPocketedBalls((prev) => [...prev, ball.id]);
 
           // Increment score
-          setScore(prevScore => prevScore + 1);
+          setScore(prevScore => prevScore + 100);
 
           // Remove the ball from the world
           World.remove(engine.world, ball);
@@ -252,7 +252,7 @@ const PoolGame = () => {
     }
   };
 
-  // Convert timer to minutes and seconds
+  // fx to Convert timer to minutes and seconds
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
