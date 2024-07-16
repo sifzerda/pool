@@ -65,8 +65,9 @@ const PoolGame = () => {
 
     const cueBallBody = Bodies.circle(cueBallX, cueBallY, cueBallRadius, {
       label: 'ball',
-      restitution: 0.8,
-      friction: 0.2,
+      restitution: 0.9,
+      friction: 0.005,
+      density: 0.01,
       render: {
         fillStyle: '#ffffff',
         strokeStyle: '#000000',
@@ -80,8 +81,9 @@ const PoolGame = () => {
     const createBall = (x, y, color) => {
       return Bodies.circle(x, y, cueBallRadius, {
         label: 'ball',
-        restitution: 0.8,
-        friction: 0.2,
+        restitution: 0.9,
+        friction: 0.005,
+        density: 0.01,
         render: {
           fillStyle: color,
           strokeStyle: '#000000',
