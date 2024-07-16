@@ -239,25 +239,40 @@ const PoolGame = () => {
   };
 
   return (
-<React.Fragment>
-    <div className="pocketed-balls">
-        <h3>Pocketed Balls: {pocketedBalls.join(', ')}</h3>
+    <React.Fragment>
+      <div className="pocketed-balls">
+        <h3>Pocketed Balls:</h3>
+        <div className="pocketed-balls-container">
+          {initialBalls.map(ball => {
+            const isPocketed = pocketedBalls.includes(ball.id);
+            return (
+              <div
+                key={ball.id}
+                className="pocketed-ball"
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  backgroundColor: isPocketed ? ball.color : '#000',
+                  margin: '5px',
+                  display: 'inline-block',
+                  border: '2px solid #000',
+                }}
+              />
+            );
+          })}
+        </div>
       </div>
 
-
-    <div className="game-container" ref={gameRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-
-
-
-
- <PoolTable engine={engine} />
-
-    </div>
-
+      <div
+        className="game-container"
+        ref={gameRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+      >
+        <PoolTable engine={engine} />
+      </div>
     </React.Fragment>
   );
 };
