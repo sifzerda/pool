@@ -9,13 +9,13 @@ function Footer() {
 
           <p className="footer-text">sifzerda <span className='bomb2'> c::::::=====o 🎱</span> 2024</p> 
           <p className="footer-text"></p>
-          <a href="https://github.com/sifzerda/pool" target="_blank" rel="noopener noreferrer">
+          <a className='glow-link' href="https://github.com/sifzerda/pool" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faGithub} size="2x" />
           </a>
 
           <br></br>
 
-          <a href="https://react-td-portfolio.netlify.app/" target="_blank" rel="noopener noreferrer">My Project Portfolio</a>
+          <a className='glow-link' href="https://react-td-portfolio.netlify.app/" target="_blank" rel="noopener noreferrer">My Project Portfolio</a>
           
         </div>
       </div>

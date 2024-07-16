@@ -64,10 +64,6 @@ const PoolGame = () => {
         fillStyle: '#ffffff',
         strokeStyle: '#000000',
         lineWidth: 2,
-         //sprite: {
-            //texture: `/images/ball${id}.png`,
-            //xScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
-            //yScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
       },
     });
     setCueBall(cueBallBody);
@@ -85,11 +81,6 @@ const PoolGame = () => {
           fillStyle: color,
           strokeStyle: '#000000',
           lineWidth: 2,
-          //sprite: {
-            //texture: `/images/ball${id}.png`,
-            //xScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
-            //yScale: 2 * cueBallRadius / 32, // Adjust scaling based on image size
-          //}
         },
       });
     };
