@@ -116,22 +116,33 @@ const PoolGame = () => {
     
     World.add(engine.world, balls);
 
-    // Create pockets
+    // Create pockets with smaller sensors
     const pocketRadius = 20;
-    const pockets = pocketPositions.map(pos => 
-      Bodies.circle(pos.x, pos.y, pocketRadius, { 
+    const sensorRadius = 10; // Smaller radius for collision detection
+
+    pocketPositions.forEach(pos => {
+      const pocket = Bodies.circle(pos.x, pos.y, pocketRadius, {
         label: 'pocket',
         isSensor: true,
-        isStatic: true, 
-        render: { 
-          fillStyle: '#000', 
+        isStatic: true,
+        render: {
+          fillStyle: '#000',
           strokeStyle: '#43505a',
           lineWidth: 20,
-        } 
-      })
-    );
-
-    World.add(engine.world, pockets);
+        },
+      });
+      
+      const pocketSensor = Bodies.circle(pos.x, pos.y, sensorRadius, {
+        label: 'pocketSensor',
+        isSensor: true,
+        isStatic: true,
+        render: {
+          visible: false,
+        },
+      });
+      
+      World.add(engine.world, [pocket, pocketSensor]);
+    });
 
     // Collision events
     Events.on(engine, 'collisionStart', (event) => {
@@ -139,9 +150,9 @@ const PoolGame = () => {
       pairs.forEach((collision) => {
         const { bodyA, bodyB } = collision;
         const ball = (bodyA.label === 'ball' && bodyA) || (bodyB.label === 'ball' && bodyB);
-        const pocket = (bodyA.label === 'pocket' && bodyA) || (bodyB.label === 'pocket' && bodyB);
+        const pocketSensor = (bodyA.label === 'pocketSensor' && bodyA) || (bodyB.label === 'pocketSensor' && bodyB);
         
-        if (ball && pocket) {
+        if (ball && pocketSensor) {
           // Remove the ball from the world
           World.remove(engine.world, ball);
           console.log('Ball removed!');
