@@ -166,7 +166,6 @@ Acceleration: raise (closer to 1.0) for speed
 
 - Balls go through walls if hit hard enough
 
-
 Optimization:
 - use react-virtualized to only render visible stuff
 - once game basically running, convert it into Redux or Zustand
@@ -182,7 +181,7 @@ Optimization:
 - [x] set world gravity = 0 and give world borders
 - [x] make table;
   - [x] Table has to be 4 enclosing rods or non physically interacting, solid table interupts object physics
-- [x] make draggable cue ball
+- [ ] make draggable cue ball
   - [ ] limit draggability to when cue ball or no balls in motion, i.e. each turn
     - [ ] Limit draggability to turn after cue ball pocketed ??
       - [ ] Ideally, cue ball draggable only after opposing player pockets it

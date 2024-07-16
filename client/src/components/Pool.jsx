@@ -34,11 +34,13 @@ const pocketPositions = [
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
   const [cueBall, setCueBall] = useState(null);
+  const [cueStick, setCueStick] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [initialMousePosition, setInitialMousePosition] = useState({ x: 0, y: 0 });
 
   const gameRef = useRef();
+  const stickOffset = -230; // Define the offset from the cue ball center
 
   window.decomp = decomp; // poly-decomp is available globally
 
@@ -77,6 +79,21 @@ const PoolGame = () => {
     setCueBall(cueBallBody);
     World.add(engine.world, cueBallBody);
 
+    // Create the cue stick
+    const stickLength = 400;
+    const stickThickness = 5;
+    const cueStickBody = Bodies.rectangle(cueBallX + stickOffset, cueBallY, stickLength, stickThickness, {
+      isStatic: true,
+      isSensor: true,
+      render: {
+        fillStyle: '#d4a373',
+        strokeStyle: '#8b4513',
+        lineWidth: 2,
+      },
+    });
+    setCueStick(cueStickBody);
+    World.add(engine.world, cueStickBody);
+
     // Create other pool balls
     const createBall = (x, y, color) => {
       return Bodies.circle(x, y, cueBallRadius, {
@@ -95,16 +112,16 @@ const PoolGame = () => {
     const ballSpacing = cueBallRadius * 2 + 2; // Adjust spacing as needed
     const pyramidBaseX = (render.options.width / 4) * 2.6; // Center right position
     const pyramidBaseY = render.options.height / 2;
-    
+
     const balls = [];
-    
+
     // Position ball 1 first
     balls.push(createBall(pyramidBaseX, pyramidBaseY, initialBalls[0].color));
-    
+
     // Position the rest of the balls
     let currentRow = 1;
     let ballIndex = 1;
-    
+
     while (ballIndex < initialBalls.length) {
       for (let i = 0; i <= currentRow; i++) {
         const x = pyramidBaseX + (currentRow * ballSpacing * Math.cos(Math.PI / 6));
@@ -115,7 +132,7 @@ const PoolGame = () => {
       }
       currentRow++;
     }
-    
+
     World.add(engine.world, balls);
 
     // Create pockets with smaller sensors
@@ -133,7 +150,7 @@ const PoolGame = () => {
           lineWidth: 20,
         },
       });
-      
+
       const pocketSensor = Bodies.circle(pos.x, pos.y, sensorRadius, {
         label: 'pocketSensor',
         isSensor: true,
@@ -142,7 +159,7 @@ const PoolGame = () => {
           visible: false,
         },
       });
-      
+
       World.add(engine.world, [pocket, pocketSensor]);
     });
 
@@ -153,7 +170,7 @@ const PoolGame = () => {
         const { bodyA, bodyB } = collision;
         const ball = (bodyA.label === 'ball' && bodyA) || (bodyB.label === 'ball' && bodyB);
         const pocketSensor = (bodyA.label === 'pocketSensor' && bodyA) || (bodyB.label === 'pocketSensor' && bodyB);
-        
+
         if (ball && pocketSensor) {
           // Remove the ball from the world
           World.remove(engine.world, ball);
@@ -189,6 +206,14 @@ const PoolGame = () => {
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       setMousePosition({ x, y });
+
+      // Calculate the angle for the stick
+      const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
+      Body.setPosition(cueStick, {
+        x: cueBall.position.x + (stickOffset * Math.cos(angle)),
+        y: cueBall.position.y + (stickOffset * Math.sin(angle)),
+      });
+      Body.setAngle(cueStick, angle);
     }
   };
 
