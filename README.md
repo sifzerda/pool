@@ -102,6 +102,7 @@ The main functions of code:
 - <strong>'const createBall' </strong>: makes all other balls taking in data from initialBalls
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
+- <strong>'const pocketSensor' </strong>: creates smaller smaller object inside each pocket which must be touched for ball to get pocketed. This can be removed from code, but allows the pocket detection to be configurable (as opposed to just being the exact size of the pocket). Without, if ball touches any part of the pocket, it trips detection. Otherwise allows balls to sit right at the edge of the pocket, without falling in.
 
 (B) Movement:
 
