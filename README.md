@@ -33,6 +33,12 @@ A personal project to create a react MERN stack app which has a number of simple
 This was built with React, Matter.js, Node, Javascript, and CSS. 
 Game was divided up into the smallest working components/units. It reused my asteroids code as template, changing the asteroids to pool balls.  
 
+The hardest part was getting the shot-taking mechanic to work and took a lot of playing around. Everything else was simpler.
+
+Things learned:
+- More experience with Matter.js; ball physics
+- Implementing 3d textures into 2D matter.js objects (to do)
+
 ## (2) Badges
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
@@ -187,19 +193,24 @@ Optimization:
       - [ ] Ideally, cue ball draggable only after opposing player pockets it
 - [x] make pool rack 
   - [ ] Rack needs to be non physical, or physical until first move (to keep balls in place before being hit)
-- Make pool stick [ ]
-- later: it disappears when ever balls are in motion, or after turn taken
+- Make pool stick [x]
+  - [ ] Refine pool stick to rotate or slide back and then disappear on releasing mouse button
+  - [ ] Pool stick only appears when its your turn (in multiplayer), it disappears when ever balls are in motion, or after turn taken
 - make pockets accept balls, or balls disappear when they 'collide' with center of pocket
 - Pocket may be IsSensor or otherwise does not physically interact with balls (or anything)
 -  [ ] MUCH LATER - Drag and drop cue ball on potting it
 -  [ ] drag and drop cue ball on first move 
 - [x] Create triangle rack: through Matter.js 'chamfer' option to round corners.
-- 
+- [ ] Ball potting order: if you pocket a stripes ball first, you are stripes, or vice versa (multiplyer logic)
 - Create game rule logic:
 - Split balls into solids and stripes (tracked by UseState)
 - Give balls colors (non tracked by UseState)
   - This may be tracked by useState later to display as image of balls needing to be potted (sort of like life display at top of screen)
-- 
+- Give balls 3d textures
+- maybe upgrade table appearance
+- aim line
+  - aim line short ricochet on wall or balls (i.e. aim line has collision logic with non-isSensors)
+  - 
 -  POOL STICK LOGIC (consider):
    -  making a slightly larger red circle surround the cue ball wherever it goes. probably will require tracking cue ball position with useState. 
    -  Align or attack one end of a rod to that circle allowing 360 rotation around the cue ball. Rod and circle can remain visible whole time for debugging (later you can make the red circle transparent)
