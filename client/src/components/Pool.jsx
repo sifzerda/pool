@@ -1,39 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
-
 import decomp from 'poly-decomp';
-
 import PoolTable from './PoolTable';
 
 const initialBalls = [
-{ id: 1, suit: 'solid', color: '#F3FF00' }, // yellow 
-{ id: 2, suit: 'solid', color: '#0074FF' }, // blue
-{ id: 3, suit: 'solid', color: '#FF002E' }, // red
-{ id: 4, suit: 'solid', color: '#8000FF' }, // purple
-{ id: 5, suit: 'solid', color: '#FF7C00' }, // orange
-{ id: 6, suit: 'solid', color: '#29F900' }, // green
-{ id: 7, suit: 'solid', color: '#954600' }, // brown
-
-{ id: 8, suit: 'neither', color: '#000000' }, // black
-
-{ id: 9, suit: 'stripe', color: '#F3FF00' }, // yellow 
-{ id: 10, suit: 'stripe', color: '#0074FF' }, // blue
-{ id: 11, suit: 'stripe', color: '#FF002E' }, // red
-{ id: 12, suit: 'stripe', color: '#8000FF' }, // purple
-{ id: 13, suit: 'stripe', color: '#FF7C00' }, // orange
-{ id: 14, suit: 'stripe', color: '#29F900' }, // green
-{ id: 15, suit: 'stripe', color: '#954600' }, // brown
+  { id: 1, suit: 'solid', color: '#F3FF00' }, // yellow 
+  { id: 2, suit: 'solid', color: '#0074FF' }, // blue
+  { id: 3, suit: 'solid', color: '#FF002E' }, // red
+  { id: 4, suit: 'solid', color: '#8000FF' }, // purple
+  { id: 5, suit: 'solid', color: '#FF7C00' }, // orange
+  { id: 6, suit: 'solid', color: '#29F900' }, // green
+  { id: 7, suit: 'solid', color: '#954600' }, // brown
+  { id: 8, suit: 'neither', color: '#000000' }, // black
+  { id: 9, suit: 'stripe', color: '#F3FF00' }, // yellow 
+  { id: 10, suit: 'stripe', color: '#0074FF' }, // blue
+  { id: 11, suit: 'stripe', color: '#FF002E' }, // red
+  { id: 12, suit: 'stripe', color: '#8000FF' }, // purple
+  { id: 13, suit: 'stripe', color: '#FF7C00' }, // orange
+  { id: 14, suit: 'stripe', color: '#29F900' }, // green
+  { id: 15, suit: 'stripe', color: '#954600' }, // brown
 ];
 
-        // Pocket positions
-        const pocketPositions = [
-          { x: 110, y: 62 },
-          { x: 750, y: 50 },
-          { x: 1380, y: 60 },
-          { x: 110, y: 620 },
-          { x: 750, y: 630 },
-          { x: 1380, y: 620 },
-        ];
+// Pocket positions
+const pocketPositions = [
+  { x: 110, y: 62 },
+  { x: 750, y: 50 },
+  { x: 1380, y: 60 },
+  { x: 110, y: 620 },
+  { x: 750, y: 630 },
+  { x: 1380, y: 620 },
+];
 
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
@@ -79,9 +75,6 @@ const PoolGame = () => {
     setCueBall(cueBallBody);
     World.add(engine.world, cueBallBody);
 
-
-// --------------------------- balls ------------------------------------//
-
     // Create other pool balls
     const createBall = (x, y, color) => {
       return Bodies.circle(x, y, cueBallRadius, {
@@ -121,34 +114,34 @@ const PoolGame = () => {
     
     World.add(engine.world, balls);
 
+    // Create pockets
+    const pocketRadius = 20;
+    const pockets = pocketPositions.map(pos => 
+      Bodies.circle(pos.x, pos.y, pocketRadius, { 
+        isSensor: true,
+        isStatic: true, 
+        render: { 
+          fillStyle: '#000', 
+          strokeStyle: '#43505a',
+          lineWidth: 20,
+        } 
+      })
+    );
 
-// ---------------------------- pockets --------------------------------------//
+    World.add(engine.world, pockets);
 
-const pocketRadius = 20;
-const pockets = pocketPositions.map(pos => 
-  Bodies.circle(pos.x, pos.y, pocketRadius, { 
-    isSensor: true,
-    isStatic: true, 
-    render: { 
-      fillStyle: '#000', 
-      strokeStyle: '#43505a',
-      lineWidth: 20,
-    } 
-  })
-);
-
-World.add(engine.world, pockets);
-
-// -----------------------------------------------------------------------------//
-
-    // Collision events example (not fully implemented for all balls, just cue ball)
+    // Collision events
     Events.on(engine, 'collisionStart', (event) => {
       const pairs = event.pairs;
       pairs.forEach((collision) => {
         const { bodyA, bodyB } = collision;
-        if (bodyA === cueBallBody || bodyB === cueBallBody) {
-          // Example collision handling logic
-          console.log('Cue ball collided with another ball!');
+        const ball = (bodyA.label === 'ball' && bodyA) || (bodyB.label === 'ball' && bodyB);
+        const pocket = (bodyA.label === 'pocket' && bodyA) || (bodyB.label === 'pocket' && bodyB);
+        
+        if (ball && pocket) {
+          // Remove the ball from the world
+          World.remove(engine.world, ball);
+          console.log('Ball removed!');
         }
       });
     });
@@ -161,8 +154,7 @@ World.add(engine.world, pockets);
     };
   }, [engine]);
 
-  // taking a shot // -----------------------------------------------------------------//
-
+  // Handling shots
   const handleMouseDown = (event) => {
     const rect = gameRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -200,17 +192,13 @@ World.add(engine.world, pockets);
     }
   };
 
-// -------------------------------------------------------------------------------------//
-
   return (
     <div className="game-container" ref={gameRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-
-<PoolTable engine={engine} />
-
+      <PoolTable engine={engine} />
     </div>
   );
 };
