@@ -31,6 +31,7 @@
   --creepy-green2:  #cefff4;
   --midnight: rgb(8, 29, 88);
   --flamingo: rgb(255, 5, 130);
+  --ultrav: rgb(0, 0, 255),  
 }
 
 * {
@@ -143,9 +144,9 @@ a.back-link {
 }
 
 .submit-button-z:hover {
-  background-color: #ffffff;
-  border: 2px solid var(--blue);
-  color: var(--blue);
+  background-color: white;
+  border: 2px solid  var(--ultrav);
+  color: var(--ultrav);
 }
 
 .submit-button-z {
@@ -189,7 +190,7 @@ a.back-link {
 }
 
 .error-text {
-  color: #dc3545;
+  color: rgb(252, 74, 89);
 }
 
 h2.login-title {
