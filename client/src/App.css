@@ -301,11 +301,11 @@ div.bucket-app {
 .nav-link.active {
   background-color: black !important;
   color:  var(--creepy-green2) !important;
-  border: 2px solid white !important;
+  border: 2px solid white !important; 
   box-shadow: 
-  0 0 5px rgba(255, 255, 255, 0.863), 
-  0 0 10px  rgba(0, 0, 255, 0.5), 
-  0 0 15px rgb(0, 0, 255);
+  0 0 4px  rgb(0, 0, 255),  
+  0 0 8px rgba(0, 0, 255, 0.5),
+  0 0 12px rgb(0, 0, 255);
   font-style: italic;
   text-shadow: 
   0 0 5px rgba(255, 255, 255, 0.863), 
@@ -338,6 +338,14 @@ h1 {
   font-size: 50px;
   margin: auto 0;
   margin-bottom: -5px;
+  border: var(--creepy-green2) double 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 5%;
+  box-shadow: 
+  0 0 4px  rgb(0, 0, 255),  
+  0 0 8px rgba(0, 0, 255, 0.5),
+  0 0 12px rgb(0, 0, 255);
   justify-content: center;
   text-align: center;
   font-family: "Neonderthaw", Monospace, sans-serif;
