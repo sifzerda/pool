@@ -64,30 +64,30 @@ const PoolTable = ({ engine }) => {
           rightWall,
         ]);
     
-        // Pocket positions
-        const pocketPositions = [
-          { x: 110, y: 62 },
-          { x: 750, y: 50 },
-          { x: 1380, y: 60 },
-          { x: 110, y: 620 },
-          { x: 750, y: 630 },
-          { x: 1380, y: 620 },
-        ];
+//        // Pocket positions
+//        const pocketPositions = [
+//          { x: 110, y: 62 },
+//          { x: 750, y: 50 },
+//          { x: 1380, y: 60 },
+//          { x: 110, y: 620 },
+//          { x: 750, y: 630 },
+//          { x: 1380, y: 620 },
+//        ];
     
-        const pocketRadius = 20;
-        const pockets = pocketPositions.map(pos => 
-          Bodies.circle(pos.x, pos.y, pocketRadius, { 
-            isSensor: true,
-            isStatic: true, 
-            render: { 
-              fillStyle: '#000', 
-              strokeStyle: '#43505a',
-              lineWidth: 20,
-            } 
-          })
-        );
+//        const pocketRadius = 20;
+//        const pockets = pocketPositions.map(pos => 
+//          Bodies.circle(pos.x, pos.y, pocketRadius, { 
+//            isSensor: true,
+//            isStatic: true, 
+//            render: { 
+//            fillStyle: '#000', 
+//              strokeStyle: '#43505a',
+//              lineWidth: 20,
+//            } 
+//          })
+//        );
     
-        World.add(engine.world, pockets);
+///        World.add(engine.world, pockets);
     
         return () => {
           World.remove(engine.world, [
@@ -96,7 +96,7 @@ const PoolTable = ({ engine }) => {
             bottomWallLeft, bottomWallRight,
             leftWall,
             rightWall,
-            ...pockets,
+//            ...pockets,
           ]);
         };
       }, [engine]);

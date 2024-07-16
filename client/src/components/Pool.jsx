@@ -25,6 +25,16 @@ const initialBalls = [
 { id: 15, suit: 'stripe', color: '#954600' }, // brown
 ];
 
+        // Pocket positions
+        const pocketPositions = [
+          { x: 110, y: 62 },
+          { x: 750, y: 50 },
+          { x: 1380, y: 60 },
+          { x: 110, y: 620 },
+          { x: 750, y: 630 },
+          { x: 1380, y: 620 },
+        ];
+
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
   const [cueBall, setCueBall] = useState(null);
@@ -112,7 +122,24 @@ const PoolGame = () => {
     World.add(engine.world, balls);
 
 
-// ------------------------------------------------------------------//
+// ---------------------------- pockets --------------------------------------//
+
+const pocketRadius = 20;
+const pockets = pocketPositions.map(pos => 
+  Bodies.circle(pos.x, pos.y, pocketRadius, { 
+    isSensor: true,
+    isStatic: true, 
+    render: { 
+      fillStyle: '#000', 
+      strokeStyle: '#43505a',
+      lineWidth: 20,
+    } 
+  })
+);
+
+World.add(engine.world, pockets);
+
+// -----------------------------------------------------------------------------//
 
     // Collision events example (not fully implemented for all balls, just cue ball)
     Events.on(engine, 'collisionStart', (event) => {
