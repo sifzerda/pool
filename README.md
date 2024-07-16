@@ -164,8 +164,8 @@ Acceleration: raise (closer to 1.0) for speed
 
 ## (8) Bugs and Further Development: 
 
-- occasionally asteroids are spawned which seem to lack collision detection so you can't hit or crash into them.
-- spam shooting gunfire everywhere trips up the collision detection and won't hit asteroids.
+- Balls go through walls if hit hard enough
+
 
 Optimization:
 - use react-virtualized to only render visible stuff
