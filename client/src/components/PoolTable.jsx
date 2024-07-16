@@ -29,10 +29,11 @@ const PoolTable = ({ engine }) => {
         const wallThickness = 14;
         const halfWidth = 1500 / 2;
         const halfHeight = 680 / 2;
-        const gapSize = 40;
     
         const wallConfig = {
           isStatic: true,
+          restitution: 1, // Ensures the ball bounces off the walls
+          friction: 0, // Ensures minimal friction
           render: {
             fillStyle: 'brown',
             strokeStyle: '#5e0808',
@@ -47,10 +48,10 @@ const PoolTable = ({ engine }) => {
         const bottomWallLeft = Bodies.rectangle(halfWidth - 320, 680 - 50, bottomWallWidth, wallThickness, wallConfig);
         const bottomWallRight = Bodies.rectangle(halfWidth + 320, 680 - 50, bottomWallWidth, wallThickness, wallConfig);
     
-        bottomWallLeft.position.y += gapSize / 2;
-        bottomWallRight.position.y += gapSize / 2;
-        topWallLeft.position.y -= gapSize / 2;
-        topWallRight.position.y -= gapSize / 2;
+        bottomWallLeft.position.y  / 2;
+        bottomWallRight.position.y  / 2;
+        topWallLeft.position.y  / 2;
+        topWallRight.position.y  / 2;
     
         const leftWallHeight = 680 - 180;
         const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, wallConfig);
