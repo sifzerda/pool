@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
 import decomp from 'poly-decomp';
 import PoolTable from './PoolTable';
@@ -38,6 +38,7 @@ const PoolGame = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [initialMousePosition, setInitialMousePosition] = useState({ x: 0, y: 0 });
+  const [pocketedBalls, setPocketedBalls] = useState([]);
 
   const gameRef = useRef();
   const stickOffset = -230; // Define the offset from the cue ball center
@@ -172,9 +173,12 @@ const PoolGame = () => {
         const pocketSensor = (bodyA.label === 'pocketSensor' && bodyA) || (bodyB.label === 'pocketSensor' && bodyB);
 
         if (ball && pocketSensor) {
+          // Add the ball ID to pocketedBalls state
+          setPocketedBalls((prev) => [...prev, ball.id]);
+
           // Remove the ball from the world
           World.remove(engine.world, ball);
-          console.log('Ball removed!');
+          console.log(`Ball ${ball.id} pocketed!`);
         }
       });
     });
@@ -234,13 +238,26 @@ const PoolGame = () => {
   };
 
   return (
+<React.Fragment>
+    <div className="pocketed-balls">
+        <h3>Pocketed Balls: {pocketedBalls.join(', ')}</h3>
+      </div>
+
+
     <div className="game-container" ref={gameRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      <PoolTable engine={engine} />
+
+
+
+
+ <PoolTable engine={engine} />
+
     </div>
+
+    </React.Fragment>
   );
 };
 
