@@ -13,10 +13,10 @@ db.once('open', async () => {
         email: 'xandro@aol.com',
         password: '12345',
 /* -----------------8ballpool score*/ 
-        mineScore: [
+        poolScore: [
           {
-            minePoints: 100,
-            mineTimeTaken: 10
+            poolPoints: 100,
+            poolTimeTaken: 10
           }
         ]
       },
@@ -25,10 +25,10 @@ db.once('open', async () => {
         username: 'Sal',
         email: 'sal@hotmail.com',
         password: '12345',
-        mineScore: [
+        poolScore: [
           {
-            minePoints: 90,
-            mineTimeTaken: 12
+            poolPoints: 90,
+            poolTimeTaken: 12
           }
         ]
       },
@@ -37,10 +37,10 @@ db.once('open', async () => {
         username: 'Lernantino',
         email: 'lernantino@gmail.com',
         password: '12345',
-        mineScore: [
+        poolScore: [
           {
-            minePoints: 50,
-            mineTimeTaken: 100
+            poolPoints: 50,
+            poolTimeTaken: 100
           }
         ]
       },
@@ -58,7 +58,7 @@ db.once('open', async () => {
     ]);
 
     console.log('🔑 users seeded');
-    console.log('💣 user.8ballpool scores seeded');
+    console.log('🎱 user.8ballpool scores seeded');
 
     process.exit();
   } catch (err) {

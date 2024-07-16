@@ -73,7 +73,7 @@ const resolvers = {
       return { token, user };
     },
 
-    saveMineScore: async (parent, { userId, poolPoints, poolTimeTaken }) => {
+    savePoolScore: async (parent, { userId, poolPoints, poolTimeTaken }) => {
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         { $push: { poolScore: { poolPoints, poolTimeTaken } } },
