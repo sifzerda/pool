@@ -4,6 +4,7 @@ THIS IS CURRENTLY UNFINISHED
 
 Current games in gamestack:
 
+- [ ] Minesweeper
 - [ ] Solitaire
 - [ ] Asteroids
 - [x] 8 Ball Pool
@@ -102,34 +103,33 @@ The main functions of code:
 - <strong>'const createBall' </strong>: makes all other balls taking in data from initialBalls
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
-- <strong>'const pocketSensor' </strong>: creates smaller object inside each pocket which must be touched for ball to get pocketed. This can be removed from code, but allows the size of pocket detection to be configurable (as opposed to just being the exact size of the pocket). Without, if ball touches any part of the pocket, it trips detection. Otherwise allows balls to sit right at the edge of the pocket, without falling in.
+ 
 
 (B) Movement:
 
 ## (7) Alternative Config
 
-You can replace :
+(A) Pocket Sensors:
+You can remove:
 ```bash
-const [engine] = useState(() => Engine.create({ gravity: { x: 0, y: 0 } }));
+const sensorRadius = 10;
 ```
-with : 
+and 
 ```bash
-const [engine] = useState(() => {
-    const newEngine = Engine.create({ gravity: { x: 0, y: 0 } });
-    newEngine.velocityIterations = 10; // Increase velocity iterations
-    newEngine.positionIterations = 10; // Increase position iterations
-    return newEngine;
-  });
+      const pocketSensor = Bodies.circle(pos.x, pos.y, sensorRadius, {
+        label: 'pocketSensor',
+        isSensor: true,
+        isStatic: true,
+        render: {
+          visible: false,
+        },
+      });
 ```
-to create smoother ship acceleration, however this may affect performance and not offer much improvement.
+Pocket sensors create smaller objects inside each pocket which must be touched for ball to get pocketed. 
+Without it, balls need only touch any part of pocket to fall in. Pocket sensors allow pocket detection radius to be configurable, so balls can sit right at the edge of the pocket, touching it, but not trip detection.
 
-I experimented with handling movement keyUp and keyDown separately via useEffect to apply different physics to ship motion vs rest, but this didn't have much overall effect. I saved the relevant code inside: client/src/components/copies/movementdiff.js
 
-change 'shootExhaust' fillStyle for randomized exhaust stream colours (i.e. rainbow exhaust stream):
-```bash
-fillStyle: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.8)` 
-```
-Note: too much use of Math.floor(Math.random()) in big quantities (e.g. many particles) affected performance, so I tried to limit randomization.
+
 
 Ship size; x/ vertices by amount (e.g. 50 / .3) for each value:
 (1) Current size:
