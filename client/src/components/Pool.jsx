@@ -96,7 +96,7 @@ const PoolGame = () => {
     World.add(engine.world, cueStickBody);
 
     // Create other pool balls
-    const createBall = (x, y, color) => {
+    const createBall = (x, y, color, id) => {
       return Bodies.circle(x, y, cueBallRadius, {
         label: 'ball',
         restitution: 0.9,
@@ -107,6 +107,7 @@ const PoolGame = () => {
           strokeStyle: '#000000',
           lineWidth: 2,
         },
+        id, // Set the ball ID here
       });
     };
 
@@ -117,7 +118,7 @@ const PoolGame = () => {
     const balls = [];
 
     // Position ball 1 first
-    balls.push(createBall(pyramidBaseX, pyramidBaseY, initialBalls[0].color));
+    balls.push(createBall(pyramidBaseX, pyramidBaseY, initialBalls[0].color, initialBalls[0].id));
 
     // Position the rest of the balls
     let currentRow = 1;
@@ -127,7 +128,7 @@ const PoolGame = () => {
       for (let i = 0; i <= currentRow; i++) {
         const x = pyramidBaseX + (currentRow * ballSpacing * Math.cos(Math.PI / 6));
         const y = pyramidBaseY - (currentRow * ballSpacing * Math.sin(Math.PI / 6)) + (i * ballSpacing);
-        balls.push(createBall(x, y, initialBalls[ballIndex].color));
+        balls.push(createBall(x, y, initialBalls[ballIndex].color, initialBalls[ballIndex].id));
         ballIndex++;
         if (ballIndex >= initialBalls.length) break;
       }
