@@ -56,13 +56,13 @@ return (
   <ul className="nav nav-tabs">
     <li className="nav-item">
       <Link to="/" className={isActive('/')}>
-        GAME
+        SPARE 1
       </Link>
     </li>
 
     <li className="nav-item">
       <Link to="/Pool" className={isActive('/Pool')}>
-        Pool
+        POOL
       </Link>
     </li>
 

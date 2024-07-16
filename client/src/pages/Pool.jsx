@@ -9,7 +9,7 @@ export default function About () {
 
       <div className="separator-line"></div>
 
-<p>xyz</p>
+<p>Click and drag cue ball to aim and power shot, release to fire</p>
       
       <div className="separator-line"></div>
 
