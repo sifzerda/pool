@@ -39,11 +39,22 @@ const PoolGame = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [initialMousePosition, setInitialMousePosition] = useState({ x: 0, y: 0 });
   const [pocketedBalls, setPocketedBalls] = useState([]);
+  const [timer, setTimer] = useState(0); // Timer state
+  const [score, setScore] = useState(0); // Score state
 
   const gameRef = useRef();
   const stickOffset = -230; // Define the offset from the cue ball center
 
   window.decomp = decomp; // poly-decomp is available globally
+
+  useEffect(() => {
+    // Start the timer when the component mounts
+    const interval = setInterval(() => {
+      setTimer(prevTimer => prevTimer + 1);
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
 
   useEffect(() => {
     engine.world.gravity.y = 0; // Disable gravity for pool balls
@@ -177,6 +188,9 @@ const PoolGame = () => {
           // Add the ball ID to pocketedBalls state
           setPocketedBalls((prev) => [...prev, ball.id]);
 
+          // Increment score
+          setScore(prevScore => prevScore + 1);
+
           // Remove the ball from the world
           World.remove(engine.world, ball);
           console.log(`Ball ${ball.id} pocketed!`);
@@ -238,8 +252,25 @@ const PoolGame = () => {
     }
   };
 
+  // Convert timer to minutes and seconds
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
   return (
     <React.Fragment>
+      <div className="score-timer-container">
+        <div className="timer">
+          <h3>Elapsed Time: {formatTime(timer)}</h3>
+        </div>
+
+        <div className="score">
+          <h3>Score: {score}</h3>
+        </div>
+      </div>
+
       <div className="pocketed-balls">
         <h3>Pocketed Balls:</h3>
         <div className="pocketed-balls-container">
