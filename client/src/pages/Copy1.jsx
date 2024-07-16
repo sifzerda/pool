@@ -9,7 +9,7 @@ export default function About () {
 
       <div className="separator-line"></div>
 
-<p>aim line thing</p>
+<p>aim line thing and draggable balls</p>
       
       <div className="separator-line"></div>
 
