@@ -64,6 +64,7 @@ const PoolGame = () => {
     const cueBallY = render.options.height / 2;
 
     const cueBallBody = Bodies.circle(cueBallX, cueBallY, cueBallRadius, {
+      label: 'ball',
       restitution: 0.8,
       friction: 0.2,
       render: {
@@ -78,6 +79,7 @@ const PoolGame = () => {
     // Create other pool balls
     const createBall = (x, y, color) => {
       return Bodies.circle(x, y, cueBallRadius, {
+        label: 'ball',
         restitution: 0.8,
         friction: 0.2,
         render: {
@@ -118,6 +120,7 @@ const PoolGame = () => {
     const pocketRadius = 20;
     const pockets = pocketPositions.map(pos => 
       Bodies.circle(pos.x, pos.y, pocketRadius, { 
+        label: 'pocket',
         isSensor: true,
         isStatic: true, 
         render: { 
