@@ -36,8 +36,8 @@ Game was divided up into the smallest working components/units. It reused my ast
 The hardest part was getting the shot-taking mechanic to work and took a lot of playing around. Everything else was simpler.
 
 Things learned:
-- More experience with Matter.js; ball physics
-- Implementing 3d textures into 2D matter.js objects (to do)
+- More experience with Matter.js; '2D.5' ball physics and 
+- Implementing 3D ('2D.5') textures into 2D matter.js objects with 'render.sprite'
 
 ## (2) Badges
 
