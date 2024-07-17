@@ -38,7 +38,7 @@ const Profile = () => {
     return (
         <div className="profile-container">
             <div className="jumbo-bg-dark">
-                <h1 className='jumbo-bg-dark-text'>{user.username}&apos;s Profile</h1>
+                <h1 className='jumbo-bg-dark-text'>{user.username}&apos;s Corner</h1>
             </div>
             <p className='black-text'>Email: {user.email}</p>
             <p className="email-info">Note: Your email cannot be seen by other users</p>
