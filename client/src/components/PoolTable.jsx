@@ -2,23 +2,22 @@
 import { useEffect } from 'react';
 import { Bodies, World } from 'matter-js';
 
+import greenTablePic from '../../public/images/greenTable.jpg';
+
 const PoolTable = ({ engine }) => {
     useEffect(() => {
-      
-      const greenTableTexture = new Image();
-      greenTableTexture.src = '../../public/images/greenTable.jpg'; // Update the path as needed
-        // Create the green table surface
+    
         const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
           isStatic: true,
           isSensor: true,
           render: {
-            fillStyle: 'green', // Keep the fill style
+            fillStyle: 'green', // fill style matte green 
             strokeStyle: '#ffffff',
             lineWidth: 2,
             sprite: {
-              texture: greenTableTexture.src,
-              xScale: 0.81, // Adjust this to change texture width
-              yScale: 0.61, // Adjust this to change texture height
+              texture: greenTablePic,
+              xScale: 0.81, // change texture width
+              yScale: 0.61, // change texture height
             },
           },
         });
