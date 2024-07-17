@@ -32,7 +32,7 @@
 .white-box {
   display: grid;
   place-items: center;
-  background-color: black;
+  background-color: rgb(20, 21, 31);
   padding: 20px;
   padding-left: 40px;
   border-radius: 10px;
@@ -230,6 +230,19 @@ p.success {
 }
 
 /* score/timer/progress display ----------------------------------- */
+
+
+
+div.score-timer-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  color: white;
+}
+
+div.pocketed-balls {
+  color: white;
+}
 
 .pocketed-balls-container {
   display: flex;
