@@ -63,10 +63,15 @@ Things learned:
 
 ## (3) Visuals
 
-REPLACE WITH PICS & LINK WHEN FINISHED 
-[Visit App deployed to Heroku](https://asteroids-10-d02b9b752090.herokuapp.com/)    <<<<<<<<<<<<<<<<<<,
+[Visit App deployed to Heroku](https://eightball-10-c60b2e58af61.herokuapp.com/)   
 
-![asteroids-screenshot](https://github.com/sifzerda/asteroids/assets/139626561/31b31fd3-c265-4837-8a97-553cb44f1d23) <<<<<<<<<<<<<<<<<<,
+![poolPic1](https://github.com/user-attachments/assets/7a029b18-93a7-47f3-937f-798dae3b747d)
+
+![pp2](https://github.com/user-attachments/assets/cd92722e-1ad5-4bdf-8541-f951ec26a6bb)
+
+![pp](https://github.com/user-attachments/assets/a5c2a26b-15c4-40b8-b50b-4e0b338aac2d)
+
+
 
 ## (4) Installation
 
