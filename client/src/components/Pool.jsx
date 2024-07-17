@@ -3,6 +3,8 @@ import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
 import decomp from 'poly-decomp';
 import PoolTable from './PoolTable';
 
+import StartScreen from './StartScreen'; 
+
 const initialBalls = [
   { id: 1, suit: 'solid', color: '#F3FF00' }, // yellow 
   { id: 2, suit: 'solid', color: '#0074FF' }, // blue
@@ -31,6 +33,13 @@ const pocketPositions = [
   { x: 1380, y: 620 },
 ];
 
+const StartBtn = ({ onStart }) => (
+  <div className="start-screen">
+    <button onClick={onStart}>Start Game</button>
+  </div>
+);
+
+
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
   const [cueBall, setCueBall] = useState(null);
@@ -42,21 +51,36 @@ const PoolGame = () => {
   const [timer, setTimer] = useState(0); // Timer state
   const [score, setScore] = useState(0); // Score state
 
+  const [gameStarted, setGameStarted] = useState(false); // State to track game start
+
   const gameRef = useRef();
   const stickOffset = -230; // Define the offset from the cue ball center
 
   window.decomp = decomp; // poly-decomp is available globally
 
+  //---------------------------------// START SCREENS //-----------------------------------//
+
+  const startGameHandler = () => {
+    setGameStarted(true);
+  };
+
+//------------------------------------------------------------------------------------//
+
+
+
+
   useEffect(() => {
+    if (!gameStarted) return;
     // Start the timer when the component mounts
     const interval = setInterval(() => {
       setTimer(prevTimer => prevTimer + 1);
     }, 1000);
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, []);
+  }, [gameStarted]);
 
   useEffect(() => {
+    if (!gameStarted) return;
     engine.world.gravity.y = 0; // Disable gravity for pool balls
 
     const render = Render.create({
@@ -204,10 +228,11 @@ const PoolGame = () => {
       Engine.clear(engine);
       Events.off(engine, 'collisionStart');
     };
-  }, [engine]);
+  }, [engine, gameStarted]);
 
   // Handling shots
   const handleMouseDown = (event) => {
+    if (!gameStarted) return;
     const rect = gameRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -220,7 +245,7 @@ const PoolGame = () => {
   };
 
   const handleMouseMove = (event) => {
-    if (isDragging) {
+    if (isDragging && gameStarted) {
       const rect = gameRef.current.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -237,7 +262,7 @@ const PoolGame = () => {
   };
 
   const handleMouseUp = () => {
-    if (isDragging) {
+    if (isDragging && gameStarted) {
       const dx = initialMousePosition.x - mousePosition.x;
       const dy = initialMousePosition.y - mousePosition.y;
       const power = Math.sqrt(dx * dx + dy * dy) * 0.05; // Adjust power scaling factor as needed
@@ -252,6 +277,8 @@ const PoolGame = () => {
     }
   };
 
+  //----------------------------------// timer //----------------------------------//
+
   // fx to Convert timer to minutes and seconds
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -259,52 +286,60 @@ const PoolGame = () => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  //----------------------------------// RENDERING //----------------------------------//
+
   return (
-    <React.Fragment>
-      <div className="score-timer-container">
-        <div className="timer">
-          <h3>Elapsed Time: {formatTime(timer)}</h3>
-        </div>
+    <div>
+      {!gameStarted ? (
+        <StartScreen onStart={startGameHandler} />
+      ) : (
+        <React.Fragment>
+          <div className="score-timer-container">
+            <div className="timer">
+              <h3>Elapsed Time: {formatTime(timer)}</h3>
+            </div>
 
-        <div className="score">
-          <h3>Score: {score}</h3>
-        </div>
-      </div>
+            <div className="score">
+              <h3>Score: {score}</h3>
+            </div>
+          </div>
 
-      <div className="pocketed-balls">
-        <h3>Pocketed Balls:</h3>
-        <div className="pocketed-balls-container">
-          {initialBalls.map(ball => {
-            const isPocketed = pocketedBalls.includes(ball.id);
-            return (
-              <div
-                key={ball.id}
-                className="pocketed-ball"
-                style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
-                  backgroundColor: isPocketed ? ball.color : '#000',
-                  margin: '5px',
-                  display: 'inline-block',
-                  border: '2px solid #000',
-                }}
-              />
-            );
-          })}
-        </div>
-      </div>
+          <div className="pocketed-balls">
+            <h3>Pocketed Balls:</h3>
+            <div className="pocketed-balls-container">
+              {initialBalls.map(ball => {
+                const isPocketed = pocketedBalls.includes(ball.id);
+                return (
+                  <div
+                    key={ball.id}
+                    className="pocketed-ball"
+                    style={{
+                      width: '30px',
+                      height: '30px',
+                      borderRadius: '50%',
+                      backgroundColor: isPocketed ? ball.color : '#000',
+                      margin: '5px',
+                      display: 'inline-block',
+                      border: '2px solid #000',
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
 
-      <div
-        className="game-container"
-        ref={gameRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-      >
-        <PoolTable engine={engine} />
-      </div>
-    </React.Fragment>
+          <div
+            className="game-container"
+            ref={gameRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+          >
+            <PoolTable engine={engine} />
+          </div>
+        </React.Fragment>
+      )}
+    </div>
   );
 };
 
