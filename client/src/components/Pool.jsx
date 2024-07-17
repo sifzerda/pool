@@ -4,6 +4,8 @@ import decomp from 'poly-decomp';
 import PoolTable from './PoolTable';
 
 import StartScreen from './StartScreen'; 
+import FinalScore from './FinalScore'; 
+import HighScores from './HighScores'; 
 
 const initialBalls = [
   { id: 1, suit: 'solid', color: '#F3FF00' }, // yellow 
@@ -33,13 +35,6 @@ const pocketPositions = [
   { x: 1380, y: 620 },
 ];
 
-const StartBtn = ({ onStart }) => (
-  <div className="start-screen">
-    <button onClick={onStart}>Start Game</button>
-  </div>
-);
-
-
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
   const [cueBall, setCueBall] = useState(null);
@@ -52,6 +47,9 @@ const PoolGame = () => {
   const [score, setScore] = useState(0); // Score state
 
   const [gameStarted, setGameStarted] = useState(false); // State to track game start
+  const [gameOver, setGameOver] = useState(false);
+  const [showFinalScore, setShowFinalScore] = useState(false);
+  const [showHighScores, setShowHighScores] = useState(false);
 
   const gameRef = useRef();
   const stickOffset = -230; // Define the offset from the cue ball center
@@ -60,8 +58,19 @@ const PoolGame = () => {
 
   //---------------------------------// START SCREENS //-----------------------------------//
 
+//  const showStartPage = ({ onStart }) => (
+//    <div className="start-screen">
+//      <button onClick={onStart}>Start Game</button>
+//    </div>
+//  );
+
   const startGameHandler = () => {
     setGameStarted(true);
+  };
+
+  const showHighScorePage = () => {
+    setShowHighScores(true);
+    console.log('High Scores button clicked', showHighScores);
   };
 
 //------------------------------------------------------------------------------------//
@@ -286,12 +295,24 @@ const PoolGame = () => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+//--------------------------------// CLOCKING SCORE //----------------------------------//
+
+
+// --------------------------------// SCREEN SELECTION //----------------------------------//
+
+if (showHighScores) {
+  return <HighScores />;
+}
+
+if (showFinalScore) {
+  return <FinalScore score={score} onHighScores={showHighScorePage} />;
+}
+
   //----------------------------------// RENDERING //----------------------------------//
 
   return (
     <div>
-      {!gameStarted ? (
-        <StartScreen onStart={startGameHandler} />
+      {!gameStarted ? ( <StartScreen onStart={startGameHandler} onHighScores={showHighScorePage} />
       ) : (
         <React.Fragment>
           <div className="score-timer-container">

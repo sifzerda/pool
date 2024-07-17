@@ -3,30 +3,30 @@ import { Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import Auth from '../utils/auth';
 import { QUERY_ME } from '../utils/queries';
-import { SAVE_MINE_SCORE } from '../utils/mutations'
+import { SAVE_POOL_SCORE } from '../utils/mutations'
 import '../App.css';
 
 const FinalScore = ({ score, time, onHighScores }) => {
-    const [minePoints, setMinePoints] = useState(score);
-    const [mineTimeTaken, setMineTimeTaken] = useState(time);
+    const [poolPoints, setPoolPoints] = useState(score);
+    const [poolTimeTaken, setPoolTimeTaken] = useState(time);
     const [showSuccessMessage, setShowSuccessMessage] = useState(false); 
   
     const { data } = useQuery(QUERY_ME);
     const userId = data?.me?._id;
     const username = data?.me?.username || 'Anonymous';
   
-    const [saveMineScore] = useMutation(SAVE_MINE_SCORE);
+    const [savePoolScore] = useMutation(SAVE_POOL_SCORE);
   
     const handleSubmit = async () => {
       try {
-        const { data } = await saveMineScore({
+        const { data } = await savePoolScore({
           variables: {
             userId,
-            minePoints,
-            mineTimeTaken,
+            poolPoints,
+            poolTimeTaken,
           },
         });
-        console.log('Score saved:', data.saveMineScore);
+        console.log('Score saved:', data.savePoolScore);
         // Optionally, you can trigger some UI update or action upon successful save
         setShowSuccessMessage(true); // Show success message
       } catch (error) {

@@ -1,6 +1,6 @@
 import Auth from '../utils/auth';
 
-const StartScreen = ({ onStart }) => {
+const StartScreen = ({ onStart, onHighScores }) => {
   return (
     <div className="start-screen">
       <h1> &lt; Main Menu &gt;</h1>
@@ -11,6 +11,7 @@ const StartScreen = ({ onStart }) => {
       )}
       
       <button className="submit-button-m" onClick={onStart}>START GAME</button>
+      <button className="submit-button-m" onClick={onHighScores}>HIGH SCORES</button>
     </div>
   );
 };
