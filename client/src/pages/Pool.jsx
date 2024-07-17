@@ -5,13 +5,7 @@ import '../8ballpool.css';
 export default function About () {
   return (
     <div>
-       <h1>How to Play</h1> 
-
-      <div className="separator-line"></div>
-
-<p>Click and drag cue ball to aim and power shot, release to fire</p>
-      
-      <div className="separator-line"></div>
+       <h1 className='space'><br></br></h1> 
 
 {/* game component */}
 
