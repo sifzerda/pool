@@ -10,14 +10,25 @@ const Profile = () => {
     if (error) return <p>Error: {error.message}</p>;
 
     const user = data?.me;
-    const mineScores = user?.mineScore || [];
+    const poolScores = user?.poolScore || [];
+
+          // ------------------------------------------------------------//
+
+    // Helper FX to convert timer to minutes and seconds
+    const formatTime = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      };
+  
+        // ------------------------------------------------------------//
 
     // Sort scores by highest minePoints, and then by least time taken if points are tied
-    const sortedScores = [...mineScores].sort((a, b) => {
-        if (b.minePoints !== a.minePoints) {
-            return b.minePoints - a.minePoints; // Sort by points descending
+    const sortedScores = [...poolScores].sort((a, b) => {
+        if (b.poolPoints !== a.poolPoints) {
+            return b.poolPoints - a.poolPoints; // Sort by points descending
         } else {
-            return a.mineTimeTaken - b.mineTimeTaken; // Sort by time ascending if points are tied
+            return a.poolTimeTaken - b.poolTimeTaken; // Sort by time ascending if points are tied
         }
     });
 
@@ -27,11 +38,11 @@ const Profile = () => {
     return (
         <div className="profile-container">
             <div className="jumbo-bg-dark">
-                <h1 className='jumbo-bg-dark-text'>{user.username}'s Profile</h1>
+                <h1 className='jumbo-bg-dark-text'>{user.username}&apos;s Profile</h1>
             </div>
             <p className='black-text'>Email: {user.email}</p>
             <p className="email-info">Note: Your email cannot be seen by other users</p>
-            <h2 className='profile-text'>Your 8ballpool Highscores:</h2>
+            <h2 className='profile-text'>Your Eight Ball Pool Highscores:</h2>
             
             {limitedScores.length === 0 ? (
                 <p className="black-text">No high scores yet!</p>
@@ -48,8 +59,8 @@ const Profile = () => {
                         {limitedScores.map((score, index) => (
                             <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{score.minePoints}</td>
-                                <td>{score.mineTimeTaken}</td>
+                                <td>{score.poolPoints}</td>
+                                <td>{formatTime(score.poolTimeTaken)}</td>
                             </tr>
                         ))}
                     </tbody>

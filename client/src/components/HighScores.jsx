@@ -10,13 +10,25 @@ const HighScores = () => {
 
   const users = data.users; // Extracting users from query data
 
+      // ------------------------------------------------------------//
+
+    // Helper FX to convert timer to minutes and seconds
+    const formatTime = (time) => {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
+      // ------------------------------------------------------------//
+
   // Aggregate all astScore entries with associated usernames
   let allScores = [];
   users.forEach(user => {
-    user.astScore.forEach(score => {
+    user.poolScore.forEach(score => {
       allScores.push({
         username: user.username,
-        astPoints: score.astPoints,
+        poolPoints: score.poolPoints,
+        poolTimeTaken: score.poolTimeTaken,
       });
     });
   });
@@ -24,8 +36,8 @@ const HighScores = () => {
   // Sort combined scores by astPoints in descending order
   // If points are the same, then sort by astTimeTaken in ascending order
   allScores.sort((a, b) => {
-    if (b.astPoints !== a.astPoints) {
-      return b.astPoints - a.astPoints; // Sort by points descending
+    if (b.poolPoints !== a.poolPoints) {
+      return b.poolPoints - a.poolPoints; // Sort by points descending
     }
 });
 
@@ -42,6 +54,7 @@ return (
           <tr>
             <th>#</th>
             <th>Score</th>
+            <th>Time Taken:</th>
             <th>Username</th>
           </tr>
         </thead>
@@ -49,7 +62,8 @@ return (
           {top20Scores.map((score, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{score.astPoints}</td>
+              <td>{score.poolPoints}</td>
+              <td>{formatTime(score.poolTimeTaken)}</td>
               <td>{score.username}</td>
             </tr>
           ))}

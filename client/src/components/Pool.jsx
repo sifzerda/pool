@@ -47,7 +47,6 @@ const PoolGame = () => {
   const [score, setScore] = useState(0); // Score state
 
   const [gameStarted, setGameStarted] = useState(false); // State to track game start
-  const [gameOver, setGameOver] = useState(false);
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [showHighScores, setShowHighScores] = useState(false);
 
@@ -73,10 +72,13 @@ const PoolGame = () => {
     console.log('High Scores button clicked', showHighScores);
   };
 
+  // in game: Function to end the game and show final score
+  const endGameHandler = () => {
+    setGameStarted(false);
+    setShowFinalScore(true);
+  };
+
 //------------------------------------------------------------------------------------//
-
-
-
 
   useEffect(() => {
     if (!gameStarted) return;
@@ -305,10 +307,10 @@ if (showHighScores) {
 }
 
 if (showFinalScore) {
-  return <FinalScore score={score} onHighScores={showHighScorePage} />;
+  return <FinalScore score={score} time={timer} onHighScores={showHighScorePage} />;
 }
 
-  //----------------------------------// RENDERING //----------------------------------//
+//----------------------------------// RENDERING //----------------------------------//
 
   return (
     <div>
@@ -323,6 +325,9 @@ if (showFinalScore) {
             <div className="score">
               <h3>Score: {score}</h3>
             </div>
+
+<div><button onClick={endGameHandler}>End Game</button></div>
+
           </div>
 
           <div className="pocketed-balls">
