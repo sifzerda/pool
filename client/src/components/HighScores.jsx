@@ -54,7 +54,7 @@ return (
           <tr>
             <th>#</th>
             <th>Score</th>
-            <th>Time Taken:</th>
+            <th>Time</th>
             <th>Username</th>
           </tr>
         </thead>
