@@ -46,7 +46,7 @@ const top20Scores = allScores.slice(0, 20);
 
 return (
   <div className="grid-wrapper">
-    <div className="grid-container">
+    <div className="grid-container-2">
       <h1 className='end'>High Scores</h1>
       <div className="table-container">
       <table className="high-scores-table">
@@ -70,7 +70,7 @@ return (
         </tbody>
       </table>
       </div>
-      <button className="submit-button-m" onClick={() => window.location.reload()}>BACK</button>
+      <button className="submit-button-g" onClick={() => window.location.reload()}>BACK</button>
     </div>
     
     </div>

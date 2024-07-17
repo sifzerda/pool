@@ -326,7 +326,7 @@ if (showFinalScore) {
               <h3>Score: {score}</h3>
             </div>
 
-<div><button onClick={endGameHandler}>End Game</button></div>
+<div><button className='end-game-btn' onClick={endGameHandler}>End Game</button></div>
 
           </div>
 

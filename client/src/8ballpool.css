@@ -10,12 +10,18 @@
 .end {
   position: relative;
   animation: neon-flashing 1s infinite alternate;
-  border: 5px solid var(--midnight);
+  border-bottom: 5px double var(--midnight);
 }
 
 @keyframes neon-flashing {
   from {
-    text-shadow: 0 0 10px white, 0 0 20px var(--volt), 0 0 30px var(--volt), 0 0 40px var(--volt), 0 0 70px #00fff6, 0 0 80px #00fff6;
+    text-shadow: 0 0 10px white, 
+    0 0 20px var(--volt), 
+    0 0 30px var(--volt), 
+    0 0 40px var(--volt), 
+    0 0 70px #00fff6, 
+    0 0 80px #00fff6;
+  
   }
 
   to {
@@ -56,6 +62,13 @@
   display: grid;
   min-width: 900px;
   place-items: center;
+}
+
+.grid-container-2 {
+  display: grid;
+  place-items: center;
+  background-color: black;
+  margin: -50px;
 }
 
 p.color {
@@ -107,6 +120,48 @@ p.color {
   /* Reduce shadow for pressed effect */
 }
 
+.end-game-btn {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  margin: 20px auto;
+  padding: 12px 16px;
+  font-size: 16px;
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s, border-color 0.3s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  /* Increased box shadow for lift effect */
+}
+
+.end-game-btn:hover {
+  border: 2px solid var(--light-red);
+  color: var(--light-red);
+}
+
+.submit-button-g {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  margin: 20px auto;
+  padding: 12px 16px;
+  font-size: 16px;
+  background-color: black;
+  color: var(--creepy-green2);
+  border: 2px solid var(--creepy-green2);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.submit-button-g:hover {
+  color: var(--volt);
+  border: 2px solid var(--volt);
+}
+
 .timer-score-container {
   display: flex;
   justify-content: space-between;
@@ -135,7 +190,18 @@ p.color {
 }
 
 p.black-text {
-  color: black;
+  color: rgb(255, 255, 255);
+}
+
+p.white-text {
+  color: rgb(255, 255, 255);
+  padding-top: 20px;
+}
+
+span.bright {
+  color: var(--flamingo);
+  font-size: 1.1rem;
+
 }
 
 .high-scores-table {
