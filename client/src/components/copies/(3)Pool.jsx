@@ -1,3 +1,13 @@
+// Shooting
+// Cue
+// other balls
+// pocketing and ball removal
+// balls to pocket display updates each ball pocketed
+// basic stick
+// score
+// timer, balls to pocket
+// no start or other screens
+
 import React, { useState, useEffect, useRef } from 'react';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
 import decomp from 'poly-decomp';
