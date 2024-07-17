@@ -21,7 +21,6 @@
     0 0 40px var(--volt), 
     0 0 70px #00fff6, 
     0 0 80px #00fff6;
-  
   }
 
   to {
@@ -209,6 +208,7 @@ span.bright {
   border-collapse: collapse;
   margin-top: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+border: 6px solid var(--midnight);
 }
 
 .high-scores-table th,
@@ -220,14 +220,15 @@ span.bright {
 
 .high-scores-table th {
   background-color: #f2f2f2;
+  background-color: black;
+  color: var(--volt);
+  font-family: 'Raleway Dots';
+  font-size: 1.2rem;
 }
 
-.high-scores-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.high-scores-table tbody tr:hover {
-  background-color: #e9ecef;
+.high-scores-table tbody tr {
+  background-color: black;
+  color: white;
 }
 
 .black-text a {
