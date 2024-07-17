@@ -21,7 +21,7 @@ const HighScores = () => {
 
       // ------------------------------------------------------------//
 
-  // Aggregate all astScore entries with associated usernames
+  // Aggregate all poolScore entries with associated usernames
   let allScores = [];
   users.forEach(user => {
     user.poolScore.forEach(score => {
@@ -33,8 +33,8 @@ const HighScores = () => {
     });
   });
 
-  // Sort combined scores by astPoints in descending order
-  // If points are the same, then sort by astTimeTaken in ascending order
+  // Sort combined scores by poolPoints in descending order
+  // If points are the same, then sort by poolTimeTaken in ascending order
   allScores.sort((a, b) => {
     if (b.poolPoints !== a.poolPoints) {
       return b.poolPoints - a.poolPoints; // Sort by points descending
