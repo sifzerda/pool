@@ -46,18 +46,16 @@ const PoolGame = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [initialMousePosition, setInitialMousePosition] = useState({ x: 0, y: 0 });
-  const [stickOffset, setStickOffset] = useState(); // Added state for stick offset
   const [pocketedBalls, setPocketedBalls] = useState([]);
-  const [timer, setTimer] = useState(0); // Timer state
-  const [score, setScore] = useState(0); // Score state
-
-  const [gameStarted, setGameStarted] = useState(false); // State to track game start
+  const [timer, setTimer] = useState(0);
+  const [score, setScore] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false);
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [showHighScores, setShowHighScores] = useState(false);
 
   const gameRef = useRef();
   const initialStickOffset = -399;
-  const stickSlideBack = 370; // Offset when dragging
+  const stickSlideBack = 370;
 
   window.decomp = decomp; // poly-decomp is available globally
 
@@ -249,21 +247,15 @@ const PoolGame = () => {
 
 // stick slide when powering up ------------------------------------------------------ //
   useEffect(() => {
-    if (!cueStick) return;
+    if (!cueStick || !cueBall) return;
     if (isDragging) {
-      Body.setPosition(cueStick, {
-        x: mousePosition.x - stickSlideBack,
-        y: mousePosition.y,
-      });
-      setStickOffset(stickSlideBack);
-    } else {
-      Body.setPosition(cueStick, {
-        x: cueBall.position.x + initialStickOffset,
-        y: cueBall.position.y,
-      });
-      setStickOffset(initialStickOffset);
+      const angle = Math.atan2(cueBall.position.y - mousePosition.y, cueBall.position.x - mousePosition.x);
+      const stickX = cueBall.position.x - Math.cos(angle) * stickSlideBack;
+      const stickY = cueBall.position.y - Math.sin(angle) * stickSlideBack;
+      Body.setPosition(cueStick, { x: stickX, y: stickY });
+      Body.setAngle(cueStick, angle);
     }
-  }, [cueStick, isDragging, mousePosition]);
+  }, [cueStick, cueBall, isDragging, mousePosition]);
 
 // ----------------------------------------------------------------------------------------- //
 
