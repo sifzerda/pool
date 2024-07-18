@@ -59,7 +59,7 @@ const FinalScore = ({ score, time, onHighScores }) => {
 
     return (
         <div className="grid-container">
-            <h1 className='start-2'>Game Over</h1>
+            <h1 className='start-3'>Exit</h1>
             <p className='white-text'>Your final score: <span className='bright'>{score}</span></p>
             <p className='black-text'>Time Taken: <span className='bright'>{formatTime(time)}</span></p>
 
