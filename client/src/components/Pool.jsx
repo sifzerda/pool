@@ -29,12 +29,12 @@ const initialBalls = [
 
 // Pocket positions
 const pocketPositions = [
-  { x: 110, y: 62 },
-  { x: 750, y: 50 },
-  { x: 1380, y: 60 },
-  { x: 110, y: 620 },
-  { x: 750, y: 630 },
-  { x: 1380, y: 620 },
+  { x: 119, y: 56 }, // top left 
+  { x: 746, y: 50 }, // top middle 
+  { x: 1370, y: 60 }, // top right 
+  { x: 122, y: 625 }, // bottom left 
+  { x: 747, y: 630 }, // bottom middle
+  { x: 1370, y: 622 }, // bottom right 
 ];
 
 //-------------------------------------------------------------------------//
@@ -199,9 +199,7 @@ const PoolGame = () => {
         isSensor: true,
         isStatic: true,
         render: {
-          fillStyle: '#000',
-          strokeStyle: '#43505a',
-          lineWidth: 20,
+          visible: false,
         },
       });
 

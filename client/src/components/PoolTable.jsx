@@ -11,9 +11,9 @@ const PoolTable = ({ engine }) => {
           isStatic: true,
           isSensor: true,
           render: {
-            fillStyle: 'green', // fill style matte green 
-            strokeStyle: '#ffffff',
-            lineWidth: 2,
+            //fillStyle: 'green', // fill style matte green 
+            //strokeStyle: '#ffffff',
+            //lineWidth: 2,
             sprite: {
               texture: greenTablePic,
               xScale: 1.3, // change texture width
