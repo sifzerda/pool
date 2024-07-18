@@ -7,8 +7,12 @@ import StartScreen from './StartScreen';
 import FinalScore from './FinalScore'; 
 import HighScores from './HighScores'; 
 
+import ballOne from '../../public/images/1solidyellow.jpg';
+import ballTen from '../../public/images/10stripeblue.jpg';
+import ballEleven from '../../public/images/11stripered.jpg';
+
 const initialBalls = [
-  { id: 1, suit: 'solid', color: '#F3FF00', }, // yellow
+  { id: 1, suit: 'solid', color: '#F3FF00', tex: ballOne }, // yellow
   { id: 2, suit: 'solid', color: '#0074FF' }, // blue
   { id: 3, suit: 'solid', color: '#FF002E' }, // red
   { id: 4, suit: 'solid', color: '#8000FF' }, // purple
@@ -17,8 +21,8 @@ const initialBalls = [
   { id: 7, suit: 'solid', color: '#954600' }, // brown
   { id: 8, suit: 'neither', color: '#000000' }, // black
   { id: 9, suit: 'stripe', color: '#F3FF00' }, // yellow
-  { id: 10, suit: 'stripe', color: '#0074FF', }, // blue
-  { id: 11, suit: 'stripe', color: '#FF002E', }, // red
+  { id: 10, suit: 'stripe', color: '#0074FF', tex: ballTen }, // blue
+  { id: 11, suit: 'stripe', color: '#FF002E', tex: ballEleven }, // red
   { id: 12, suit: 'stripe', color: '#8000FF' }, // purple
   { id: 13, suit: 'stripe', color: '#FF7C00' }, // orange
   { id: 14, suit: 'stripe', color: '#29F900' }, // green
@@ -56,6 +60,8 @@ const PoolGame = () => {
   const stickOffset = -230; // Define the offset from the cue ball center
 
   window.decomp = decomp; // poly-decomp is available globally
+
+//-------------------------------------------------------------------------//
 
   //---------------------------------// START SCREENS //-----------------------------------//
 
@@ -141,6 +147,7 @@ const PoolGame = () => {
 
     // Create other pool balls
     const createBall = (x, y, color, id) => {
+      const ballTexture = initialBalls.find(ball => ball.id === id)?.tex; // Fetch texture URL or object
       return Bodies.circle(x, y, cueBallRadius, {
         label: 'ball',
         restitution: 0.9,
@@ -151,6 +158,11 @@ const PoolGame = () => {
           fillStyle: color,
           strokeStyle: '#000000',
           lineWidth: 2,
+          sprite: {
+            texture: ballTexture,
+            xScale: 0.1, // 
+            yScale: 0.1, //
+          },
         },
         id, // Set the ball ID here
       });
@@ -295,6 +307,9 @@ const PoolGame = () => {
     const seconds = time % 60;
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
+
+//--------------------------------// CLOCKING SCORE //----------------------------------//
+
 
 // --------------------------------// SCREEN SELECTION //----------------------------------//
 
