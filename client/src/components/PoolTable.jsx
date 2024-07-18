@@ -3,6 +3,13 @@ import { useEffect } from 'react';
 import { Bodies, World } from 'matter-js';
 
 import greenTablePic from '../../public/images/greenTable.jpg';
+//import blueTablePic from '../../public/images/tableBlue.jpg';
+//import redTablePic from '../../public/images/tableRed.jpg';
+//import yellowTablePic  from '../../public/images/tableYellow.jpg';
+//import pinkTablePic  from '../../public/images/tablePink.jpg';
+//import monoTablePic  from '../../public/images/tableMono.jpg';
+//import chalkTablePic  from '../../public/images/tableChalk.jpg';
+//import chalkTripTablePic from '../../public/images/tableChalkTrip.jpg';
 
 const PoolTable = ({ engine, backgroundImage  }) => {
     useEffect(() => {
@@ -12,7 +19,7 @@ const PoolTable = ({ engine, backgroundImage  }) => {
           isSensor: true,
           render: {
             sprite: {
-              texture: backgroundImage,
+              texture: greenTablePic,
               xScale: 1.3, // change texture width
               yScale: 1.15, // change texture height
             },
