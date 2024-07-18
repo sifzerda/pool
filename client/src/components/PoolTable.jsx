@@ -11,9 +11,6 @@ const PoolTable = ({ engine }) => {
           isStatic: true,
           isSensor: true,
           render: {
-            //fillStyle: 'green', // fill style matte green 
-            //strokeStyle: '#ffffff',
-            //lineWidth: 2,
             sprite: {
               texture: greenTablePic,
               xScale: 1.3, // change texture width
@@ -34,28 +31,30 @@ const PoolTable = ({ engine }) => {
           restitution: 1, // Ensures the ball bounces off the walls
           friction: 0, // Ensures minimal friction
           render: {
-            fillStyle: 'brown',
+            //fillStyle: 'brown',
             strokeStyle: '#5e0808',
             lineWidth: 9,
+            visible: false,
           },
         };
     
-        const topWallWidth = (1500 / 2) - 175;
-        const topWallLeft = Bodies.rectangle(halfWidth - 320, 50, topWallWidth, wallThickness, wallConfig);
-        const topWallRight = Bodies.rectangle(halfWidth + 320, 50, topWallWidth, wallThickness, wallConfig);
-        const bottomWallWidth = (1500 / 2) - 175;
-        const bottomWallLeft = Bodies.rectangle(halfWidth - 320, 680 - 50, bottomWallWidth, wallThickness, wallConfig);
-        const bottomWallRight = Bodies.rectangle(halfWidth + 320, 680 - 50, bottomWallWidth, wallThickness, wallConfig);
-    
+        const topWallWidth = (1500 / 2) - 199;
+        const topWallLeft = Bodies.rectangle(halfWidth - 317, 62, topWallWidth, wallThickness, wallConfig);
+        const topWallRight = Bodies.rectangle(halfWidth + 308, 62, topWallWidth, wallThickness, wallConfig);
+        const bottomWallWidth = (1500 / 2) - 199;
+        const bottomWallLeft = Bodies.rectangle(halfWidth - 317, 680 - 62, bottomWallWidth, wallThickness, wallConfig);
+        const bottomWallRight = Bodies.rectangle(halfWidth + 308, 680 - 62, bottomWallWidth, wallThickness, wallConfig);
         bottomWallLeft.position.y  / 2;
         bottomWallRight.position.y  / 2;
         topWallLeft.position.y  / 2;
         topWallRight.position.y  / 2;
     
-        const leftWallHeight = 680 - 180;
-        const leftWall = Bodies.rectangle(100, halfHeight, wallThickness, leftWallHeight, wallConfig);
+        const leftWallHeight = 680 - 180; 
+        const leftWallXOffset = 257; // Adjust this value to shift left wall left or right
+        const leftWall = Bodies.rectangle(halfWidth  / 2 - leftWallXOffset, halfHeight, wallThickness, leftWallHeight, wallConfig);
         const rightWallHeight = 680 - 180;
-        const rightWall = Bodies.rectangle(1500 - 100, halfHeight, wallThickness, rightWallHeight, wallConfig);
+        const rightWallXOffset = 998; // Adjust this value to shift right wall left or right
+        const rightWall = Bodies.rectangle(halfWidth / 2 + rightWallXOffset, halfHeight, wallThickness, rightWallHeight, wallConfig);
     
         World.add(engine.world, [
           topWallLeft, topWallRight,
