@@ -7,8 +7,12 @@ import StartScreen from './StartScreen';
 import FinalScore from './FinalScore'; 
 import HighScores from './HighScores'; 
 
+import ballOne from '../../public/images/1solidyellow.jpg';
+import ballTen from '../../public/images/10stripeblue.jpg';
+import ballEleven from '../../public/images/11stripered.jpg';
+
 const initialBalls = [
-  { id: 1, suit: 'solid', color: '#F3FF00' }, // yellow 
+  { id: 1, suit: 'solid', color: '#F3FF00', tex: ballOne }, // yellow
   { id: 2, suit: 'solid', color: '#0074FF' }, // blue
   { id: 3, suit: 'solid', color: '#FF002E' }, // red
   { id: 4, suit: 'solid', color: '#8000FF' }, // purple
@@ -16,9 +20,9 @@ const initialBalls = [
   { id: 6, suit: 'solid', color: '#29F900' }, // green
   { id: 7, suit: 'solid', color: '#954600' }, // brown
   { id: 8, suit: 'neither', color: '#000000' }, // black
-  { id: 9, suit: 'stripe', color: '#F3FF00' }, // yellow 
-  { id: 10, suit: 'stripe', color: '#0074FF' }, // blue
-  { id: 11, suit: 'stripe', color: '#FF002E' }, // red
+  { id: 9, suit: 'stripe', color: '#F3FF00' }, // yellow
+  { id: 10, suit: 'stripe', color: '#0074FF', tex: ballTen }, // blue
+  { id: 11, suit: 'stripe', color: '#FF002E', tex: ballEleven }, // red
   { id: 12, suit: 'stripe', color: '#8000FF' }, // purple
   { id: 13, suit: 'stripe', color: '#FF7C00' }, // orange
   { id: 14, suit: 'stripe', color: '#29F900' }, // green
@@ -34,6 +38,8 @@ const pocketPositions = [
   { x: 750, y: 630 },
   { x: 1380, y: 620 },
 ];
+
+//-------------------------------------------------------------------------//
 
 const PoolGame = () => {
   const [engine] = useState(Engine.create());
@@ -55,13 +61,9 @@ const PoolGame = () => {
 
   window.decomp = decomp; // poly-decomp is available globally
 
-  //---------------------------------// START SCREENS //-----------------------------------//
+//-------------------------------------------------------------------------//
 
-//  const showStartPage = ({ onStart }) => (
-//    <div className="start-screen">
-//      <button onClick={onStart}>Start Game</button>
-//    </div>
-//  );
+  //---------------------------------// START SCREENS //-----------------------------------//
 
   const startGameHandler = () => {
     setGameStarted(true);
@@ -82,6 +84,7 @@ const PoolGame = () => {
 
   useEffect(() => {
     if (!gameStarted) return;
+    
     // Start the timer when the component mounts
     const interval = setInterval(() => {
       setTimer(prevTimer => prevTimer + 1);
@@ -117,6 +120,7 @@ const PoolGame = () => {
       restitution: 0.9,
       friction: 0.005,
       density: 0.01,
+      angularDamping: 0.1, // 
       render: {
         fillStyle: '#ffffff',
         strokeStyle: '#000000',
@@ -143,15 +147,22 @@ const PoolGame = () => {
 
     // Create other pool balls
     const createBall = (x, y, color, id) => {
+      const ballTexture = initialBalls.find(ball => ball.id === id)?.tex; // Fetch texture URL or object
       return Bodies.circle(x, y, cueBallRadius, {
         label: 'ball',
         restitution: 0.9,
         friction: 0.005,
         density: 0.01,
+        angularDamping: 0.1, // 
         render: {
           fillStyle: color,
           strokeStyle: '#000000',
           lineWidth: 2,
+          sprite: {
+            texture: ballTexture,
+            xScale: 0.1, // 
+            yScale: 0.1, //
+          },
         },
         id, // Set the ball ID here
       });
