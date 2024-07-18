@@ -352,6 +352,7 @@ div.pocketed-balls {
 .pocketed-balls-container {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 30px;
 }
 
 .pocketed-ball {

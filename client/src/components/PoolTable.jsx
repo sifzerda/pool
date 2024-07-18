@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { Bodies, World } from 'matter-js';
 
-import greenTablePic from '../../public/images/greenTable.jpg';
+import greenTablePic from '../../public/images/greenTable.png';
 
 const PoolTable = ({ engine }) => {
     useEffect(() => {
@@ -16,8 +16,8 @@ const PoolTable = ({ engine }) => {
             lineWidth: 2,
             sprite: {
               texture: greenTablePic,
-              xScale: 0.81, // change texture width
-              yScale: 0.61, // change texture height
+              xScale: 1.3, // change texture width
+              yScale: 1.15, // change texture height
             },
           },
         });
@@ -64,31 +64,6 @@ const PoolTable = ({ engine }) => {
           rightWall,
         ]);
     
-//        // Pocket positions
-//        const pocketPositions = [
-//          { x: 110, y: 62 },
-//          { x: 750, y: 50 },
-//          { x: 1380, y: 60 },
-//          { x: 110, y: 620 },
-//          { x: 750, y: 630 },
-//          { x: 1380, y: 620 },
-//        ];
-    
-//        const pocketRadius = 20;
-//        const pockets = pocketPositions.map(pos => 
-//          Bodies.circle(pos.x, pos.y, pocketRadius, { 
-//            isSensor: true,
-//            isStatic: true, 
-//            render: { 
-//            fillStyle: '#000', 
-//              strokeStyle: '#43505a',
-//              lineWidth: 20,
-//            } 
-//          })
-//        );
-    
-///        World.add(engine.world, pockets);
-    
         return () => {
           World.remove(engine.world, [
             greenTable,
@@ -96,7 +71,6 @@ const PoolTable = ({ engine }) => {
             bottomWallLeft, bottomWallRight,
             leftWall,
             rightWall,
-//            ...pockets,
           ]);
         };
       }, [engine]);

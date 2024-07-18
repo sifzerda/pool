@@ -3,26 +3,28 @@ import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
 import decomp from 'poly-decomp';
 import PoolTable from './PoolTable';
 
+import stickPic from '../../public/images/poolStick.png';
+
 import StartScreen from './StartScreen'; 
 import FinalScore from './FinalScore'; 
 import HighScores from './HighScores'; 
 
 const initialBalls = [
   { id: 1, suit: 'solid', color: '#F3FF00', }, // yellow
-  { id: 2, suit: 'solid', color: '#0074FF' }, // blue
-  { id: 3, suit: 'solid', color: '#FF002E' }, // red
-  { id: 4, suit: 'solid', color: '#8000FF' }, // purple
-  { id: 5, suit: 'solid', color: '#FF7C00' }, // orange
-  { id: 6, suit: 'solid', color: '#29F900' }, // green
-  { id: 7, suit: 'solid', color: '#954600' }, // brown
+  { id: 2, suit: 'solid', color: '#00C0FF' }, // blue
+  { id: 3, suit: 'solid', color: '#FF3854' }, // red
+  { id: 4, suit: 'solid', color: '#BD00FF' }, // purple
+  { id: 5, suit: 'solid', color: '#FFAF00' }, // orange
+  { id: 6, suit: 'solid', color: '#0EFF00' }, // green
+  { id: 7, suit: 'solid', color: '#A98D00' }, // brown
   { id: 8, suit: 'neither', color: '#000000' }, // black
-  { id: 9, suit: 'stripe', color: '#F3FF00' }, // yellow
-  { id: 10, suit: 'stripe', color: '#0074FF', }, // blue
-  { id: 11, suit: 'stripe', color: '#FF002E', }, // red
-  { id: 12, suit: 'stripe', color: '#8000FF' }, // purple
-  { id: 13, suit: 'stripe', color: '#FF7C00' }, // orange
-  { id: 14, suit: 'stripe', color: '#29F900' }, // green
-  { id: 15, suit: 'stripe', color: '#954600' }, // brown
+  { id: 9, suit: 'stripe', color: '#FFCE00' }, // yellow
+  { id: 10, suit: 'stripe', color: '#001DDA', }, // blue
+  { id: 11, suit: 'stripe', color: '#D11400', }, // red
+  { id: 12, suit: 'stripe', color: '#49007E' }, // purple
+  { id: 13, suit: 'stripe', color: '#FF6100' }, // orange
+  { id: 14, suit: 'stripe', color: '#009017' }, // green
+  { id: 15, suit: 'stripe', color: '#7B643E' }, // brown
 ];
 
 // Pocket positions
@@ -126,7 +128,7 @@ const PoolGame = () => {
 
     // Create the cue stick
     const stickLength = 400;
-    const stickThickness = 5;
+    const stickThickness = 8;
     const cueStickBody = Bodies.rectangle(cueBallX + stickOffset, cueBallY, stickLength, stickThickness, {
       isStatic: true,
       isSensor: true,
@@ -134,6 +136,11 @@ const PoolGame = () => {
         fillStyle: '#d4a373',
         strokeStyle: '#8b4513',
         lineWidth: 2,
+        sprite: {
+          texture: stickPic,
+          xScale: 0.5, // change texture width
+          yScale: 0.5, // change texture height
+        },
       },
     });
     setCueStick(cueStickBody);
