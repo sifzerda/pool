@@ -46,6 +46,7 @@ const PoolGame = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [initialMousePosition, setInitialMousePosition] = useState({ x: 0, y: 0 });
+  const [stickOffset, setStickOffset] = useState(); // Added state for stick offset
   const [pocketedBalls, setPocketedBalls] = useState([]);
   const [timer, setTimer] = useState(0); // Timer state
   const [score, setScore] = useState(0); // Score state
@@ -55,7 +56,8 @@ const PoolGame = () => {
   const [showHighScores, setShowHighScores] = useState(false);
 
   const gameRef = useRef();
-  const stickOffset = -399; // Define the offset from the cue ball center
+  const initialStickOffset = -399;
+  const stickSlideBack = 370; // Offset when dragging
 
   window.decomp = decomp; // poly-decomp is available globally
 
@@ -198,7 +200,7 @@ const PoolGame = () => {
         // Create the cue stick
         const stickLength = 400;
         const stickThickness = 8;
-        const cueStickBody = Bodies.rectangle(cueBallX + stickOffset, cueBallY, stickLength, stickThickness, {
+        const cueStickBody = Bodies.rectangle(cueBallX + initialStickOffset, cueBallY, stickLength, stickThickness, {
           isStatic: true,
           isSensor: true,
           render: {
@@ -245,6 +247,26 @@ const PoolGame = () => {
     };
   }, [engine, gameStarted]);
 
+// stick slide when powering up ------------------------------------------------------ //
+  useEffect(() => {
+    if (!cueStick) return;
+    if (isDragging) {
+      Body.setPosition(cueStick, {
+        x: mousePosition.x - stickSlideBack,
+        y: mousePosition.y,
+      });
+      setStickOffset(stickSlideBack);
+    } else {
+      Body.setPosition(cueStick, {
+        x: cueBall.position.x + initialStickOffset,
+        y: cueBall.position.y,
+      });
+      setStickOffset(initialStickOffset);
+    }
+  }, [cueStick, isDragging, mousePosition]);
+
+// ----------------------------------------------------------------------------------------- //
+
   // Handling shots
   const handleMouseDown = (event) => {
     if (!gameStarted) return;
@@ -269,8 +291,8 @@ const PoolGame = () => {
       // Calculate the angle for the stick
       const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
       Body.setPosition(cueStick, {
-        x: cueBall.position.x + (stickOffset * Math.cos(angle)),
-        y: cueBall.position.y + (stickOffset * Math.sin(angle)),
+        x: cueBall.position.x + (initialStickOffset * Math.cos(angle)),
+        y: cueBall.position.y + (initialStickOffset * Math.sin(angle)),
       });
       Body.setAngle(cueStick, angle);
     }
