@@ -32,8 +32,8 @@ const PoolTable = ({ engine }) => {
           friction: 0, // Ensures minimal friction
           render: {
             //fillStyle: 'brown',
-            strokeStyle: '#5e0808',
-            lineWidth: 9,
+            //strokeStyle: '#5e0808',
+            //lineWidth: 9,
             visible: false,
           },
         };
