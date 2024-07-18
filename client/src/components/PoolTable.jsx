@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { Bodies, World } from 'matter-js';
 
-import greenTablePic from '../../public/images/greenTable.png';
+import greenTablePic from '../../public/images/greenTable.jpg';
 
 const PoolTable = ({ engine }) => {
     useEffect(() => {

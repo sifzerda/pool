@@ -55,7 +55,7 @@ const PoolGame = () => {
   const [showHighScores, setShowHighScores] = useState(false);
 
   const gameRef = useRef();
-  const stickOffset = -230; // Define the offset from the cue ball center
+  const stickOffset = -399; // Define the offset from the cue ball center
 
   window.decomp = decomp; // poly-decomp is available globally
 
@@ -138,8 +138,8 @@ const PoolGame = () => {
         lineWidth: 2,
         sprite: {
           texture: stickPic,
-          xScale: 0.5, // change texture width
-          yScale: 0.5, // change texture height
+          xScale: 0.7, // change texture width
+          yScale: 0.7, // change texture height
         },
       },
     });
@@ -310,6 +310,9 @@ if (showHighScores) {
 if (showFinalScore) {
   return <FinalScore score={score} time={timer} onHighScores={showHighScorePage} />;
 }
+
+
+
 
 //----------------------------------// RENDERING //----------------------------------//
 
