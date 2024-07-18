@@ -57,6 +57,10 @@
   }
 }
 
+.gap {
+  margin-top: 5px;
+}
+
 .grid-wrapper {
   display: flex;
   justify-content: center;
@@ -335,8 +339,6 @@ p.success {
 }
 
 /* score/timer/progress display ----------------------------------- */
-
-
 
 div.score-timer-container {
   display: flex;

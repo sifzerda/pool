@@ -1,5 +1,5 @@
 import '../App.css';
-import Pool from '../components/Pool';
+import TrialBike from '../components/TrialBike';
 import '../8ballpool.css';
 
 export default function About () {
@@ -11,7 +11,7 @@ export default function About () {
 
 <div className='grid-wrapper'>
 <div className='white-box'>
-      <Pool />
+      <TrialBike />
 </div>
 </div>
 {/* -------------- */}

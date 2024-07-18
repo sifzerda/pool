@@ -1,15 +1,12 @@
 import '../App.css';
-import TrialBike from '../components/TrialBike';
+import Pool from '../components/Pool';
 import '../8ballpool.css';
 
 export default function About () {
   return (
     <div>
-       <h1>How to Play</h1> 
 
-      <div className="separator-line"></div>
-
-<p>description</p>
+<p className='gap'>Click and hold the cue ball, and drag back to power shot. Release to fire.</p>
       
       <div className="separator-line"></div>
 
@@ -17,7 +14,7 @@ export default function About () {
 
 <div className='grid-wrapper'>
 <div className='white-box'>
-      <TrialBike />
+      <Pool />
 </div>
 </div>
 {/* -------------- */}
