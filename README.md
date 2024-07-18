@@ -38,6 +38,7 @@ The hardest part was getting the shot-taking mechanic to work and took a lot of 
 Things learned:
 - More experience with Matter.js; '2D.5' ball physics and 
 - Implementing 3D ('2D.5') textures into 2D matter.js objects with 'render.sprite'
+- Instead of z-index, matter.js layers objects based on order of rendering. So, the pool stick is on top of everything else because it's created last (see PoolGame.jsx)
 
 ## (2) Badges
 

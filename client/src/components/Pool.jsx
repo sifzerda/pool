@@ -106,89 +106,6 @@ const PoolGame = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-    // Create the cue ball at the center left of the screen
-    const cueBallRadius = 15;
-    const cueBallX = render.options.width / 4;
-    const cueBallY = render.options.height / 2;
-
-    const cueBallBody = Bodies.circle(cueBallX, cueBallY, cueBallRadius, {
-      label: 'ball',
-      restitution: 0.9,
-      friction: 0.005,
-      density: 0.01,
-      angularDamping: 0.1, // 
-      render: {
-        fillStyle: '#ffffff',
-        strokeStyle: '#000000',
-        lineWidth: 2,
-      },
-    });
-    setCueBall(cueBallBody);
-    World.add(engine.world, cueBallBody);
-
-    // Create the cue stick
-    const stickLength = 400;
-    const stickThickness = 8;
-    const cueStickBody = Bodies.rectangle(cueBallX + stickOffset, cueBallY, stickLength, stickThickness, {
-      isStatic: true,
-      isSensor: true,
-      render: {
-        fillStyle: '#d4a373',
-        strokeStyle: '#8b4513',
-        lineWidth: 2,
-        sprite: {
-          texture: stickPic,
-          xScale: 0.7, // change texture width
-          yScale: 0.7, // change texture height
-        },
-      },
-    });
-    setCueStick(cueStickBody);
-    World.add(engine.world, cueStickBody);
-
-    // Create other pool balls
-    const createBall = (x, y, color, id) => {
-      return Bodies.circle(x, y, cueBallRadius, {
-        label: 'ball',
-        restitution: 0.9,
-        friction: 0.005,
-        density: 0.01,
-        angularDamping: 0.1, // 
-        render: {
-          fillStyle: color,
-          strokeStyle: '#000000',
-          lineWidth: 2,
-        },
-        id, // Set the ball ID here
-      });
-    };
-
-    const ballSpacing = cueBallRadius * 2 + 2; // Adjust spacing as needed
-    const pyramidBaseX = (render.options.width / 4) * 2.6; // Center right position
-    const pyramidBaseY = render.options.height / 2;
-
-    const balls = [];
-
-    // Position ball 1 first
-    balls.push(createBall(pyramidBaseX, pyramidBaseY, initialBalls[0].color, initialBalls[0].id));
-
-    // Position the rest of the balls
-    let currentRow = 1;
-    let ballIndex = 1;
-
-    while (ballIndex < initialBalls.length) {
-      for (let i = 0; i <= currentRow; i++) {
-        const x = pyramidBaseX + (currentRow * ballSpacing * Math.cos(Math.PI / 6));
-        const y = pyramidBaseY - (currentRow * ballSpacing * Math.sin(Math.PI / 6)) + (i * ballSpacing);
-        balls.push(createBall(x, y, initialBalls[ballIndex].color, initialBalls[ballIndex].id));
-        ballIndex++;
-        if (ballIndex >= initialBalls.length) break;
-      }
-      currentRow++;
-    }
-
-    World.add(engine.world, balls);
-
     // Create pockets with smaller sensors
     const pocketRadius = 20;
     const sensorRadius = 10; // Smaller radius for collision detection
@@ -214,6 +131,89 @@ const PoolGame = () => {
 
       World.add(engine.world, [pocket, pocketSensor]);
     });
+
+        // Create the cue ball at the center left of the screen
+        const cueBallRadius = 15;
+        const cueBallX = render.options.width / 4;
+        const cueBallY = render.options.height / 2;
+    
+        const cueBallBody = Bodies.circle(cueBallX, cueBallY, cueBallRadius, {
+          label: 'ball',
+          restitution: 0.9,
+          friction: 0.005,
+          density: 0.01,
+          angularDamping: 0.1, // 
+          render: {
+            fillStyle: '#ffffff',
+            strokeStyle: '#000000',
+            lineWidth: 2,
+          },
+        });
+        setCueBall(cueBallBody);
+        World.add(engine.world, cueBallBody);
+    
+        // Create other pool balls
+        const createBall = (x, y, color, id) => {
+          return Bodies.circle(x, y, cueBallRadius, {
+            label: 'ball',
+            restitution: 0.9,
+            friction: 0.005,
+            density: 0.01,
+            angularDamping: 0.1, // 
+            render: {
+              fillStyle: color,
+              strokeStyle: '#000000',
+              lineWidth: 2,
+            },
+            id, // Set the ball ID here
+          });
+        };
+    
+        const ballSpacing = cueBallRadius * 2 + 2; // Adjust spacing as needed
+        const pyramidBaseX = (render.options.width / 4) * 2.6; // Center right position
+        const pyramidBaseY = render.options.height / 2;
+    
+        const balls = [];
+    
+        // Position ball 1 first
+        balls.push(createBall(pyramidBaseX, pyramidBaseY, initialBalls[0].color, initialBalls[0].id));
+    
+        // Position the rest of the balls
+        let currentRow = 1;
+        let ballIndex = 1;
+    
+        while (ballIndex < initialBalls.length) {
+          for (let i = 0; i <= currentRow; i++) {
+            const x = pyramidBaseX + (currentRow * ballSpacing * Math.cos(Math.PI / 6));
+            const y = pyramidBaseY - (currentRow * ballSpacing * Math.sin(Math.PI / 6)) + (i * ballSpacing);
+            balls.push(createBall(x, y, initialBalls[ballIndex].color, initialBalls[ballIndex].id));
+            ballIndex++;
+            if (ballIndex >= initialBalls.length) break;
+          }
+          currentRow++;
+        }
+    
+        World.add(engine.world, balls);
+
+        // Create the cue stick
+        const stickLength = 400;
+        const stickThickness = 8;
+        const cueStickBody = Bodies.rectangle(cueBallX + stickOffset, cueBallY, stickLength, stickThickness, {
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#d4a373',
+            strokeStyle: '#8b4513',
+            lineWidth: 2,
+            sprite: {
+              texture: stickPic,
+              xScale: 0.7, // change texture width
+              yScale: 0.7, // change texture height
+            },
+          },
+        });
+        setCueStick(cueStickBody);
+        World.add(engine.world, cueStickBody);
 
     // Collision events
     Events.on(engine, 'collisionStart', (event) => {
