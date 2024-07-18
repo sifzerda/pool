@@ -5,6 +5,16 @@ import PoolTable from './PoolTable';
 
 import stickPic from '../../public/images/poolStick.png';
 
+import greenTablePic from '../../public/images/greenTable.jpg';
+import blueTablePic from '../../public/images/tableBlue.jpg';
+import redTablePic from '../../public/images/tableRed.jpg';
+import yellowTablePic  from '../../public/images/tableYellow.jpg';
+import pinkTablePic  from '../../public/images/tablePink.jpg';
+import monoTablePic  from '../../public/images/tableMono.jpg';
+import chalkTablePic  from '../../public/images/tableChalk.jpg';
+import chalkTripTablePic from '../../public/images/tableChalkTrip.jpg';
+
+
 import StartScreen from './StartScreen'; 
 import FinalScore from './FinalScore'; 
 import HighScores from './HighScores'; 
@@ -53,6 +63,8 @@ const PoolGame = () => {
   const [gameStarted, setGameStarted] = useState(false); // State to track game start
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [showHighScores, setShowHighScores] = useState(false);
+
+  const [backgroundImage, setBackgroundImage] = useState(greenTablePic); // State for selected background image
 
   const gameRef = useRef();
   const stickOffset = -399; // Define the offset from the cue ball center
@@ -312,7 +324,9 @@ if (showFinalScore) {
 }
 
 
-
+  const handleBackgroundChange = (event) => {
+    setBackgroundImage(event.target.value);
+  };
 
 //----------------------------------// RENDERING //----------------------------------//
 
@@ -321,6 +335,26 @@ if (showFinalScore) {
       {!gameStarted ? ( <StartScreen onStart={startGameHandler} onHighScores={showHighScorePage} />
       ) : (
         <React.Fragment>
+
+
+<div className="controls">
+            <label>
+              <input type="radio" value={greenTablePic} checked={backgroundImage === greenTablePic} onChange={handleBackgroundChange} />
+              Green Table
+            </label>
+            <label>
+              <input type="radio" value={blueTablePic} checked={backgroundImage === blueTablePic} onChange={handleBackgroundChange} />
+              Blue Table
+            </label>
+            <label>
+              <input type="radio" value={redTablePic} checked={backgroundImage === redTablePic} onChange={handleBackgroundChange} />
+              Red Table
+            </label>
+          </div>
+          <PoolTable engine={engine} backgroundImage={backgroundImage} />
+
+
+
           <div className="score-timer-container">
             <div className="timer">
               <h3>Elapsed Time: {formatTime(timer)}</h3>

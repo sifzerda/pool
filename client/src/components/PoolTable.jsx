@@ -4,7 +4,7 @@ import { Bodies, World } from 'matter-js';
 
 import greenTablePic from '../../public/images/greenTable.jpg';
 
-const PoolTable = ({ engine }) => {
+const PoolTable = ({ engine, backgroundImage  }) => {
     useEffect(() => {
     
         const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
@@ -12,7 +12,7 @@ const PoolTable = ({ engine }) => {
           isSensor: true,
           render: {
             sprite: {
-              texture: greenTablePic,
+              texture: backgroundImage,
               xScale: 1.3, // change texture width
               yScale: 1.15, // change texture height
             },
@@ -72,7 +72,7 @@ const PoolTable = ({ engine }) => {
             rightWall,
           ]);
         };
-      }, [engine]);
+      }, [engine, backgroundImage]);
     
       return null; // This component does not render any JSX
     };
