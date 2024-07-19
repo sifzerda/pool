@@ -154,6 +154,8 @@ There are some alternate pool table colours in the public/images folder. You can
 - Pool stick doesn't slide back when you take a shot
 - Draggable Rack in spare file, haven't put it in game
 - Dragging only extends within canvas rather than full browser window
+- No ball pot order
+- Potting cue ball needs cue ball reset to initial position or penalty
 
 Optimization:
 - use react-virtualized to only render visible stuff
