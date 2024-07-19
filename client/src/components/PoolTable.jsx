@@ -11,7 +11,17 @@ import greenTablePic from '../../public/images/greenTable.jpg';
 //import chalkTablePic  from '../../public/images/tableChalk.jpg';
 //import chalkTripTablePic from '../../public/images/tableChalkTrip.jpg';
 
-const PoolTable = ({ engine, backgroundImage  }) => {
+// Pocket positions
+const pocketPositions = [
+  { x: 119, y: 56 }, // top left 
+  { x: 746, y: 50 }, // top middle 
+  { x: 1370, y: 60 }, // top right 
+  { x: 122, y: 625 }, // bottom left 
+  { x: 747, y: 630 }, // bottom middle
+  { x: 1370, y: 622 }, // bottom right 
+];
+
+const PoolTable = ({ engine  }) => {
     useEffect(() => {
     
         const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
@@ -69,6 +79,32 @@ const PoolTable = ({ engine, backgroundImage  }) => {
           leftWall,
           rightWall,
         ]);
+
+            // Create pockets with smaller sensors
+    const pocketRadius = 20;
+    const sensorRadius = 10; // Smaller radius for collision detection
+
+    pocketPositions.forEach(pos => {
+      const pocket = Bodies.circle(pos.x, pos.y, pocketRadius, {
+        label: 'pocket',
+        isSensor: true,
+        isStatic: true,
+        render: {
+          visible: false,
+        },
+      });
+
+      const pocketSensor = Bodies.circle(pos.x, pos.y, sensorRadius, {
+        label: 'pocketSensor',
+        isSensor: true,
+        isStatic: true,
+        render: {
+          visible: false,
+        },
+      });
+
+      World.add(engine.world, [pocket, pocketSensor]);
+    });
     
         return () => {
           World.remove(engine.world, [
@@ -77,9 +113,10 @@ const PoolTable = ({ engine, backgroundImage  }) => {
             bottomWallLeft, bottomWallRight,
             leftWall,
             rightWall,
+            pocketPositions,
           ]);
         };
-      }, [engine, backgroundImage]);
+      }, [engine]);
     
       return null; // This component does not render any JSX
     };

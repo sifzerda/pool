@@ -25,16 +25,6 @@ const initialBalls = [
   { id: 15, suit: 'stripe', color: '#7B643E' }, // brown
 ];
 
-// Pocket positions
-const pocketPositions = [
-  { x: 119, y: 56 }, // top left 
-  { x: 746, y: 50 }, // top middle 
-  { x: 1370, y: 60 }, // top right 
-  { x: 122, y: 625 }, // bottom left 
-  { x: 747, y: 630 }, // bottom middle
-  { x: 1370, y: 622 }, // bottom right 
-];
-
 //-------------------------------------------------------------------------//
 
 const PoolGame = () => {
@@ -101,32 +91,6 @@ const PoolGame = () => {
     Render.run(render);
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
-
-    // Create pockets with smaller sensors
-    const pocketRadius = 20;
-    const sensorRadius = 10; // Smaller radius for collision detection
-
-    pocketPositions.forEach(pos => {
-      const pocket = Bodies.circle(pos.x, pos.y, pocketRadius, {
-        label: 'pocket',
-        isSensor: true,
-        isStatic: true,
-        render: {
-          visible: false,
-        },
-      });
-
-      const pocketSensor = Bodies.circle(pos.x, pos.y, sensorRadius, {
-        label: 'pocketSensor',
-        isSensor: true,
-        isStatic: true,
-        render: {
-          visible: false,
-        },
-      });
-
-      World.add(engine.world, [pocket, pocketSensor]);
-    });
 
         // Create the cue ball at the center left of the screen
         const cueBallRadius = 15;
