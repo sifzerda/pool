@@ -1,7 +1,5 @@
 # 8 Ball Pool 🎱
 
-THIS IS CURRENTLY UNFINISHED
-
 Current games in gamestack:
 
 - [ ] Minesweeper
@@ -238,4 +236,4 @@ Distributed under the MIT License. See LICENSE.txt for more information.
 
 ## (14) Project status
 
-This project is unfinished.
+This project is complete.
