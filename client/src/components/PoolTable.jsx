@@ -21,7 +21,7 @@ const pocketPositions = [
   { x: 1370, y: 622 }, // bottom right 
 ];
 
-const PoolTable = ({ engine  }) => {
+const PoolTable = ({ engine }) => {
     useEffect(() => {
     
         const greenTable = Bodies.rectangle(745, 340, 1295, 590, {

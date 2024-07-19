@@ -40,10 +40,12 @@ const PoolGame = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [showHighScores, setShowHighScores] = useState(false);
+  const [aimLine, setAimLine] = useState(null);
 
   const gameRef = useRef();
   const initialStickOffset = -399;
   const stickSlideBack = 370;
+  const aimLineOffset = 50; // Offset distance for aim line
 
   //---------------------------------// START SCREENS //-----------------------------------//
 
@@ -234,11 +236,23 @@ const PoolGame = () => {
   };
 
   const handleMouseMove = (event) => {
-    if (isDragging && gameStarted) {
+    if (gameStarted) {
       const rect = gameRef.current.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       setMousePosition({ x, y });
+
+      if (isDragging) {
+        const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
+        const offsetX = Math.cos(angle) * aimLineOffset;
+        const offsetY = Math.sin(angle) * aimLineOffset;
+        setAimLine({
+          start: { x: cueBall.position.x, y: cueBall.position.y },
+          end: { x: x + offsetX, y: y + offsetY },
+        });
+      } else {
+        setAimLine(null);
+      }
 
       // Calculate the angle for the stick
       const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
@@ -247,6 +261,22 @@ const PoolGame = () => {
         y: cueBall.position.y + (initialStickOffset * Math.sin(angle)),
       });
       Body.setAngle(cueStick, angle);
+
+    // Update aim line position ----------------------------------------------------------------//
+    if (cueBall) {
+      const angle = Math.atan2(cueBall.position.y - event.clientY, cueBall.position.x - event.clientX);
+      const aimLineEnd = {
+        x: cueBall.position.x + Math.cos(angle) * aimLineOffset,
+        y: cueBall.position.y + Math.sin(angle) * aimLineOffset,
+      };
+      setAimLine({
+        x1: cueBall.position.x,
+        y1: cueBall.position.y,
+        x2: aimLineEnd.x,
+        y2: aimLineEnd.y,
+      });
+    }
+//---------------------------------------------------------------------------------------------//
     }
   };
 
@@ -293,59 +323,80 @@ if (showFinalScore) {
 
   return (
     <div>
-      {!gameStarted ? ( <StartScreen onStart={startGameHandler} onHighScores={showHighScorePage} />
-      ) : (
-        <React.Fragment>
-
-          <div className="score-timer-container">
-            <div className="timer">
-              <h3>Elapsed Time: {formatTime(timer)}</h3>
-            </div>
-
-            <div className="score">
-              <h3>Score: {score}</h3>
-            </div>
-
-<div><button className='end-game-btn' onClick={endGameHandler}>End Game</button></div>
-
+    {!gameStarted ? (
+      <StartScreen onStart={startGameHandler} onHighScores={showHighScorePage} />
+    ) : (
+      <React.Fragment>
+        <div className="score-timer-container">
+          <div className="timer">
+            <h3>Elapsed Time: {formatTime(timer)}</h3>
           </div>
-
-          <div className="pocketed-balls">
-            <h3>Pocketed Balls:</h3>
-            <div className="pocketed-balls-container">
-              {initialBalls.map(ball => {
-                const isPocketed = pocketedBalls.includes(ball.id);
-                return (
-                  <div
-                    key={ball.id}
-                    className="pocketed-ball"
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '50%',
-                      backgroundColor: isPocketed ? ball.color : '#000',
-                      margin: '5px',
-                      display: 'inline-block',
-                      border: '2px solid #000',
-                    }}
-                  />
-                );
-              })}
-            </div>
+          <div className="score">
+            <h3>Score: {score}</h3>
           </div>
+          <div><button className='end-game-btn' onClick={endGameHandler}>End Game</button></div>
+        </div>
 
-          <div
-            className="game-container"
-            ref={gameRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-          >
-            <PoolTable engine={engine} />
+        <div className="pocketed-balls">
+          <h3>Pocketed Balls:</h3>
+          <div className="pocketed-balls-container">
+            {initialBalls.map(ball => {
+              const isPocketed = pocketedBalls.includes(ball.id);
+              return (
+                <div
+                  key={ball.id}
+                  className="pocketed-ball"
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    backgroundColor: isPocketed ? ball.color : '#000',
+                    margin: '5px',
+                    display: 'inline-block',
+                    border: '2px solid #000',
+                  }}
+                />
+              );
+            })}
           </div>
-        </React.Fragment>
-      )}
-    </div>
+        </div>
+
+        <div
+          className="game-container"
+          ref={gameRef}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          style={{ position: 'relative' }} // Ensure relative positioning
+        >
+          <PoolTable engine={engine} />
+
+          {aimLine && (
+            <svg
+              style={{
+                position: 'absolute', // Absolute positioning for layering
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                pointerEvents: 'none', // Ensure SVG doesn't block mouse events
+                zIndex: 10, // Higher z-index to render above other elements
+              }}
+            >
+              <line
+                x1={aimLine.x1}
+                y1={aimLine.y1}
+                x2={aimLine.x2}
+                y2={aimLine.y2}
+                stroke="white"
+                strokeWidth="2"
+              />
+            </svg>
+          )}
+        </div>
+      </React.Fragment>
+    )}
+  </div>
   );
 };
 
