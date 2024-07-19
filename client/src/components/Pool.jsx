@@ -206,6 +206,14 @@ const PoolGame = () => {
     };
   }, [engine, gameStarted]);
 
+//----------------------// Check if all balls are pocketed ---------------------//
+
+    useEffect(() => {
+      if (pocketedBalls.length === initialBalls.length) {
+        endGameHandler(); // Trigger end game handler if all balls are pocketed
+      }
+    }, [pocketedBalls]);
+
 // stick slide when powering up ------------------------------------------------------ //
   useEffect(() => {
     if (!cueStick || !cueBall) return;
