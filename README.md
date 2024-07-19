@@ -18,7 +18,7 @@ Current games in gamestack:
   - [(4) Installation](#4-installation)
   - [(5) Usage](#5-usage)
   - [(6) Dev Stuff: Building:](#6-dev-stuff-building)
-  - [(7) Alternative Config](#7-alternative-config)
+  - [(7) Config](#7-config)
   - [(8) Bugs and Further Development:](#8-bugs-and-further-development)
   - [(9) To do:](#9-to-do)
   - [(10) Support](#10-support)
@@ -114,7 +114,7 @@ The main functions of code:
  
 (B) Movement:
 
-## (7) Alternative Config
+## (7) Config
 
 (A) Pocket Sensors:
 
