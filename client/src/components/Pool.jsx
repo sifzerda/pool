@@ -55,8 +55,6 @@ const PoolGame = () => {
   const initialStickOffset = -399;
   const stickSlideBack = 370;
 
-  window.decomp = decomp; // poly-decomp is available globally
-
   //---------------------------------// START SCREENS //-----------------------------------//
 
   const startGameHandler = () => {
@@ -303,6 +301,10 @@ const PoolGame = () => {
       setIsDragging(false);
     }
   };
+
+// ------------------------------------// aim line // ------------------------------//
+
+
 
   //----------------------------------// timer //----------------------------------//
 
