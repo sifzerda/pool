@@ -43,7 +43,7 @@ const PoolGame = () => {
   const [aimLine, setAimLine] = useState(null);
 
   const gameRef = useRef();
-  const initialStickOffset = -399;
+  const initialStickOffset = -399; // offset stick from cue ball
   const stickSlideBack = 370;
   const aimLineOffset = 100; // Offset distance for aim line
 
@@ -55,7 +55,6 @@ const PoolGame = () => {
 
   const showHighScorePage = () => {
     setShowHighScores(true);
-    console.log('High Scores button clicked', showHighScores);
   };
 
   // in game: Function to end the game and show final score
@@ -64,7 +63,7 @@ const PoolGame = () => {
     setShowFinalScore(true);
   };
 
-//------------------------------------------------------------------------------------//
+//-----------------------// game initializing //-----------------------------//
 
   useEffect(() => {
     if (!gameStarted) return;
@@ -94,7 +93,7 @@ const PoolGame = () => {
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
-        // Create the cue ball at the center left of the screen
+// --------------------------// CUE BALL //------------------------------//
         const cueBallRadius = 15;
         const cueBallX = render.options.width / 4;
         const cueBallY = render.options.height / 2;
@@ -114,7 +113,7 @@ const PoolGame = () => {
         setCueBall(cueBallBody);
         World.add(engine.world, cueBallBody);
     
-        // Create other pool balls
+// --------------------------// OTHER BALLS //------------------------------//
         const createBall = (x, y, color, id) => {
           return Bodies.circle(x, y, cueBallRadius, {
             label: 'ball',
@@ -157,7 +156,7 @@ const PoolGame = () => {
     
         World.add(engine.world, balls);
 
-        // Create the cue stick
+// --------------------------// POOL STICK //------------------------------//
         const stickLength = 400;
         const stickThickness = 8;
         const cueStickBody = Bodies.rectangle(cueBallX + initialStickOffset, cueBallY, stickLength, stickThickness, {
@@ -177,7 +176,7 @@ const PoolGame = () => {
         setCueStick(cueStickBody);
         World.add(engine.world, cueStickBody);
 
-    // Collision events
+// --------------------------// BALL COLLISION //------------------------------//
     Events.on(engine, 'collisionStart', (event) => {
       const pairs = event.pairs;
       pairs.forEach((collision) => {
@@ -219,7 +218,7 @@ const PoolGame = () => {
     }
   }, [cueStick, cueBall, isDragging, mousePosition]);
 
-// ----------------------------------------------------------------------------------------- //
+// --------------------------------------- SHOT LOGIC -------------------------------------------------- //
 
   // Handling shots
   const handleMouseDown = (event) => {
@@ -302,13 +301,9 @@ const PoolGame = () => {
     }
   };
 
-// ------------------------------------// aim line // ------------------------------//
-
-
-
   //----------------------------------// timer //----------------------------------//
 
-  // fx to Convert timer to minutes and seconds
+  // helper fx to Convert timer to minutes and seconds
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
