@@ -33,7 +33,7 @@ A personal project to create a react MERN stack app which has a number of simple
 This was built with React, Matter.js, Node, Javascript, and CSS. 
 Game was divided up into the smallest working components/units. It reused my asteroids code as template, changing the asteroids to pool balls.  
 
-The hardest part was getting the shot-taking mechanic to work and took a lot of playing around. Everything else was simpler.
+The hardest part was getting the shot-taking mechanic to work and took a lot of playing around.
 
 Things learned:
 - More experience with Matter.js; '2D.5' ball physics and 
@@ -90,7 +90,7 @@ Technologies:
 
 - <strong>useRef and requestAnimationFrame: </strong> API library to update game state at fps matching the display refresh rate, creating animation, by default 60fps.
 - <strong>matter-js: </strong> physics and collision detection engine.
-- <strong>Canvas: </strong> API for creating and drawing on a canvas.
+- ~~<strong>Canvas: </strong> API for creating and drawing on a canvas.~~ Used this initially to draw aim line but took it out and drew with SVG instead.
 
 ## (6) Dev Stuff: Building:
 
@@ -112,12 +112,12 @@ The main functions of code:
 - <strong>'const createBall' </strong>: makes all other balls taking in data from initialBalls
 - <strong>'const ballSpacing' </strong>: positions balls on game start.
  
-
 (B) Movement:
 
 ## (7) Alternative Config
 
 (A) Pocket Sensors:
+
 You can remove:
 ```bash
 const sensorRadius = 10;
@@ -136,45 +136,22 @@ and
 Pocket sensors create smaller objects inside each pocket which must be touched for ball to get removed. 
 Without it, balls need only touch any part of pocket to fall in. Pocket sensors allow pocket detection radius to be configurable, so balls can sit right at the edge of the pocket, touching it, but not trip detection.
 
+(B) Change Background:
 
-
-
-Ship size; x/ vertices by amount (e.g. 50 / .3) for each value:
-(1) Current size:
+There are some alternate pool table colours in the public/images folder. You can switch the green table out by replacing 'greenTablePic' inside PoolTable.jsx with one of the other variables (and uncommenting it)
 ```bash
-      { x: 0, y: 0 }, 
-      { x: 34, y: 14 }, 
-      { x: 0, y: 27 }     
-```
-(2) Tiny ship:
-```bash
-      { x: 0, y: 0 },  
-      { x: 16, y: 6 },   
-      { x: 0, y: 13 }  
-```
-(2) Bigger ship:
-```bash
-      { x: 0, y: 0 }, 
-      { x: 50, y: 20 },   
-      { x: 0, y: 40 }   
-```
-(2) Even Bigger ship:
-```bash
-      { x: 0, y: 0 }, 
-      { x: 65, y: 26 },   
-      { x: 0, y: 52 }   
-```
-Acceleration: raise (closer to 1.0) for speed
-```bash
-  const moveShipUp = () => {
-[...]
-      const forceMagnitude = 0.0003; 
-    }
+        const greenTable = Bodies.rectangle(745, 340, 1295, 590, {
+          isStatic: true,
+          isSensor: true,
+          render: {
+            sprite: {
+              texture: greenTablePic,
 ```
 
 ## (8) Bugs and Further Development: 
 
 - Balls go through walls if hit hard enough
+- Pool stick doesn't slide back when you take a shot
 
 Optimization:
 - use react-virtualized to only render visible stuff
@@ -186,7 +163,7 @@ Optimization:
 
 - [x] Make a cue ball
 - [x] Get mouse drag shot mechanic
-- [ ] Make aim line when dragging
+- [x] Make aim line when dragging
 - [x] Make 15 balls
 - [x] set world gravity = 0 and give world borders
 - [x] make table;
@@ -198,41 +175,34 @@ Optimization:
 - [x] make pool rack 
   - [ ] Rack needs to be non physical, or physical until first move (to keep balls in place before being hit)
 - Make pool stick [x]
-  - [ ] Refine pool stick to rotate or slide back and then disappear on releasing mouse button
+  - [x] Refine pool stick to rotate or slide back and then disappear on releasing mouse button
   - [ ] Pool stick only appears when its your turn (in multiplayer), it disappears when ever balls are in motion, or after turn taken
-- make pockets accept balls, or balls disappear when they 'collide' with center of pocket
-- Pocket may be IsSensor or otherwise does not physically interact with balls (or anything)
+- [x] Make pockets accept balls, or balls disappear when they 'collide' with center of pocket
 -  [ ] MUCH LATER - Drag and drop cue ball on potting it
 -  [ ] drag and drop cue ball on first move 
 - [x] Create triangle rack: through Matter.js 'chamfer' option to round corners.
 - [ ] Ball potting order: if you pocket a stripes ball first, you are stripes, or vice versa (multiplyer logic)
-- Create game rule logic:
-- Split balls into solids and stripes (tracked by UseState)
-- Give balls colors (non tracked by UseState)
-  - This may be tracked by useState later to display as image of balls needing to be potted (sort of like life display at top of screen)
-- Give balls 3d textures
-- maybe upgrade table appearance
-- aim line
-  - aim line short ricochet on wall or balls (i.e. aim line has collision logic with non-isSensors)
-  - 
--  POOL STICK LOGIC (consider):
-   -  making a slightly larger red circle surround the cue ball wherever it goes. probably will require tracking cue ball position with useState. 
-   -  Align or attack one end of a rod to that circle allowing 360 rotation around the cue ball. Rod and circle can remain visible whole time for debugging (later you can make the red circle transparent)
+- [x] Split balls into solids and stripes (tracked by UseState)
+- [x] Give balls colors (non tracked by UseState)
+  - [x] This may be tracked by useState later to display as image of balls needing to be potted (sort of like life display at top of screen)
+- [ ] Give balls 3d textures
+- [x] maybe upgrade table appearance
+  
 -  STYLE:
--  Green pool table (or radio switches to change table color; green default, red, blue, yellow, white, black - or fluro colors)
--  change stick color; beige (default), brown, black, red, blue, green
--  sound fx (game start initializing sound, cue hitting ball, stick hitting cue, ball hitting pocket, ball rolling along pocket rail)
+-  ~~[ ] Green pool table (or radio switches to change table color; green default, red, blue, yellow, white, black - or fluro colors)~~ made this but creates issues changing background pre-game initialization;
+-  ~~[ ] change stick color; beige (default), brown, black, red, blue, green~~ same issue as above
+- [ ] sound fx (game start initializing sound, cue hitting ball, stick hitting cue, ball hitting pocket, ball rolling along pocket rail)
 
 Navigation:
 
-- [ ] Game Start screen
-- [ ] Game win/loss screen
-  -  [ ] Timer potentially player turn is on a timer (e.g. 1 minute), after which, other player's turn
-  - [ ] Score: each ball pocketed + time bonus
-- [ ] Exit game through main game
-- [ ] Highscores (from start screen)
-- [ ] Submit highscores
-- [ ] Profile scores and logging in
+- [x] Game Start screen
+- [x] Game win/loss screen
+  -  [x] Timer potentially player turn is on a timer (e.g. 1 minute), after which, other player's turn
+  - [x] Score: each ball pocketed + time bonus
+- [x] Exit game through main game
+- [x] Highscores (from start screen)
+- [x] Submit highscores
+- [x] Profile scores and logging in
 
 ## (10) Support
 
@@ -262,4 +232,4 @@ Distributed under the MIT License. See LICENSE.txt for more information.
 
 ## (14) Project status
 
-This project is UNFINISHED.
+This project is unfinished.
