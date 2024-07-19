@@ -152,6 +152,8 @@ There are some alternate pool table colours in the public/images folder. You can
 
 - Balls go through walls if hit hard enough
 - Pool stick doesn't slide back when you take a shot
+- Draggable Rack in spare file, haven't put it in game
+- Dragging only extends within canvas rather than full browser window
 
 Optimization:
 - use react-virtualized to only render visible stuff
