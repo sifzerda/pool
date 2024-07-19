@@ -164,6 +164,7 @@ Optimization:
 - [x] Make a cue ball
 - [x] Get mouse drag shot mechanic
 - [x] Make aim line when dragging
+- [ ] make stick and aimline not visible when cue ball is moving
 - [x] Make 15 balls
 - [x] set world gravity = 0 and give world borders
 - [x] make table;
