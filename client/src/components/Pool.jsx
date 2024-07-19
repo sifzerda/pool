@@ -353,13 +353,7 @@ if (showFinalScore) {
                   key={ball.id}
                   className="pocketed-ball"
                   style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
                     backgroundColor: isPocketed ? ball.color : '#000',
-                    margin: '5px',
-                    display: 'inline-block',
-                    border: '2px solid #000',
                   }}
                 />
               );
@@ -373,29 +367,17 @@ if (showFinalScore) {
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
-          style={{ position: 'relative' }} // Ensure relative positioning
         >
+          
           <PoolTable engine={engine} />
 
           {aimLine && (
-          <svg
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              pointerEvents: 'none',
-              zIndex: 10,
-            }}
-          >
-            <line
+          <svg className="aim-line">
+            <line className="green-line"
               x1={aimLine.x1}
               y1={aimLine.y1}
               x2={aimLine.x2}
               y2={aimLine.y2}
-              stroke="greenyellow"
-              strokeWidth="2"
             />
           </svg>
         )}
