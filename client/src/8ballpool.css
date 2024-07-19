@@ -340,14 +340,14 @@ p.success {
 
 /* score/timer/progress display ----------------------------------- */
 
-div.score-timer-container {
+.score-timer-container {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
   color: white;
 }
 
-div.pocketed-balls {
+.pocketed-balls {
   color: white;
 }
 

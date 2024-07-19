@@ -204,7 +204,7 @@ h2.login-title {
   color: var(--lblue);
 }
 
-div.container.my-1-9 {
+.container.my-1-9 {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
@@ -234,7 +234,7 @@ div.container.my-1-9 {
   padding: 20px;
 }
 
-header.header {
+.header {
   background: black;
   border: none;
 }
@@ -276,7 +276,7 @@ a:hover {
 
 /* ------ -------------------- ----------- */
 
-div.bucket-app {
+.bucket-app {
   border-top: var(--dark-blue) ridge 8px;
 }
 
@@ -347,10 +347,6 @@ h1 {
   padding-left: 10px;
   padding-right: 10px;
   border-radius: 5%;
-  box-shadow-bottom: 
-  0 0 4px  rgb(0, 0, 255),  
-  0 0 8px rgba(0, 0, 255, 0.5),
-  0 0 12px rgb(0, 0, 255);
   justify-content: center;
   text-align: center;
   font-family: "Neonderthaw", Monospace, sans-serif;
