@@ -45,7 +45,7 @@ const PoolGame = () => {
   const gameRef = useRef();
   const initialStickOffset = -399;
   const stickSlideBack = 370;
-  const aimLineOffset = 50; // Offset distance for aim line
+  const aimLineOffset = 100; // Offset distance for aim line
 
   //---------------------------------// START SCREENS //-----------------------------------//
 
@@ -394,7 +394,7 @@ if (showFinalScore) {
               y1={aimLine.y1}
               x2={aimLine.x2}
               y2={aimLine.y2}
-              stroke="white"
+              stroke="greenyellow"
               strokeWidth="2"
             />
           </svg>
