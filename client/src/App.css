@@ -252,7 +252,6 @@ h2.login-title {
   width: 100%;
   display: flex;
   flex-direction: column;
-  border-right: var(--dark-blue) ridge 8px;
   align-items: center;
   padding: 0;
 }

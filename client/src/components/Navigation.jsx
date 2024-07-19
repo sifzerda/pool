@@ -60,30 +60,6 @@ return (
       </Link>
     </li>
 
-    <li className="nav-item">
-      <Link to="/Pool" className={isActive('/TrialBike')}>
-        CopyX
-      </Link>
-    </li>
-
-    <li className="nav-item">
-      <Link to="/Copy1" className={isActive('/Copy1')}>
-        Copy1
-      </Link>
-    </li>
-
-    <li className="nav-item">
-      <Link to="/Copy2" className={isActive('/Copy2')}>
-      Copy2
-      </Link>
-    </li>
-
-    <li className="nav-item">
-      <Link to="/Copy3" className={isActive('/Cop3')}>
-      Copy3
-      </Link>
-    </li>
-
     {/* ---------------------------------- log in conditional function --------------------------------  */}
 
     {showNavigation()}
