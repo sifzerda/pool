@@ -359,13 +359,7 @@ p.success {
 }
 
 .pocketed-ball {
-  margin: 5px;
   transition: background-color 0.3s ease;
-  display: 'inline-block';
-  border: '2px solid #000';
-  border-radius: '50%';
-  width: '30px';
-  height: '30px';
 }
 
 svg.aim-line {

@@ -356,7 +356,13 @@ if (showFinalScore) {
                   key={ball.id}
                   className="pocketed-ball"
                   style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
                     backgroundColor: isPocketed ? ball.color : '#000',
+                    margin: '5px',
+                    display: 'inline-block',
+                    border: '2px solid #000',
                   }}
                 />
               );

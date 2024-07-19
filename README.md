@@ -68,9 +68,7 @@ Things learned:
 
 ![poolPic1](https://github.com/user-attachments/assets/7a029b18-93a7-47f3-937f-798dae3b747d)
 
-![pp2](https://github.com/user-attachments/assets/cd92722e-1ad5-4bdf-8541-f951ec26a6bb)
-
-![pp](https://github.com/user-attachments/assets/a5c2a26b-15c4-40b8-b50b-4e0b338aac2d)
+![poolpic1](https://github.com/user-attachments/assets/12ba417e-f00a-4b37-adb3-a6612b539c31)
 
 ## (4) Installation
 
