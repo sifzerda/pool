@@ -244,11 +244,11 @@ const PoolGame = () => {
 
       if (isDragging) {
         const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
-        const offsetX = Math.cos(angle) * aimLineOffset;
-        const offsetY = Math.sin(angle) * aimLineOffset;
+    const offsetX = Math.cos(angle) * aimLineOffset;
+    const offsetY = Math.sin(angle) * aimLineOffset;
         setAimLine({
           start: { x: cueBall.position.x, y: cueBall.position.y },
-          end: { x: x + offsetX, y: y + offsetY },
+          end: { x: cueBall.position.x + offsetX, y: cueBall.position.y + offsetY },
         });
       } else {
         setAimLine(null);
@@ -264,7 +264,13 @@ const PoolGame = () => {
 
     // Update aim line position ----------------------------------------------------------------//
     if (cueBall) {
-      const angle = Math.atan2(cueBall.position.y - event.clientY, cueBall.position.x - event.clientX);
+      const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
+      Body.setPosition(cueStick, {
+        x: cueBall.position.x - (stickSlideBack * Math.cos(angle)),
+        y: cueBall.position.y - (stickSlideBack * Math.sin(angle)),
+      });
+      Body.setAngle(cueStick, angle);
+    
       const aimLineEnd = {
         x: cueBall.position.x + Math.cos(angle) * aimLineOffset,
         y: cueBall.position.y + Math.sin(angle) * aimLineOffset,
@@ -372,27 +378,27 @@ if (showFinalScore) {
           <PoolTable engine={engine} />
 
           {aimLine && (
-            <svg
-              style={{
-                position: 'absolute', // Absolute positioning for layering
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                pointerEvents: 'none', // Ensure SVG doesn't block mouse events
-                zIndex: 10, // Higher z-index to render above other elements
-              }}
-            >
-              <line
-                x1={aimLine.x1}
-                y1={aimLine.y1}
-                x2={aimLine.x2}
-                y2={aimLine.y2}
-                stroke="white"
-                strokeWidth="2"
-              />
-            </svg>
-          )}
+          <svg
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              zIndex: 10,
+            }}
+          >
+            <line
+              x1={aimLine.x1}
+              y1={aimLine.y1}
+              x2={aimLine.x2}
+              y2={aimLine.y2}
+              stroke="white"
+              strokeWidth="2"
+            />
+          </svg>
+        )}
         </div>
       </React.Fragment>
     )}
