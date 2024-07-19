@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Matter, { Engine, Render, World, Bodies, Body, Events } from 'matter-js';
-import decomp from 'poly-decomp';
+
 import PoolTable from './PoolTable';
-
 import stickPic from '../../public/images/poolStick.png';
-
 import StartScreen from './StartScreen'; 
 import FinalScore from './FinalScore'; 
 import HighScores from './HighScores'; 
