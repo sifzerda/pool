@@ -155,6 +155,7 @@ There are some alternate pool table colours in the public/images folder. You can
 - Dragging only extends within canvas rather than full browser window
 - No ball pot order
 - Potting cue ball needs cue ball reset to initial position or penalty
+- Light blue ball doesn't move on deployed app (it does on local)
 
 Optimization:
 - use react-virtualized to only render visible stuff
