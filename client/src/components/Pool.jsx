@@ -242,56 +242,63 @@ const PoolGame = () => {
     }
   };
 
-  const handleMouseMove = (event) => {
-    if (gameStarted) {
-      const rect = gameRef.current.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      setMousePosition({ x, y });
+  useEffect(() => {
+    const handleMouseMoveGlobal = (event) => {
+      if (gameStarted) {
+        const rect = gameRef.current.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        setMousePosition({ x, y });
+  
+        if (isDragging) {
+          const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
+          const offsetX = Math.cos(angle) * aimLineOffset;
+          const offsetY = Math.sin(angle) * aimLineOffset;
+          setAimLine({
+            start: { x: cueBall.position.x, y: cueBall.position.y },
+            end: { x: cueBall.position.x + offsetX, y: cueBall.position.y + offsetY },
+          });
+        } else {
+          setAimLine(null);
+        }
 
-      if (isDragging) {
-        const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
-    const offsetX = Math.cos(angle) * aimLineOffset;
-    const offsetY = Math.sin(angle) * aimLineOffset;
-        setAimLine({
-          start: { x: cueBall.position.x, y: cueBall.position.y },
-          end: { x: cueBall.position.x + offsetX, y: cueBall.position.y + offsetY },
-        });
-      } else {
-        setAimLine(null);
-      }
 
-      // Calculate the angle for the stick
-      const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
-      Body.setPosition(cueStick, {
-        x: cueBall.position.x + (initialStickOffset * Math.cos(angle)),
-        y: cueBall.position.y + (initialStickOffset * Math.sin(angle)),
-      });
-      Body.setAngle(cueStick, angle);
-
-    // Update aim line position ----------------------------------------------------------------//
-    if (cueBall) {
-      const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
-      Body.setPosition(cueStick, {
-        x: cueBall.position.x - (stickSlideBack * Math.cos(angle)),
-        y: cueBall.position.y - (stickSlideBack * Math.sin(angle)),
-      });
-      Body.setAngle(cueStick, angle);
-    
-      const aimLineEnd = {
-        x: cueBall.position.x + Math.cos(angle) * aimLineOffset,
-        y: cueBall.position.y + Math.sin(angle) * aimLineOffset,
-      };
-      setAimLine({
-        x1: cueBall.position.x,
-        y1: cueBall.position.y,
-        x2: aimLineEnd.x,
-        y2: aimLineEnd.y,
-      });
-    }
-//---------------------------------------------------------------------------------------------//
-    }
-  };
+           // Update stick position
+           const angle = Math.atan2(cueBall.position.y - y, cueBall.position.x - x);
+           Body.setPosition(cueStick, {
+             x: cueBall.position.x + (initialStickOffset * Math.cos(angle)),
+             y: cueBall.position.y + (initialStickOffset * Math.sin(angle)),
+           });
+           Body.setAngle(cueStick, angle);
+         }
+       };
+   
+     const handleMouseUpGlobal = () => {
+       if (isDragging && gameStarted) {
+         const dx = initialMousePosition.x - mousePosition.x;
+         const dy = initialMousePosition.y - mousePosition.y;
+         const power = Math.sqrt(dx * dx + dy * dy) * 0.05; // Adjust power scaling factor as needed
+         const angle = Math.atan2(dy, dx);
+         const velocity = {
+           x: power * Math.cos(angle),
+           y: power * Math.sin(angle),
+         };
+   
+         Body.setVelocity(cueBall, velocity);
+         setIsDragging(false);
+       }
+     };
+   
+     if (gameStarted) {
+       window.addEventListener('mousemove', handleMouseMoveGlobal);
+       window.addEventListener('mouseup', handleMouseUpGlobal);
+     }
+   
+     return () => {
+       window.removeEventListener('mousemove', handleMouseMoveGlobal);
+       window.removeEventListener('mouseup', handleMouseUpGlobal);
+     };
+   }, [gameStarted, isDragging, mousePosition, cueStick, cueBall]);
 
   const handleMouseUp = () => {
     if (isDragging && gameStarted) {
@@ -374,7 +381,6 @@ if (showFinalScore) {
           className="game-container"
           ref={gameRef}
           onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
         >
           
